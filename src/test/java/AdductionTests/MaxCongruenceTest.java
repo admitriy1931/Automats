@@ -35,13 +35,13 @@ public class MaxCongruenceTest {
                 false, first, "0", firstFinal));
 
         List<List<String>> expected = Lists.newArrayList();
-        expected.add(Lists.newArrayList("4"));
-        expected.add(Lists.newArrayList("5", "6"));
         expected.add(Lists.newArrayList("0", "1"));
         expected.add(Lists.newArrayList("2"));
         expected.add(Lists.newArrayList("3"));
+        expected.add(Lists.newArrayList("4"));
+        expected.add(Lists.newArrayList("5", "6"));
 
-        Assertions.assertEquals(result, expected);
+        Assertions.assertTrue(expected.containsAll(result));
     }
 
     @Test
@@ -56,5 +56,17 @@ public class MaxCongruenceTest {
         first.put("1", "b", "0");
         first.put("2", "b", "2");
         first.put("3", "b", "2");
+
+        List<String> firstFinal = Lists.newArrayList("2", "3");
+
+        List<List<String>> result = Adduction.buildMaxCongruence(new Automat(
+                false, first, "0", firstFinal));
+
+        List<List<String>> expected = Lists.newArrayList();
+        expected.add(Lists.newArrayList("0"));
+        expected.add(Lists.newArrayList("1"));
+        expected.add(Lists.newArrayList("2", "3"));
+
+        Assertions.assertTrue(expected.containsAll(result));
     }
 }

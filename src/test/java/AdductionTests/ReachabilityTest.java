@@ -34,7 +34,7 @@ public class ReachabilityTest {
         Automat result = Adduction.findReachableVertexes(new Automat(false, first, "0", firstFinal));
         Automat expected = new Automat(false, first, "0", firstFinal);
 
-        Assertions.assertEquals(result.jumpTable, expected.jumpTable);
+        Assertions.assertEquals(expected.jumpTable, result.jumpTable);
     }
 
     @Test
@@ -66,6 +66,6 @@ public class ReachabilityTest {
 
         Automat expected = new Automat(false, first, "0", firstFinal);
 
-        Assertions.assertEquals(result.jumpTable, expected.jumpTable);
+        Assertions.assertEquals(expected.jumpTable, result.jumpTable);
     }
 }
