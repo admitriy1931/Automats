@@ -13,7 +13,7 @@ public class Adduction {
     private Adduction() {
     }
 
-    public static Automat findReachableVertexes(Automat automat) {
+    public static Automat excludeUnreachableVertexes(Automat automat) {
         Set<String> reachedVertexes = Sets.newHashSet();
         reachedVertexes.add(automat.startVertex);
         boolean running = true;
@@ -75,13 +75,34 @@ public class Adduction {
     }
 
     public static Automat buildAdductedAutomat(Automat automat) {
-        Automat modifiedAutomat = findReachableVertexes(automat);
+        Automat modifiedAutomat = excludeUnreachableVertexes(automat);
         List<List<String>> maxCongruence = buildMaxCongruence(modifiedAutomat);
-        String adductedStartVertex = null;
-        List<String> adductedFinalVertexes = null;
+        List<String> maxCongruenceJoined = Lists.newArrayList();
+        maxCongruence.forEach(x -> maxCongruenceJoined.add(String.join(", ", x)));
+        HashBasedTable<String, String, String> newJumpTable = HashBasedTable.create();
+        automat.finalVertexes = Lists.newArrayList();
 
-        HashBasedTable<String, String, String> adductedJumpTable = HashBasedTable.create();
 
-        return new Automat(true, adductedJumpTable, adductedStartVertex, adductedFinalVertexes);
+        for (int i = 0; i < maxCongruence.size(); i++) {
+            List<String> eqClass = maxCongruence.get(i);
+            if (eqClass.contains(automat.startVertex)) automat.startVertex = maxCongruenceJoined.get(i);
+            for (String finalVertex : automat.finalVertexes) {
+                if (eqClass.contains(finalVertex)) automat.finalVertexes.add(maxCongruenceJoined.get(i));
+            }
+            for (String letter : automat.letters) {
+                int index = 0;
+                String jump = automat.getJumpByVertexAndLetter(eqClass.get(0), letter);
+                for (int j = 0; j < maxCongruence.size(); j++) {
+                    List<String> eq = maxCongruence.get(j);
+                    if (eq.contains(jump)) index = j;
+                }
+                newJumpTable.put(String.join(", ", eqClass), letter, maxCongruenceJoined.get(index));
+            }
+        }
+
+        automat.jumpTable = newJumpTable;
+        automat.isFinalised = true;
+
+        return automat;
     }
 }
