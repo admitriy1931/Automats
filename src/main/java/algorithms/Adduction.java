@@ -80,14 +80,14 @@ public class Adduction {
         List<String> maxCongruenceJoined = Lists.newArrayList();
         maxCongruence.forEach(x -> maxCongruenceJoined.add(String.join(", ", x)));
         HashBasedTable<String, String, String> newJumpTable = HashBasedTable.create();
-        automat.finalVertexes = Lists.newArrayList();
+        Set<String> newFinalVertexes = Sets.newHashSet();
 
 
         for (int i = 0; i < maxCongruence.size(); i++) {
             List<String> eqClass = maxCongruence.get(i);
             if (eqClass.contains(automat.startVertex)) automat.startVertex = maxCongruenceJoined.get(i);
             for (String finalVertex : automat.finalVertexes) {
-                if (eqClass.contains(finalVertex)) automat.finalVertexes.add(maxCongruenceJoined.get(i));
+                if (eqClass.contains(finalVertex)) newFinalVertexes.add(maxCongruenceJoined.get(i));
             }
             for (String letter : automat.letters) {
                 int index = 0;
@@ -100,8 +100,9 @@ public class Adduction {
             }
         }
 
-        automat.jumpTable = newJumpTable;
         automat.isFinalised = true;
+        automat.jumpTable = newJumpTable;
+        automat.finalVertexes = Lists.newArrayList(newFinalVertexes);
 
         return automat;
     }

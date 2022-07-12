@@ -47,8 +47,10 @@ public class buildAdductedTest {
         expected.put("4", "b", "2");
         expected.put("5, 6", "b", "0, 1");
 
-        System.out.println(result.jumpTable);
+        List<String> expectedFinalVertexes = Lists.newArrayList("4", "5, 6");
 
+        Assertions.assertEquals("0, 1", result.startVertex);
+        Assertions.assertEquals(expectedFinalVertexes, result.finalVertexes);
         Assertions.assertEquals(expected, result.jumpTable);
     }
 }
