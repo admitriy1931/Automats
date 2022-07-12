@@ -1,4 +1,5 @@
-# Automats. UrFU summer course work. Java project using Maven and JavaFX.
+# Automats.
+## UrFU summer course work. Java project using Maven and JavaFX.
 
 ## Задача 1.
 
