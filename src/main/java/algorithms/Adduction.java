@@ -8,10 +8,13 @@ import com.google.common.collect.Sets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+/**
+ * Класс алгоритмов приведения ДКА с методами исключение недостижимых вершин,
+ * разбиение на классы эквивалентных состояний, построение приведенного автомата.
+ * <b>Важное замечание - методы, принимающие автомат, меняют исходный объект</b>
+ */
 public class Adduction {
-    private Adduction() {
-    }
+    private Adduction() {}
 
     public static Automat excludeUnreachableVertexes(Automat automat) {
         Set<String> reachedVertexes = Sets.newHashSet();
@@ -36,7 +39,6 @@ public class Adduction {
         eqClasses.add(automat.finalVertexes);
         eqClasses.add(Lists.newArrayList(Sets.difference(new HashSet<>(automat.vertexes), new HashSet<>(automat.finalVertexes))));
         int notSplitCounter = 0;
-;
         do {
             List<String> pickedClass = eqClasses.get(0);
             List<List<String>> dividedClass = Lists.newArrayList();
@@ -77,11 +79,12 @@ public class Adduction {
     public static Automat buildAdductedAutomat(Automat automat) {
         Automat modifiedAutomat = excludeUnreachableVertexes(automat);
         List<List<String>> maxCongruence = buildMaxCongruence(modifiedAutomat);
+
         List<String> maxCongruenceJoined = Lists.newArrayList();
         maxCongruence.forEach(x -> maxCongruenceJoined.add(String.join(", ", x)));
+
         HashBasedTable<String, String, String> newJumpTable = HashBasedTable.create();
         Set<String> newFinalVertexes = Sets.newHashSet();
-
 
         for (int i = 0; i < maxCongruence.size(); i++) {
             List<String> eqClass = maxCongruence.get(i);
