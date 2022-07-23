@@ -38,7 +38,7 @@ public class RegExprBuild {
             switch (symbol){
                 case '(':
                     if (implicitMultiply)
-                        tree.value = "*";
+                        tree.value = "конкатенация";
                     bracketsCount += 1;
                     tree = getNewChild(tree);
 
@@ -65,7 +65,7 @@ public class RegExprBuild {
 
                     implicitMultiply = true;
                     break;
-                case '+': case '*':
+                case '+':
                     if (tree.children.isEmpty())
                         throw new GrammarTreeException(
                                 "Нет левого операнда для " + symbol, i);
@@ -91,7 +91,7 @@ public class RegExprBuild {
                     }
                     implicitMultiply = false;
                     break;
-                case '^':
+                case '*':
                     if (tree.children.isEmpty())
                         throw new GrammarTreeException(
                                 "Неправильное использование итерации", i);
@@ -100,7 +100,7 @@ public class RegExprBuild {
                     break;
                 default:
                     if (implicitMultiply)
-                        tree.value = "*";
+                        tree.value = "конкатенация";
                     var child = new GrammarTree(Character.toString(symbol));
                     child.position = i;
                     tree.add(child);

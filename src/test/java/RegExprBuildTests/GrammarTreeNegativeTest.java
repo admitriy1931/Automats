@@ -62,27 +62,17 @@ public class GrammarTreeNegativeTest {
 
     @Test
     public void wrongIterationUsage1Test(){
-        standardTest("(^)", "Неправильное использование итерации", 1);
+        standardTest("(*)", "Неправильное использование итерации", 1);
     }
 
     @Test
     public void wrongIterationUsage2Test(){
-        standardTest("^)", "Неправильное использование итерации", 0);
+        standardTest("*)", "Неправильное использование итерации", 0);
     }
 
     @Test
     public void doublePlusTest(){
         standardTest("a++b", "Нет левого операнда для +", 2);
-    }
-
-    @Test
-    public void doubleMultiplyTest(){
-        standardTest("a**b", "Нет левого операнда для *", 2);
-    }
-
-    @Test
-    public void IncorrectOperatorsTest(){
-        standardTest("a+*b", "Нет левого операнда для *", 2);
     }
 
     @Test
