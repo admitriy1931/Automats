@@ -21,6 +21,11 @@ public class GrammarTreeNegativeTest {
     }
 
     @Test
+    public void wrongSymbolTest(){
+        standardTest("a +& b", "Неизвестный символ", 3);
+    }
+
+    @Test
     public void noClosingBracket2Test(){
         standardTest("((a + b)", "Нет закрывающей скобки", 7);
     }

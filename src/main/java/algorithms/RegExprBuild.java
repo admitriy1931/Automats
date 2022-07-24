@@ -111,6 +111,8 @@ public class RegExprBuild {
                     implicitMultiply = true;
                     break;
                 default:
+                    if (!Character.isLetterOrDigit(symbol))
+                        throw new RegexpExeption("Неизвестный символ", i);
                     if (implicitMultiply)
                         tree.value = "конкатенация";
                     var child = new GrammarTree(Character.toString(symbol));
