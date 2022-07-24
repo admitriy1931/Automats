@@ -3,12 +3,12 @@ package RegExprBuildTests;
 import algorithms.RegExprBuild;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import regexp.GrammarTreeException;
+import regexp.RegexpExeption;
 
 public class GrammarTreeNegativeTest {
     private void standardTest(String regexp, String expectedText, Integer expectedPosition){
         var thrown = Assertions.assertThrows(
-                GrammarTreeException.class,
+                RegexpExeption.class,
                 () -> RegExprBuild.makeGrammarTree(regexp));
 
         Assertions.assertEquals(expectedText, thrown.getText());

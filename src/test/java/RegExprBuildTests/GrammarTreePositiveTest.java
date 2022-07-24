@@ -14,6 +14,53 @@ public class GrammarTreePositiveTest {
     }
 
     @Test
+    public void simple1Test(){
+        var tree = new GrammarTree("+");
+
+        var child1 = new GrammarTree("конкатенация");
+        child1.add(new GrammarTree("a"));
+        child1.add(new GrammarTree("b"));
+        child1.add(new GrammarTree("c"));
+
+        var child2 = new GrammarTree("конкатенация");
+        child2.add(new GrammarTree("a"));
+        child2.add(new GrammarTree("b"));
+        child2.add(new GrammarTree("c"));
+
+        tree.add(child1);
+        tree.add(child2);
+
+        standardTest("(abc + abc)", tree);
+        standardTest("abc + abc", tree);
+    }
+
+    @Test
+    public void wikiExampleTest(){
+        var tree = new GrammarTree("+");
+
+        var child1 = new GrammarTree("конкатенация");
+
+        var grandChild = new GrammarTree("конкатенация");
+        grandChild.add(new GrammarTree("a"));
+        grandChild.add(new GrammarTree("b"));
+        grandChild.iterationAvailable = true;
+
+        child1.add(new GrammarTree("a"));
+        child1.add(grandChild);
+        child1.iterationAvailable = true;
+
+        var child2 = new GrammarTree("конкатенация");
+        child2.add(new GrammarTree("b"));
+        child2.add(new GrammarTree("a"));
+        child2.iterationAvailable = true;
+
+        tree.add(child1);
+        tree.add(child2);
+
+        standardTest("(a(ab)*)* + (ba)*", tree);
+    }
+
+    @Test
     public void treeForEmptyStringTest(){
         standardTest("", new GrammarTree(""));
     }

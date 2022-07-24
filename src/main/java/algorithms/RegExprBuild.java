@@ -1,10 +1,9 @@
 package algorithms;
 
 import regexp.GrammarTree;
-import regexp.GrammarTreeException;
+import regexp.RegexpExeption;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 public class RegExprBuild {
     public static Boolean isCorrect(String regexp){
@@ -15,17 +14,16 @@ public class RegExprBuild {
         try {
             return makeGrammarTree(regexp);
         }
-        catch (GrammarTreeException e){
+        catch (RegexpExeption e){
             return null;
         }
     }
 
-    //TODO: убрать знак для конкатенации и использовать * для итерации
-    public static GrammarTree makeGrammarTree(String regexp) throws GrammarTreeException{
+    public static GrammarTree makeGrammarTree(String regexp) throws RegexpExeption {
         return completeRawTree(makeRawTree(regexp));
     }
 
-    private static GrammarTree makeRawTree(String regexp) throws GrammarTreeException{
+    private static GrammarTree makeRawTree(String regexp) throws RegexpExeption {
         var tree = new GrammarTree("");
         var bracketsCount = 0;
         var implicitMultiply = false;
@@ -37,8 +35,11 @@ public class RegExprBuild {
 
             switch (symbol){
                 case '(':
-                    if (implicitMultiply)
+                    if (implicitMultiply){
                         tree.value = "конкатенация";
+                        tree = getNewChild(tree);
+                    }
+
                     bracketsCount += 1;
                     tree = getNewChild(tree);
 
@@ -46,19 +47,21 @@ public class RegExprBuild {
                     break;
                 case ')':
                     if (--bracketsCount < 0)
-                        throw new GrammarTreeException("Нет открывающейся скобки", i);
+                        throw new RegexpExeption("Нет открывающейся скобки", i);
                     if (getPreviousSymbol(i, regexp) == '(')
-                        throw new GrammarTreeException("Пустые скобки", i);
+                        throw new RegexpExeption("Пустые скобки", i);
 
                     if (tree.value.isEmpty()){
                         if (tree.children.size() == 0)
-                            throw new GrammarTreeException(
+                            throw new RegexpExeption(
                                     "Нет правого операнда для " + tree.parent.value,
                                     tree.parent.position);
-                        var child = tree.children.get(0);
-                        ChangeLastChild(tree.parent, child);
-                        child.parent = tree.parent;
-                        tree = child;
+                        if (tree.parent != null){
+                            var child = tree.children.get(0);
+                            ChangeLastChild(tree.parent, child);
+                            child.parent = tree.parent;
+                            tree = child;
+                        }
                     }
                     while (!tree.value.isEmpty() && tree.parent != null)
                         tree = tree.parent;
@@ -67,7 +70,7 @@ public class RegExprBuild {
                     break;
                 case '+':
                     if (tree.children.isEmpty())
-                        throw new GrammarTreeException(
+                        throw new RegexpExeption(
                                 "Нет левого операнда для " + symbol, i);
                     if (tree.parent != null
                             && Objects.equals(Character.toString(symbol), tree.parent.value)){
@@ -85,7 +88,16 @@ public class RegExprBuild {
                         }
                     }
                     else{
-                        tree.value = Character.toString(symbol);
+                        var val = Character.toString(symbol);
+                        if (!Objects.equals(tree.value, "")
+                                && !Objects.equals(tree.value, val)){
+                            if (tree.parent == null){
+                                var parent = new GrammarTree("");
+                                parent.add(tree);
+                            }
+                            tree = tree.parent;
+                        }
+                        tree.value = val;
                         tree.position = i;
                         tree = getNewChild(tree);
                     }
@@ -93,7 +105,7 @@ public class RegExprBuild {
                     break;
                 case '*':
                     if (tree.children.isEmpty())
-                        throw new GrammarTreeException(
+                        throw new RegexpExeption(
                                 "Неправильное использование итерации", i);
                     tree.children.get(tree.children.size()-1).iterationAvailable = true;
                     implicitMultiply = true;
@@ -109,13 +121,13 @@ public class RegExprBuild {
             }
         }
         if (bracketsCount != 0)
-            throw new GrammarTreeException(
+            throw new RegexpExeption(
                     "Нет закрывающей скобки", regexp.length()-1);
 
         return tree;
     }
 
-    private static GrammarTree completeRawTree(GrammarTree tree) throws GrammarTreeException{
+    private static GrammarTree completeRawTree(GrammarTree tree) throws RegexpExeption {
         if (tree.value.isEmpty()){
             if (!tree.children.isEmpty()){
                 var child = tree.children.get(0);
@@ -125,7 +137,7 @@ public class RegExprBuild {
                 tree = child;
             }
             else if (tree.parent != null && !tree.parent.value.isEmpty())
-                throw new GrammarTreeException(
+                throw new RegexpExeption(
                         "Нет правого операнда для " + tree.parent.value,
                         tree.parent.position);
         }

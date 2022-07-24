@@ -1,10 +1,10 @@
 package regexp;
 
-public class GrammarTreeException extends Exception{
+public class RegexpExeption extends Exception{
     private final String text;
     private final Integer wrongSymbolPosition;
 
-    public GrammarTreeException(String text, Integer wrongSymbolPosition){
+    public RegexpExeption(String text, Integer wrongSymbolPosition){
         this.text = text;
         this.wrongSymbolPosition = wrongSymbolPosition;
     }
