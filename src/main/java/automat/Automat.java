@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Automat {
     public Boolean isFinalised;
@@ -54,5 +55,18 @@ public class Automat {
         finalVertexes.remove(vertex);
         jumpTable.row(vertex).clear();
         vertexes.remove(vertex);
+    }
+
+    public int getVertexStatus(String vertex) {
+        if (!vertexes.contains(vertex)) throw new IllegalArgumentException(VERTEX_NOT_EXISTING);
+        if (startVertex.equals(vertex)) return -1;
+        if (finalVertexes.contains(vertex)) return 1;
+        return 0;
+    }
+
+    public boolean isVertexStock(String vertex) {
+        if (!vertexes.contains(vertex)) throw new IllegalArgumentException(VERTEX_NOT_EXISTING);
+        List<String> distinctJumps = getAllJumpsByVertex(vertex).stream().distinct().collect(Collectors.toList());
+        return distinctJumps.size() == 1 && distinctJumps.contains(vertex);
     }
 }
