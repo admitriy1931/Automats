@@ -6,6 +6,24 @@ import regexp.RegexpExeption;
 import java.util.*;
 
 public class RegExprBuild {
+    public static Boolean allowEmptyWord(String regexp) throws RegexpExeption {
+        var tree = makeGrammarTree(regexp);
+        if (tree.iterationAvailable)
+            return true;
+        if (Objects.equals(tree.value, "+")){
+            for (var child: tree.children)
+                if (child.iterationAvailable)
+                    return true;
+        }
+        if (Objects.equals(tree.value, "конкатенация")){
+            for (var child: tree.children)
+                if (!child.iterationAvailable)
+                    return false;
+            return true;
+        }
+        return false;
+    }
+
     public static Boolean isCorrect(String regexp){
         return makeGrammarTreeOrNull(regexp) != null;
     }
@@ -73,13 +91,21 @@ public class RegExprBuild {
                         throw new RegexpExeption(
                                 "Нет левого операнда для " + symbol, i);
                     if (tree.parent != null
-                            && Objects.equals(Character.toString(symbol), tree.parent.value)){
+                            && Objects.equals("+", tree.parent.value)){
                         if (tree.value.isEmpty()){
                             var child = tree.children.get(0);
-                            tree.value = child.value;
-                            tree.position = child.position;
-                            tree.children = new ArrayList<>();
-
+                            if (Objects.equals(child.value, "+") && !child.iterationAvailable){
+                                ChangeLastChild(tree.parent, child.children.get(0));
+                                for (var j = 1; j < child.children.size(); j++){
+                                    tree.parent.add(child.children.get(j));
+                                }
+                            }
+                            else{
+                                tree.value = child.value;
+                                tree.position = child.position;
+                                tree.children = child.children;
+                                tree.iterationAvailable = child.iterationAvailable;
+                            }
                             tree = getNewChild(tree.parent);
                         }
                         else{
@@ -113,8 +139,30 @@ public class RegExprBuild {
                 default:
                     if (!Character.isLetterOrDigit(symbol))
                         throw new RegexpExeption("Неизвестный символ", i);
-                    if (implicitMultiply)
-                        tree.value = "конкатенация";
+                    if (implicitMultiply){
+                        if (tree.parent != null
+                                && Objects.equals("конкатенация", tree.parent.value)){
+                            if (tree.value.isEmpty()){
+                                var child = tree.children.get(0);
+                                if (Objects.equals(child.value, "конкатенация") && !child.iterationAvailable){
+                                    ChangeLastChild(tree.parent, child.children.get(0));
+                                    for (var j = 1; j < child.children.size(); j++){
+                                        tree.parent.add(child.children.get(j));
+                                    }
+                                }
+                                else{
+                                    tree.value = child.value;
+                                    tree.position = child.position;
+                                    tree.children = child.children;
+                                    tree.iterationAvailable = child.iterationAvailable;
+                                }
+                            }
+                            tree = getNewChild(tree.parent);
+                        }
+                        else {
+                            tree.value = "конкатенация";
+                        }
+                    }
                     var child = new GrammarTree(Character.toString(symbol));
                     child.position = i;
                     tree.add(child);
@@ -154,7 +202,7 @@ public class RegExprBuild {
         while (j > 0 && Character.isWhitespace(regexp.charAt(j))){
             j--;
         }
-        return regexp.charAt(j);
+        return (j < 0) ? null : regexp.charAt(j);
     }
 
     private static GrammarTree getNewChild(GrammarTree tree){
