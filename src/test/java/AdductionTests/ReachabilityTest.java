@@ -31,7 +31,12 @@ public class ReachabilityTest {
 
         List<String> firstFinal = Lists.newArrayList("4", "5", "6");
 
-        Automat result = Adduction.excludeUnreachableVertexes(new Automat(false, first, "0", firstFinal));
+        Automat result = null;
+        try {
+            result = Adduction.excludeUnreachableVertexes(new Automat(false, first, "0", firstFinal));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         Automat expected = new Automat(false, first, "0", firstFinal);
 
         Assertions.assertEquals(expected.jumpTable, result.jumpTable);
@@ -57,7 +62,12 @@ public class ReachabilityTest {
         first.put("6", "b", "5");
 
         List<String> firstFinal = Lists.newArrayList("2", "3", "4");
-        Automat result = Adduction.excludeUnreachableVertexes(new Automat(false, first, "0", firstFinal));
+        Automat result = null;
+        try {
+            result = Adduction.excludeUnreachableVertexes(new Automat(false, first, "0", firstFinal));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
 
         first.row("4").clear();
         first.row("5").clear();

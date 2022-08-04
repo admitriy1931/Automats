@@ -3,11 +3,13 @@ package automat;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Table;
+
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Automat {
+public class Automat implements Cloneable, Serializable {
     public Boolean isFinalised;
     public HashBasedTable<String, String, String> jumpTable;
     public List<String> vertexes;
@@ -68,5 +70,10 @@ public class Automat {
         if (!vertexes.contains(vertex)) throw new IllegalArgumentException(VERTEX_NOT_EXISTING);
         List<String> distinctJumps = getAllJumpsByVertex(vertex).stream().distinct().collect(Collectors.toList());
         return distinctJumps.size() == 1 && distinctJumps.contains(vertex);
+    }
+
+    @Override
+    public Automat clone() throws CloneNotSupportedException {
+        return (Automat) super.clone();
     }
 }

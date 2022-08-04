@@ -16,22 +16,23 @@ import java.util.Set;
 public class Adduction {
     private Adduction() {}
 
-    public static Automat excludeUnreachableVertexes(Automat automat) {
+    public static Automat excludeUnreachableVertexes(Automat automat) throws CloneNotSupportedException {
+        Automat clone = automat.clone();
         Set<String> reachedVertexes = Sets.newHashSet();
-        reachedVertexes.add(automat.startVertex);
+        reachedVertexes.add(clone.startVertex);
         boolean running = true;
 
         while(running) {
             Set<String> iteratedReachedVertexes = Sets.newHashSet();
-            reachedVertexes.forEach(x -> iteratedReachedVertexes.addAll(automat.getAllJumpsByVertex(x)));
+            reachedVertexes.forEach(x -> iteratedReachedVertexes.addAll(clone.getAllJumpsByVertex(x)));
             iteratedReachedVertexes.addAll(reachedVertexes);
             if (iteratedReachedVertexes.equals(reachedVertexes)) running = false;
             reachedVertexes = iteratedReachedVertexes;
         }
 
-        Set<String> notReachedVertexes = Sets.difference(new HashSet<>(automat.vertexes), reachedVertexes);
-        notReachedVertexes.forEach(automat::removeVertex);
-        return automat;
+        Set<String> notReachedVertexes = Sets.difference(new HashSet<>(clone.vertexes), reachedVertexes);
+        notReachedVertexes.forEach(clone::removeVertex);
+        return clone;
     }
 
     public static List<List<String>> buildMaxCongruence(Automat automat) {
@@ -76,8 +77,9 @@ public class Adduction {
         return eqClasses;
     }
 
-    public static Automat buildAdductedAutomat(Automat automat) {
-        Automat modifiedAutomat = excludeUnreachableVertexes(automat);
+    public static Automat buildAdductedAutomat(Automat automat) throws CloneNotSupportedException {
+        Automat clone = automat.clone();
+        Automat modifiedAutomat = excludeUnreachableVertexes(clone);
         List<List<String>> maxCongruence = buildMaxCongruence(modifiedAutomat);
 
         List<String> maxCongruenceJoined = Lists.newArrayList();
@@ -88,13 +90,13 @@ public class Adduction {
 
         for (int i = 0; i < maxCongruence.size(); i++) {
             List<String> eqClass = maxCongruence.get(i);
-            if (eqClass.contains(automat.startVertex)) automat.startVertex = maxCongruenceJoined.get(i);
-            for (String finalVertex : automat.finalVertexes) {
+            if (eqClass.contains(clone.startVertex)) clone.startVertex = maxCongruenceJoined.get(i);
+            for (String finalVertex : clone.finalVertexes) {
                 if (eqClass.contains(finalVertex)) newFinalVertexes.add(maxCongruenceJoined.get(i));
             }
-            for (String letter : automat.letters) {
+            for (String letter : clone.letters) {
                 int index = 0;
-                String jump = automat.getJumpByVertexAndLetter(eqClass.get(0), letter);
+                String jump = clone.getJumpByVertexAndLetter(eqClass.get(0), letter);
                 for (int j = 0; j < maxCongruence.size(); j++) {
                     List<String> eq = maxCongruence.get(j);
                     if (eq.contains(jump)) index = j;
@@ -103,10 +105,10 @@ public class Adduction {
             }
         }
 
-        automat.isFinalised = true;
-        automat.jumpTable = newJumpTable;
-        automat.finalVertexes = Lists.newArrayList(newFinalVertexes);
+        clone.isFinalised = true;
+        clone.jumpTable = newJumpTable;
+        clone.finalVertexes = Lists.newArrayList(newFinalVertexes);
 
-        return automat;
+        return clone;
     }
 }
