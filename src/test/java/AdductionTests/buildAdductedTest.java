@@ -32,15 +32,12 @@ public class buildAdductedTest {
         List<String> firstFinal = Lists.newArrayList("4", "5", "6");
 
         Automat result = null;
-        Automat tested = new Automat(
-                false, first, "0", firstFinal);
         try {
-            result = Adduction.buildAdductedAutomat(tested);
+            result = Adduction.buildAdductedAutomat(new Automat(
+                    false, first, "0", firstFinal));
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        System.out.println(tested.jumpTable);
-        System.out.println(result.jumpTable);
 
         HashBasedTable<String, String, String> expected = HashBasedTable.create();
         expected.put("0, 1", "a", "5, 6");

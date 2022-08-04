@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Automat implements Cloneable, Serializable {
+public class Automat implements Cloneable, Serializable{
     public Boolean isFinalised;
     public HashBasedTable<String, String, String> jumpTable;
     public List<String> vertexes;

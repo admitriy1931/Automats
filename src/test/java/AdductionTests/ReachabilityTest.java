@@ -75,6 +75,7 @@ public class ReachabilityTest {
 
         Automat expected = new Automat(false, first, "0", firstFinal);
 
+        assert result != null;
         Assertions.assertEquals(expected.jumpTable, result.jumpTable);
     }
 }
