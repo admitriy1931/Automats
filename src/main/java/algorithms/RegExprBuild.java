@@ -7,17 +7,20 @@ import java.util.*;
 
 public class RegExprBuild {
     public static Boolean allowEmptyWord(String regexp) throws RegexpExeption {
-        var tree = makeGrammarTree(regexp);
+        return allowEmptyWord(makeGrammarTree(regexp));
+    }
+
+    private static Boolean allowEmptyWord(GrammarTree tree){
         if (tree.iterationAvailable)
             return true;
         if (Objects.equals(tree.value, "+")){
             for (var child: tree.children)
-                if (child.iterationAvailable)
+                if (allowEmptyWord(child))
                     return true;
         }
         if (Objects.equals(tree.value, "конкатенация")){
             for (var child: tree.children)
-                if (!child.iterationAvailable)
+                if (!allowEmptyWord(child))
                     return false;
             return true;
         }
@@ -54,6 +57,20 @@ public class RegExprBuild {
             switch (symbol){
                 case '(':
                     if (implicitMultiply){
+                        if (!tree.value.isEmpty() && (tree.parent == null || !tree.parent.value.isEmpty())){
+                            if (tree.parent == null){
+                                var parent = new GrammarTree("конкатенация");
+                                parent.add(tree);
+                                tree = tree.parent;
+                            }
+                            else{
+                                var parent = new GrammarTree("конкатенация");
+                                ChangeLastChild(tree.parent, parent);
+                                tree.parent = parent;
+                                parent.add(tree);
+                                tree = parent;
+                            }
+                        }
                         tree.value = "конкатенация";
                         tree = getNewChild(tree);
                     }
@@ -66,7 +83,8 @@ public class RegExprBuild {
                 case ')':
                     if (--bracketsCount < 0)
                         throw new RegexpExeption("Нет открывающейся скобки", i);
-                    if (getPreviousSymbol(i, regexp) == '(')
+                    var prev = getPreviousSymbol(i, regexp);
+                    if (prev == null || prev == '(')
                         throw new RegexpExeption("Пустые скобки", i);
 
                     if (tree.value.isEmpty()){
@@ -77,7 +95,6 @@ public class RegExprBuild {
                         if (tree.parent != null){
                             var child = tree.children.get(0);
                             ChangeLastChild(tree.parent, child);
-                            child.parent = tree.parent;
                             tree = child;
                         }
                     }
@@ -114,6 +131,13 @@ public class RegExprBuild {
                         }
                     }
                     else{
+                        if (tree.parent != null
+                                && Objects.equals(tree.parent.value, "конкатенация")
+                                && tree.value.isEmpty()){
+                            var child = tree.children.get(0);
+                            ChangeLastChild(tree.parent, child);
+                            tree = tree.parent;
+                        }
                         var val = Character.toString(symbol);
                         if (!Objects.equals(tree.value, "")
                                 && !Objects.equals(tree.value, val)){
@@ -213,5 +237,6 @@ public class RegExprBuild {
 
     private static void ChangeLastChild(GrammarTree tree, GrammarTree child){
         tree.children.set(tree.children.size()-1, child);
+        child.parent = tree;
     }
 }
