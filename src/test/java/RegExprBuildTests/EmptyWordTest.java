@@ -85,8 +85,7 @@ public class EmptyWordTest {
 
     @Test
     public void complexPositiveTest(){
-        var actual = standardTest("(c+c)(c+c) + (d*d* + dd)(dd + d*d*)");
-        actual = standardTest("c + (dd+d)(d)");
+        var actual = standardTest("a + bb + (c+c)(c+c) + (d*d* + dd)(dd + d*d*)");
 
         Assertions.assertNotNull(actual);
         Assertions.assertTrue(actual);
