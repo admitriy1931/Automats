@@ -246,6 +246,14 @@ public class RegExprBuild {
         while (tree.parent != null)
             tree = tree.parent;
 
+        while (tree.value.isEmpty()){
+            if (tree.children.size() == 0)
+                return tree;
+            var child = tree.children.get(0);
+            child.parent = null;
+            tree = child;
+        }
+
         return tree;
     }
 
