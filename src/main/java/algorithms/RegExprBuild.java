@@ -54,8 +54,7 @@ public class RegExprBuild {
             switch (symbol){
                 case '(':
                     if (implicitMultiply){
-                        tree.value = "конкатенация";
-                        tree = getNewChild(tree);
+                        tree = implicitMultiplyHandler(tree);
                     }
 
                     bracketsCount += 1;
@@ -68,7 +67,7 @@ public class RegExprBuild {
                         throw new RegexpExeption("Нет открывающейся скобки", i);
                     if (getPreviousSymbol(i, regexp) == '(')
                         throw new RegexpExeption("Пустые скобки", i);
-
+                    var flag = tree.value.isEmpty();
                     if (tree.value.isEmpty()){
                         if (tree.children.size() == 0)
                             throw new RegexpExeption(
@@ -76,13 +75,38 @@ public class RegExprBuild {
                                     tree.parent.position);
                         if (tree.parent != null){
                             var child = tree.children.get(0);
-                            ChangeLastChild(tree.parent, child);
-                            child.parent = tree.parent;
-                            tree = child;
+                            if (Objects.equals(child.value, tree.parent.value) && !child.iterationAvailable){
+                                tree = moveChildrenToParent(tree, child);
+                            }
+                            else{
+                                ChangeLastChild(tree.parent, child);
+                                tree = child;
+                                if (tree.parent.value.isEmpty() && tree.parent.parent != null){
+                                    var parent = tree;
+                                    while (parent.parent != null && parent.parent.value.isEmpty())
+                                        parent = parent.parent;
+                                    if (parent.parent != null && Objects.equals(parent.parent.value, "+")){
+                                        ChangeLastChild(tree.parent.parent, child);
+                                    }
+                                }
+                            }
                         }
                     }
                     while (!tree.value.isEmpty() && tree.parent != null)
                         tree = tree.parent;
+
+                    if (!flag){
+                        if (tree.parent != null){
+                            var child = tree.children.get(0);
+                            if (Objects.equals(child.value, tree.parent.value) && !child.iterationAvailable){
+                                tree = moveChildrenToParent(tree, child);
+                            }
+                            else{
+                                ChangeLastChild(tree.parent, child);
+                                tree = child;
+                            }
+                        }
+                    }
 
                     implicitMultiply = true;
                     break;
@@ -95,10 +119,7 @@ public class RegExprBuild {
                         if (tree.value.isEmpty()){
                             var child = tree.children.get(0);
                             if (Objects.equals(child.value, "+") && !child.iterationAvailable){
-                                ChangeLastChild(tree.parent, child.children.get(0));
-                                for (var j = 1; j < child.children.size(); j++){
-                                    tree.parent.add(child.children.get(j));
-                                }
+                                moveChildrenToParent(tree, child);
                             }
                             else{
                                 tree.value = child.value;
@@ -115,13 +136,19 @@ public class RegExprBuild {
                     }
                     else{
                         var val = Character.toString(symbol);
-                        if (!Objects.equals(tree.value, "")
+                        if (!tree.value.isEmpty()
                                 && !Objects.equals(tree.value, val)){
                             if (tree.parent == null){
                                 var parent = new GrammarTree("");
                                 parent.add(tree);
                             }
                             tree = tree.parent;
+                        }
+                        else if (tree.value.isEmpty()){
+                            var child = tree.children.get(0);
+                            if (Objects.equals(child.value, "+") && !child.iterationAvailable){
+                                moveChildrenToParent(child, child);
+                            }
                         }
                         tree.value = val;
                         tree.position = i;
@@ -140,32 +167,16 @@ public class RegExprBuild {
                     if (!Character.isLetterOrDigit(symbol))
                         throw new RegexpExeption("Неизвестный символ", i);
                     if (implicitMultiply){
-                        if (tree.parent != null
-                                && Objects.equals("конкатенация", tree.parent.value)){
-                            if (tree.value.isEmpty()){
-                                var child = tree.children.get(0);
-                                if (Objects.equals(child.value, "конкатенация") && !child.iterationAvailable){
-                                    ChangeLastChild(tree.parent, child.children.get(0));
-                                    for (var j = 1; j < child.children.size(); j++){
-                                        tree.parent.add(child.children.get(j));
-                                    }
-                                }
-                                else{
-                                    tree.value = child.value;
-                                    tree.position = child.position;
-                                    tree.children = child.children;
-                                    tree.iterationAvailable = child.iterationAvailable;
-                                }
-                            }
-                            tree = getNewChild(tree.parent);
-                        }
-                        else {
-                            tree.value = "конкатенация";
-                        }
+                        tree = implicitMultiplyHandler(tree);
+                        tree.value = Character.toString(symbol);
+                        tree.position = i;
+                        tree = tree.parent;
                     }
-                    var child = new GrammarTree(Character.toString(symbol));
-                    child.position = i;
-                    tree.add(child);
+                    else{
+                        var child = new GrammarTree(Character.toString(symbol));
+                        child.position = i;
+                        tree.add(child);
+                    }
 
                     implicitMultiply = true;
             }
@@ -174,7 +185,63 @@ public class RegExprBuild {
             throw new RegexpExeption(
                     "Нет закрывающей скобки", regexp.length()-1);
 
+
+        if (tree.parent != null && tree.children.size() == 1){
+            var child = tree.children.get(0);
+            if (tree.value.isEmpty()
+                    && Objects.equals(child.value, tree.parent.value)
+                    && !child.iterationAvailable){
+                tree = moveChildrenToParent(tree, child);
+            }
+        }
+
         return tree;
+    }
+
+    private static GrammarTree implicitMultiplyHandler(GrammarTree tree){
+        if (tree.parent != null
+                && Objects.equals("конкатенация", tree.parent.value)){
+            if (tree.value.isEmpty()){
+                var child = tree.children.get(0);
+                if (Objects.equals(child.value, "конкатенация") && !child.iterationAvailable){
+                    moveChildrenToParent(tree, child);
+                }
+                else{
+                    tree.value = child.value;
+                    tree.position = child.position;
+                    tree.children = child.children;
+                    tree.iterationAvailable = child.iterationAvailable;
+                }
+            }
+            tree = getNewChild(tree.parent);
+        }
+        else {
+            if (tree.value.isEmpty()){
+                var child = tree.children.get(0);
+                if (Objects.equals(child.value, "конкатенация") && !child.iterationAvailable){
+                    if (tree.parent != null){
+                        ChangeLastChild(tree.parent, child);
+                    }
+                    child.parent = tree.parent;
+                    tree.children = new ArrayList<>();
+                    tree.parent = null;
+
+                    tree = child;
+                }
+            }
+            tree.value = "конкатенация";
+            tree = getNewChild(tree);
+        }
+
+        return tree;
+    }
+
+    private static GrammarTree moveChildrenToParent(GrammarTree tree, GrammarTree child){
+        ChangeLastChild(tree.parent, child.children.get(0));
+        for (var j = 1; j < child.children.size(); j++){
+            tree.parent.add(child.children.get(j));
+        }
+        return tree.parent;
     }
 
     private static GrammarTree completeRawTree(GrammarTree tree) throws RegexpExeption {
@@ -213,5 +280,10 @@ public class RegExprBuild {
 
     private static void ChangeLastChild(GrammarTree tree, GrammarTree child){
         tree.children.set(tree.children.size()-1, child);
+        child.parent = tree;
+    }
+
+    private static void upChild(){
+
     }
 }
