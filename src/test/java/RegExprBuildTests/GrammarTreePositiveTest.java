@@ -375,6 +375,33 @@ public class GrammarTreePositiveTest {
     }
 
     @Test
+    public void plusIteration2Test(){
+        var expected = RegExprBuild.makeGrammarTreeOrNull("a+b+c");
+        Assertions.assertNotNull(expected);
+        expected.iterationAvailable = true;
+
+        standardTest("(a + b + c)*", expected);
+    }
+
+    @Test
+    public void plusMultiplyIterationTest(){
+        var expected = RegExprBuild.makeGrammarTreeOrNull("a+b+cd");
+        Assertions.assertNotNull(expected);
+        expected.iterationAvailable = true;
+
+        standardTest("(a + b + cd)*", expected);
+    }
+
+    @Test
+    public void plusMultiplyIteration2Test(){
+        var expected = RegExprBuild.makeGrammarTreeOrNull("a+(b+c)");
+        Assertions.assertNotNull(expected);
+        expected.iterationAvailable = true;
+
+        standardTest("(a + (b + c))*", expected);
+    }
+
+    @Test
     public void plusWithBracketsAndIterationTest(){
         var expected = new GrammarTree("+");
 
