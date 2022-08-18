@@ -104,7 +104,7 @@ public class RegExprBuild {
                     break;
                 case '+':
                     if (tree.children.isEmpty())
-                        throw new RegexpExeption("Нет левого операнда для " + symbol, i);
+                        throw new RegexpExeption("Нет левого операнда для +", i);
                     if (tree.parent != null && Objects.equals("+", tree.parent.value)){
                         if (tree.value.isEmpty())
                             processEmptyNode(tree, "+");
@@ -159,8 +159,7 @@ public class RegExprBuild {
             }
         }
         if (bracketsCount != 0)
-            throw new RegexpExeption(
-                    "Нет закрывающей скобки", regexp.length()-1);
+            throw new RegexpExeption("Нет закрывающей скобки", regexp.length()-1);
 
         while (!tree.value.isEmpty() && tree.parent != null)
             tree = tree.parent;
@@ -196,8 +195,7 @@ public class RegExprBuild {
                 tree = child;
             }
             else if (tree.parent != null && !tree.parent.value.isEmpty())
-                throw new RegexpExeption(
-                        "Нет правого операнда для " + tree.parent.value,
+                throw new RegexpExeption("Нет правого операнда для " + tree.parent.value,
                         tree.parent.position);
         }
         while (tree.parent != null)
