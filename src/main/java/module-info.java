@@ -5,4 +5,6 @@ module org.openjfx {
     exports org.openjfx;
     exports algorithms;
     exports automat;
+    exports org.openjfx.Controllers;
+    opens org.openjfx.Controllers;
 }
