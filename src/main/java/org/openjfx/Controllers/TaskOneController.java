@@ -43,47 +43,60 @@ public class TaskOneController {
 
     private void initBuildFinalisedAutomatonButtons() {
         buildFinalisedAutomatons.setOnAction(event -> {
-            var firstFinalisedAutomaton = Adduction.buildAdductedAutomat(Controller.automatonList.get(0));
-            var secondFinalisedAutomaton = Adduction.buildAdductedAutomat(Controller.automatonList.get(1));
-
-            buildFinalisedAutomatons.getScene().getWindow().hide();
-
-            var firstAutomatonTableView = createAutomatonJumpTableTableView(firstFinalisedAutomaton);
-            var secondAutomatonTableView = createAutomatonJumpTableTableView(secondFinalisedAutomaton);
-
-            var mainPane = new AnchorPane(firstAutomatonTableView, secondAutomatonTableView);
-
-            var firstAutomatonInfo = new Text("Первый автомат");
-            firstAutomatonInfo.setFill(Color.WHITESMOKE);
-            firstAutomatonInfo.setFont(Font.font("System", 20));
-
-            var secondAutomatonInfo = new Text("Второй автомат");
-            secondAutomatonInfo.setFill(Color.WHITESMOKE);
-            secondAutomatonInfo.setFont(Font.font("System", 20));
-
-            mainPane.setStyle("-fx-background-color: #2e3348;");
-
-            AnchorPane.setLeftAnchor(firstAutomatonTableView, 10.0);
-            AnchorPane.setTopAnchor(firstAutomatonTableView, 50.0);
-
-            AnchorPane.setRightAnchor(secondAutomatonTableView, 10.0);
-            AnchorPane.setTopAnchor(secondAutomatonTableView, 50.0);
-
-            AnchorPane.setLeftAnchor(firstAutomatonInfo, 10.0);
-            AnchorPane.setTopAnchor(firstAutomatonInfo, 10.0);
-
-            AnchorPane.setLeftAnchor(secondAutomatonInfo, 10.0);
-            AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
-
-
-            buildFinalisedAutomatons.getScene().getWindow().hide();
-
-            var scene = new Scene(mainPane);
-            Stage stage = new Stage();
-            stage.setMaximized(true);
-            App.setUpApplicationWindow(stage);
-            stage.setScene(scene);
-            stage.show();
+            Automat firstFinalisedAutomaton = null;
+            try {
+                firstFinalisedAutomaton = Adduction.buildAdductedAutomat(Controller.automatonList.get(0));
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            Automat secondFinalisedAutomaton = null;
+            try {
+                secondFinalisedAutomaton = Adduction.buildAdductedAutomat(Controller.automatonList.get(1));
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+//        buildFinalisedAutomatons.setOnAction(event -> {
+//            var firstFinalisedAutomaton = Adduction.buildAdductedAutomat(Controller.automatonList.get(0));
+//            var secondFinalisedAutomaton = Adduction.buildAdductedAutomat(Controller.automatonList.get(1));
+//
+//            buildFinalisedAutomatons.getScene().getWindow().hide();
+//
+//            var firstAutomatonTableView = createAutomatonJumpTableTableView(firstFinalisedAutomaton);
+//            var secondAutomatonTableView = createAutomatonJumpTableTableView(secondFinalisedAutomaton);
+//
+//            var mainPane = new AnchorPane(firstAutomatonTableView, secondAutomatonTableView);
+//
+//            var firstAutomatonInfo = new Text("Первый автомат");
+//            firstAutomatonInfo.setFill(Color.WHITESMOKE);
+//            firstAutomatonInfo.setFont(Font.font("System", 20));
+//
+//            var secondAutomatonInfo = new Text("Второй автомат");
+//            secondAutomatonInfo.setFill(Color.WHITESMOKE);
+//            secondAutomatonInfo.setFont(Font.font("System", 20));
+//
+//            mainPane.setStyle("-fx-background-color: #2e3348;");
+//
+//            AnchorPane.setLeftAnchor(firstAutomatonTableView, 10.0);
+//            AnchorPane.setTopAnchor(firstAutomatonTableView, 50.0);
+//
+//            AnchorPane.setRightAnchor(secondAutomatonTableView, 10.0);
+//            AnchorPane.setTopAnchor(secondAutomatonTableView, 50.0);
+//
+//            AnchorPane.setLeftAnchor(firstAutomatonInfo, 10.0);
+//            AnchorPane.setTopAnchor(firstAutomatonInfo, 10.0);
+//
+//            AnchorPane.setLeftAnchor(secondAutomatonInfo, 10.0);
+//            AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
+//
+//
+//            buildFinalisedAutomatons.getScene().getWindow().hide();
+//
+//            var scene = new Scene(mainPane);
+//            Stage stage = new Stage();
+//            stage.setMaximized(true);
+//            App.setUpApplicationWindow(stage);
+//            stage.setScene(scene);
+//            stage.show();
         });
     }
 
