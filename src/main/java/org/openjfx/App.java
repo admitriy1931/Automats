@@ -12,21 +12,28 @@ import java.io.InputStream;
 import java.net.URL;
 
 public class App extends Application {
+
+    private static Image mainIcon;
+
     public void start(Stage primaryStage) throws IOException {
         URL url = App.class.getResource("/start.fxml");
         FXMLLoader loader = new FXMLLoader(url);
         Parent root = loader.load();
+        setUpStage(primaryStage);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
-        setUpApplicationWindow(primaryStage);
     }
 
-    public static void setUpApplicationWindow(Stage stage) {
+    public static void setUpStage(Stage stage) {
         stage.setTitle("Automaton");
+        if (mainIcon != null) {
+            stage.getIcons().add(mainIcon);
+            return;
+        }
         InputStream iconStream = App.class.getResourceAsStream("/steam.png");
         assert iconStream != null;
-        Image image = new Image(iconStream);
-        stage.getIcons().add(image);
+        mainIcon = new Image(iconStream);
+        stage.getIcons().add(mainIcon);
     }
 
     public static void main(String[] args) {
