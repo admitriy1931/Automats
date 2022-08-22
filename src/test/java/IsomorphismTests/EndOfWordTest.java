@@ -31,7 +31,7 @@ public class EndOfWordTest {
 
     @Test
     public void simpleTest2(){
-        var aut = makeAut2();
+        var aut = makeAut2(0);
 
         var expected = new ArrayList<String>();
         expected.add("b");
@@ -71,40 +71,48 @@ public class EndOfWordTest {
         return new Automat(false, jumpTable, v1, finalVertexes);
     }
 
-    public static Automat makeAut2(){
+    public static Automat makeAut2(Integer shift){
         HashBasedTable<String, String, String> jumpTable = HashBasedTable.create();
 
-        jumpTable.put("1", "a", "2");
-        jumpTable.put("1", "b", "3");
-        jumpTable.put("1", "c", "4");
+        var v1 = String.valueOf(1 + shift);
+        var v2 = String.valueOf(2 + shift);
+        var v3 = String.valueOf(3 + shift);
+        var v4 = String.valueOf(4 + shift);
+        var v5 = String.valueOf(5 + shift);
+        var v6 = String.valueOf(6 + shift);
+        var v7 = String.valueOf(7 + shift);
 
-        jumpTable.put("2", "a", "3");
-        jumpTable.put("2", "b", "4");
-        jumpTable.put("2", "c", "5");
+        jumpTable.put(v1, "a", v2);
+        jumpTable.put(v1, "b", v3);
+        jumpTable.put(v1, "c", v4);
 
-        jumpTable.put("3", "a", "5");
-        jumpTable.put("3", "b", "7");
-        jumpTable.put("3", "c", "7");
+        jumpTable.put(v2, "a", v3);
+        jumpTable.put(v2, "b", v4);
+        jumpTable.put(v2, "c", v5);
 
-        jumpTable.put("4", "a", "7");
-        jumpTable.put("4", "b", "7");
-        jumpTable.put("4", "c", "7");
+        jumpTable.put(v3, "a", v5);
+        jumpTable.put(v3, "b", v7);
+        jumpTable.put(v3, "c", v7);
 
-        jumpTable.put("5", "a", "7");
-        jumpTable.put("5", "b", "6");
-        jumpTable.put("5", "c", "7");
+        jumpTable.put(v4, "a", v7);
+        jumpTable.put(v4, "b", v7);
+        jumpTable.put(v4, "c", v7);
 
-        jumpTable.put("6", "a", "7");
-        jumpTable.put("6", "b", "7");
-        jumpTable.put("6", "c", "7");
+        jumpTable.put(v5, "a", v7);
+        jumpTable.put(v5, "b", v6);
+        jumpTable.put(v5, "c", v7);
 
-        jumpTable.put("7", "a", "7");
-        jumpTable.put("7", "b", "7");
-        jumpTable.put("7", "c", "7");
+        jumpTable.put(v6, "a", v7);
+        jumpTable.put(v6, "b", v7);
+        jumpTable.put(v6, "c", v7);
+
+        jumpTable.put(v7, "a", v7);
+        jumpTable.put(v7, "b", v7);
+        jumpTable.put(v7, "c", v7);
 
         var finalVertexes = new ArrayList<String>();
-        finalVertexes.add("6");
+        finalVertexes.add(v6);
 
-        return new Automat(false, jumpTable, "1", finalVertexes);
+        return new Automat(false, jumpTable, v1, finalVertexes);
     }
 }

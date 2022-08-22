@@ -106,6 +106,7 @@ public class Adduction {
 
         clone.isFinalised = true;
         clone.jumpTable = newJumpTable;
+        clone.vertexes = Lists.newArrayList(newJumpTable.rowKeySet());
         clone.finalVertexes = Lists.newArrayList(newFinalVertexes);
 
         return clone;

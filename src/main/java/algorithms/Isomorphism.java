@@ -17,7 +17,9 @@ public class Isomorphism {
         associations.clear();
     }
 
-    public static IsomorphismResult automatsAreIsomorphic(Automat aut1, Automat aut2) {
+    public static IsomorphismResult automatsAreIsomorphic(Automat aut1, Automat aut2) throws CloneNotSupportedException {
+        aut1 = Adduction.buildAdductedAutomat(aut1);
+        aut2 = Adduction.buildAdductedAutomat(aut2);
         clear();
         var wordIn2ThatNotIn1 = Lists.reverse(
                 findWordIn1ThatNotIn2(aut2, aut1, aut2.startVertex, aut1.startVertex, ""));
