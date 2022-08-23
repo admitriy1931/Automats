@@ -47,20 +47,20 @@ public class TaskOneController {
             } catch (CloneNotSupportedException e) {
                 return;
             }
-//        buildFinalisedAutomatons.setOnAction(event -> {
-//            var firstFinalisedAutomaton = Adduction.buildAdductedAutomat(Controller.automatonList.get(0));
-//            var secondFinalisedAutomaton = Adduction.buildAdductedAutomat(Controller.automatonList.get(1));
-//
-//            buildFinalisedAutomatons.getScene().getWindow().hide();
-//
-//
-//            var mainPane = new AnchorPane(firstAutomatonTableView, secondAutomatonTableView);
-//
-//            var firstAutomatonInfo = new Text("Первый автомат");
-//            firstAutomatonInfo.setFill(Color.WHITESMOKE);
-//            firstAutomatonInfo.setFont(Font.font("System", 20));
-//
-//            var secondAutomatonInfo = new Text("Второй автомат");
+
+            buildFinalisedAutomatons.getScene().getWindow().hide();
+
+            var firstAutomatonTableView = createAutomatonJumpTableTableView(firstFinalisedAutomaton);
+            var secondAutomatonTableView = createAutomatonJumpTableTableView(secondFinalisedAutomaton);
+
+            var firstAutomatonInfo = new Text("Первый автомат");
+            firstAutomatonInfo.setFill(Color.WHITESMOKE);
+            firstAutomatonInfo.setFont(Font.font("System", 20));
+
+            var secondAutomatonInfo = new Text("Второй автомат");
+            secondAutomatonInfo.setFill(Color.WHITESMOKE);
+            secondAutomatonInfo.setFont(Font.font("System", 20));
+
             var checkIfIsomorphicButton = getCheckIfIsomorphicButton(firstFinalisedAutomaton, secondFinalisedAutomaton);
 
             var mainPane = getMainPane(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, checkIfIsomorphicButton);
@@ -75,23 +75,25 @@ public class TaskOneController {
         var mainPane = new AnchorPane(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, checkIfIsomorphicButton);
 
         mainPane.setStyle("-fx-background-color: #2e3348;");
-//            AnchorPane.setLeftAnchor(secondAutomatonInfo, 10.0);
+
         AnchorPane.setLeftAnchor(firstAutomatonTableView, 25.0);
         AnchorPane.setTopAnchor(firstAutomatonTableView, 50.0);
-//
+
         AnchorPane.setRightAnchor(secondAutomatonTableView, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonTableView, 50.0);
-//            var scene = new Scene(mainPane);
+
         AnchorPane.setLeftAnchor(firstAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(firstAutomatonInfo, 10.0);
-//            App.setUpApplicationWindow(stage);
+
         AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
+
         AnchorPane.setBottomAnchor(checkIfIsomorphicButton, 35.0);
         AnchorPane.setLeftAnchor(checkIfIsomorphicButton, 800.0);
         AnchorPane.setRightAnchor(checkIfIsomorphicButton, 800.0);
         return mainPane;
     }
+
     private Button getCheckIfIsomorphicButton(Automat firstFinalisedAutomaton, Automat secondFinalisedAutomaton) {
         var checkIfIsomorphicButton = new Button("Проверить автоматы на изоморфность");
         checkIfIsomorphicButton.setFont(Font.font(Font.getDefault().getName(), 14));
