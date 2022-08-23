@@ -31,8 +31,13 @@ public class buildAdductedTest {
 
         List<String> firstFinal = Lists.newArrayList("4", "5", "6");
 
-        Automat result = Adduction.buildAdductedAutomat(new Automat(
-                false, first, "0", firstFinal));
+        Automat result = null;
+        try {
+            result = Adduction.buildAdductedAutomat(new Automat(
+                    false, first, "0", firstFinal));
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
 
         HashBasedTable<String, String, String> expected = HashBasedTable.create();
         expected.put("0, 1", "a", "5, 6");
@@ -49,6 +54,7 @@ public class buildAdductedTest {
 
         List<String> expectedFinalVertexes = Lists.newArrayList("4", "5, 6");
 
+        assert result != null;
         Assertions.assertEquals("0, 1", result.startVertex);
         Assertions.assertEquals(expectedFinalVertexes, result.finalVertexes);
         Assertions.assertEquals(expected, result.jumpTable);
