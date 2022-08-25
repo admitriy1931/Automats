@@ -20,7 +20,7 @@ public class GlushkovSetsBuild {
     }
 
     private static HashSet<LinearisedSymbol> makeSetOfStartSymbols(GrammarTree tree){
-        var symbols = new HashSet<LinearisedSymbol>();
+        HashSet<LinearisedSymbol> symbols = new HashSet<>();
         if (Objects.equals(tree.value, "+")){
             for (GrammarTree child: tree.children)
                 symbols.addAll(makeSetOfStartSymbols(child));

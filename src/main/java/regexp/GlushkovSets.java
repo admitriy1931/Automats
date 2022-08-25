@@ -30,8 +30,8 @@ public class GlushkovSets {
     }
 
     public Boolean glushkovSetsAreEqual(GlushkovSets other){
-        if (!setOfStartSymbol.equals(other.getSetOfStartSymbol())) return false;
-        if (!setOfEndSymbol.equals(other.getSetOfEndSymbol())) return false;
-        return setOfPairs.equals(other.getSetOfPairs());
+        return setOfPairs.equals(other.getSetOfPairs()) &&
+                !setOfEndSymbol.equals(other.getSetOfEndSymbol()) &&
+                (!setOfStartSymbol.equals(other.getSetOfStartSymbol()));
     }
 }

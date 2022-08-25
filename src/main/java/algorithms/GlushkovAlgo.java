@@ -5,11 +5,12 @@ import com.google.common.collect.HashBasedTable;
 import regexp.GlushkovSets;
 import regexp.LinearisedSymbol;
 import javafx.util.Pair;
+import regexp.RegexpExeption;
 
 import java.util.*;
 
 public class GlushkovAlgo {
-    public static Automat doGlushkovAlgo (String regexp) {
+    public static Automat doGlushkovAlgo (String regexp) throws RegexpExeption{
         GlushkovSets sets = new GlushkovSets(null, null,null);
         try {
             sets = GlushkovSetsBuild.makeGlushkovSets(regexp);
@@ -72,7 +73,32 @@ public class GlushkovAlgo {
                 vertexTo.clear();
             }
         }
-        return new Automat(false, res, "-1", terminals);
+        HashBasedTable<String,String,String> prepared = renameVertexes(res, -2, false);
+        HashBasedTable<String,String,String> jumpTable = renameVertexes(prepared, 0, true);
+        return new Automat(false, jumpTable, "-1", terminals);
+    }
+
+    private static HashBasedTable<String, String, String>
+            renameVertexes(HashBasedTable<String, String, String> raw, int startName, boolean up){
+        HashBasedTable<String, String, String> renamed = HashBasedTable.create();
+        HashMap<String, String> dictionary = new HashMap<>();
+        int newName = startName;
+        for (String rowKey: raw.rowKeySet()){
+            for (String columnKey: raw.columnKeySet()){
+                renamed.put(Integer.toString(newName), columnKey, Objects.requireNonNull(raw.get(rowKey, columnKey)));
+            }
+            dictionary.put(rowKey, Integer.toString(newName));
+            if (up){newName++;} else {newName--;}
+        }
+        for (String rowKey: renamed.rowKeySet()){
+            for (String columnKey: renamed.columnKeySet()){
+                String value = Objects.requireNonNull(renamed.get(rowKey, columnKey));
+                if (dictionary.containsKey(value)){
+                    renamed.put(rowKey, columnKey, dictionary.get(value));
+                }
+            }
+        }
+        return renamed;
     }
 
     private static String getName(ArrayList<String> rawName){
@@ -87,9 +113,9 @@ public class GlushkovAlgo {
 
     private static HashSet<String> findAlphabet (String regexp){
         HashSet<String> alphabet = new HashSet<>();
-        for (int i = 0; i < regexp.length() - 1; i++){
+        for (int i = 0; i < regexp.length(); i++){
             String letter = regexp.substring(i, i+1);
-            if (letter.matches("[a-z]")){
+            if (letter.matches("[a-z0-9]")){
                 alphabet.add(letter);
             }
         }
@@ -138,7 +164,7 @@ public class GlushkovAlgo {
         return automaton;
     }
 
-    private static List<String> makeSetOfTerminal(GlushkovSets sets, String regexp){
+    private static List<String> makeSetOfTerminal(GlushkovSets sets, String regexp) throws RegexpExeption{
         List<String> terminalVertexes = new ArrayList<>();
         for (LinearisedSymbol terminal: sets.getSetOfEndSymbol()){
             terminalVertexes.add(terminal.getNumber().toString());
@@ -149,8 +175,8 @@ public class GlushkovAlgo {
         return terminalVertexes;
     }
 
-    private static boolean checkFirst(String regexp){
-        return regexp.length() >= 5;//TODO
+    private static boolean checkFirst(String regexp) throws RegexpExeption{
+        return RegExprBuild.allowEmptyWord(regexp);
     }
 
     private GlushkovAlgo(){}

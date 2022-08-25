@@ -86,11 +86,17 @@ class BuildingDKATest{
 
     @Test
     void simpleRegTest(){
-        Automat real = GlushkovAlgo.doGlushkovAlgo(simpleReg);
+        try {
+            Automat real = GlushkovAlgo.doGlushkovAlgo(simpleReg);
+        }catch (Exception e){e.printStackTrace();}
+
     }
 
     @Test
     void wikiRegTest(){
-        Automat real = GlushkovAlgo.doGlushkovAlgo(wikiExample);
+        try{
+            Automat real = GlushkovAlgo.doGlushkovAlgo(wikiExample);
+        }catch (Exception e){e.printStackTrace();}
+
     }
 }
