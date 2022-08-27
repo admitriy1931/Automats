@@ -22,18 +22,27 @@ public class GlushkovSetsBuild {
     private static HashSet<LinearisedSymbol> makeSetOfStartSymbols(GrammarTree tree){
         HashSet<LinearisedSymbol> symbols = new HashSet<>();
         if (Objects.equals(tree.value, "+")){
-            for (GrammarTree child: tree.children)
+            for (GrammarTree child: tree.children){
                 symbols.addAll(makeSetOfStartSymbols(child));
+                if (child.canBeEmpty)
+                    tree.canBeEmpty = true;
+            }
         }
         else if (Objects.equals(tree.value, "конкатенация")){
+            tree.canBeEmpty = true;
             for (GrammarTree child: tree.children) {
                 symbols.addAll(makeSetOfStartSymbols(child));
-                if (!child.iterationAvailable)
+                if (!child.iterationAvailable && !child.canBeEmpty){
+                    tree.canBeEmpty = false;
                     break;
+                }
             }
         }
         else if (tree.value.length() == 1) {
-            symbols.add(new LinearisedSymbol(tree.value.charAt(0), tree.position));
+            if (!tree.value.equals(RegExprBuild.emptyWordSymbol))
+                symbols.add(new LinearisedSymbol(tree.value.charAt(0), tree.position));
+            else
+                tree.canBeEmpty = true;
         }
 
         return symbols;
@@ -42,19 +51,28 @@ public class GlushkovSetsBuild {
     private static HashSet<LinearisedSymbol> makeSetOfEndSymbols(GrammarTree tree){
         var symbols = new HashSet<LinearisedSymbol>();
         if (Objects.equals(tree.value, "+")){
-            for (GrammarTree child: tree.children)
+            for (GrammarTree child: tree.children){
                 symbols.addAll(makeSetOfEndSymbols(child));
+                if (child.canBeEmpty)
+                    tree.canBeEmpty = true;
+            }
         }
         else if (Objects.equals(tree.value, "конкатенация")){
+            tree.canBeEmpty = true;
             for (var i = tree.children.size()-1; i >= 0; i--){
                 var child = tree.children.get(i);
                 symbols.addAll(makeSetOfEndSymbols(child));
-                if (!child.iterationAvailable)
+                if (!child.iterationAvailable && !child.canBeEmpty){
+                    tree.canBeEmpty = false;
                     break;
+                }
             }
         }
         else if (tree.value.length() == 1) {
-            symbols.add(new LinearisedSymbol(tree.value.charAt(0), tree.position));
+            if (!tree.value.equals(RegExprBuild.emptyWordSymbol))
+                symbols.add(new LinearisedSymbol(tree.value.charAt(0), tree.position));
+            else
+                tree.canBeEmpty = true;
         }
 
         return symbols;
@@ -83,7 +101,7 @@ public class GlushkovSetsBuild {
                 for (var j = i+1; j < tree.children.size(); j++){
                     var neighbourChild = tree.children.get(j);
                     pairs.addAll(makePairs(ourTail, makeSetOfStartSymbols(neighbourChild)));
-                    if (!neighbourChild.iterationAvailable)
+                    if (!neighbourChild.iterationAvailable && !neighbourChild.canBeEmpty)
                         break;
                 }
                 if (child.iterationAvailable)

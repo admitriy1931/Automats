@@ -6,13 +6,19 @@ import regexp.RegexpExeption;
 import java.util.*;
 
 public class RegExprBuild {
+    public static String emptyWordSymbol = "-";
+
     public static Boolean allowEmptyWord(String regexp) throws RegexpExeption {
         return allowEmptyWord(makeGrammarTree(regexp));
     }
 
     private static Boolean allowEmptyWord(GrammarTree tree){
-        if (tree.iterationAvailable)
+        if (tree.iterationAvailable || tree.canBeEmpty){
             return true;
+        }
+        if (Objects.equals(tree.value, emptyWordSymbol)){
+            return true;
+        }
         if (Objects.equals(tree.value, "+")){
             for (var child: tree.children)
                 if (allowEmptyWord(child))
@@ -97,8 +103,23 @@ public class RegExprBuild {
                         if (tree.parent != null)
                             tree = changeLastChild(tree.parent, tree.children.get(0));
                     }
+
                     tree = Objects.equals(tree.value, "+") || Objects.equals(tree.value, "конкатенация")
                             ? tree.parent : getEmptyAncestorOrParent(tree);
+
+                    if (tree.parent != null && tree.parent.value.isEmpty()
+                            && tree.parent.parent != null
+                            && Objects.equals(tree.parent.parent.value, "конкатенация")){
+                        changeLastChild(tree.parent.parent, tree);
+                        tree = tree.parent;
+                    }
+                    if (Objects.equals(tree.value, "+")){
+                        var parent = tree;
+                        while (parent.parent != null && parent.parent.value.equals("конкатенация"))
+                            parent = parent.parent;
+                        if (parent.parent == null)
+                            tree = parent;
+                    }
 
                     implicitMultiply = true;
                     break;
@@ -111,15 +132,30 @@ public class RegExprBuild {
                         tree = getNewChild(tree.parent);
                     }
                     else{
-                        if (tree.parent != null && Objects.equals(tree.parent.value, "конкатенация")
-                                && tree.value.isEmpty()){
-                            changeLastChild(tree.parent, tree.children.get(0));
-                            tree = tree.parent;
+                        if (tree.parent != null
+                                && Objects.equals(tree.parent.value, "конкатенация")
+                                && Objects.equals(tree.value, "+")
+                                && (tree.parent.parent == null || Objects.equals(tree.parent.parent.value, "+"))){
+                            if (tree.parent.parent == null){
+                                var ancestor = new GrammarTree("+");
+                                ancestor.add(tree.parent);
+                                tree = ancestor;
+                            }
+                            else if (Objects.equals(tree.parent.parent.value, "+")){
+                                tree = tree.parent.parent;
+                            }
                         }
-                        if (!Objects.equals(tree.value, "") && !Objects.equals(tree.value, "+")){
-                            if (tree.parent == null)
-                                new GrammarTree("").add(tree);
-                            tree = tree.parent;
+                        else{
+                            if (tree.parent != null && Objects.equals(tree.parent.value, "конкатенация")
+                                    && tree.value.isEmpty()){
+                                changeLastChild(tree.parent, tree.children.get(0));
+                                tree = tree.parent;
+                            }
+                            if (!Objects.equals(tree.value, "") && !Objects.equals(tree.value, "+")){
+                                if (tree.parent == null)
+                                    new GrammarTree("").add(tree);
+                                tree = tree.parent;
+                            }
                         }
                         tree.value = "+";
                         tree.position = i;
@@ -140,7 +176,7 @@ public class RegExprBuild {
                     implicitMultiply = true;
                     break;
                 default:
-                    if (!Character.isLetterOrDigit(symbol))
+                    if (!Character.isLetterOrDigit(symbol) && !Character.toString(symbol).equals(emptyWordSymbol))
                         throw new RegexpExeption("Неизвестный символ", i);
                     if (implicitMultiply){
                         if (tree.parent != null && Objects.equals(tree.parent.value, "конкатенация")){

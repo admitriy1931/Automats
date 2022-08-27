@@ -282,30 +282,6 @@ public class GrammarTreePositiveTest {
     }
 
     @Test
-    public void sumConcatSum1Test(){
-        var expected = new GrammarTree("конкатенация");
-
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
-        expected.add(new GrammarTree("a"));
-        expected.add(new GrammarTree("b"));
-
-        standardTest("(c+d) ab", expected);
-        standardTest("((c)+(d)) ab", expected);
-    }
-
-    @Test
-    public void sumConcatSum2Test(){
-        var expected = new GrammarTree("конкатенация");
-
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
-
-        standardTest("(c+d) (ab)", expected);
-        standardTest("((c)+(d)) (a)(b)", expected);
-        standardTest("((c)+(d)) ((a)(b))", expected);
-    }
-
-    @Test
     public void sumSumSumTest(){
         var expected = new GrammarTree("конкатенация");
 
@@ -340,8 +316,6 @@ public class GrammarTreePositiveTest {
 
         standardTest("(ba)*", expected);
     }
-
-
 
     @Test
     public void wikiExampleTest(){
@@ -551,5 +525,36 @@ public class GrammarTreePositiveTest {
         expected.add(new GrammarTree("e"));
 
         standardTest("( (( ((a) + b) + cd )) + e)", expected);
+    }
+
+    @Test
+    public void Exam2Test(){
+        var expected = new GrammarTree("+");
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(aa + -)"));
+        expected.add(new GrammarTree("b"));
+        expected.add(new GrammarTree("-"));
+
+        standardTest("a(aa + -) + b + -", expected);
+    }
+
+    @Test
+    public void Exam2modifiedTest(){
+        var expected = new GrammarTree("+");
+        expected.add(new GrammarTree("a"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(aa + -)"));
+        expected.add(new GrammarTree("b"));
+        expected.add(new GrammarTree("-"));
+
+        standardTest("a + a(aa + -) + b + -", expected);
+    }
+
+    @Test
+    public void Exam2modified2Test(){
+        var expected = new GrammarTree("+");
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(a(aa + -))"));
+        expected.add(new GrammarTree("b"));
+        expected.add(new GrammarTree("-"));
+
+        standardTest("a(a(aa + -)) + b + -", expected);
     }
 }

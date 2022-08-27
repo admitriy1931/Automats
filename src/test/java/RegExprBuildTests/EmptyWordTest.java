@@ -3,6 +3,7 @@ package RegExprBuildTests;
 import algorithms.RegExprBuild;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import regexp.GrammarTree;
 import regexp.RegexpExeption;
 
 public class EmptyWordTest {
@@ -90,4 +91,85 @@ public class EmptyWordTest {
         Assertions.assertNotNull(actual);
         Assertions.assertTrue(actual);
     }
+
+    @Test
+    public void bigNegativeTest1(){
+        var actual = standardTest("c + (dd+d)(d)");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertFalse(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolSumTest(){
+        var actual = standardTest("a + -");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolSumMultiplyTest(){
+        var actual = standardTest("a + bc + -");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolMultiplySumTest(){
+        var actual = standardTest("a(bc + -)");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertFalse(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolIterationSumTest(){
+        var actual = standardTest("a*(c + -)");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolSumSumConcatTest(){
+        var actual = standardTest("(a+-)(b + -)");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolExamTest(){
+        var actual = standardTest("b*(ab*ab*a + -)");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolExam1Test(){
+        var actual = standardTest("b(ba)*(b(b + -) + a) + -");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolExam2Test(){
+        var actual = standardTest("a(aa + -) + b + -");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertTrue(actual);
+    }
+
+    @Test
+    public void emptyWordSymbolExam3Test(){
+        var actual = standardTest("a(aa + -) + b + -");
+
+        Assertions.assertNotNull(actual);
+        Assertions.assertTrue(actual);
+    }
+
 }

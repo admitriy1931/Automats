@@ -32,7 +32,7 @@ public class GlushkovSetsBuildTest {
         var actual = Assertions.assertDoesNotThrow(
                 () -> GlushkovSetsBuild.makeGlushkovSets("abc + abc"));
 
-        Assertions.assertTrue(expected.glushkovSetsAreEqual(actual));
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class GlushkovSetsBuildTest {
         var actual = Assertions.assertDoesNotThrow(
                 () -> GlushkovSetsBuild.makeGlushkovSets("(a(ab)*)* + (ba)*"));
 
-        Assertions.assertTrue(expected.glushkovSetsAreEqual(actual));
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class GlushkovSetsBuildTest {
         var actual = Assertions.assertDoesNotThrow(
                 () -> GlushkovSetsBuild.makeGlushkovSets("a + bc* + ((d+e)f)*"));
 
-        Assertions.assertTrue(expected.glushkovSetsAreEqual(actual));
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class GlushkovSetsBuildTest {
         var actual = Assertions.assertDoesNotThrow(
                 () -> GlushkovSetsBuild.makeGlushkovSets("(a + b)(c + de)"));
 
-        Assertions.assertTrue(expected.glushkovSetsAreEqual(actual));
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class GlushkovSetsBuildTest {
         var actual = Assertions.assertDoesNotThrow(
                 () -> GlushkovSetsBuild.makeGlushkovSets("aab"));
 
-        Assertions.assertTrue(expected.glushkovSetsAreEqual(actual));
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -155,7 +155,7 @@ public class GlushkovSetsBuildTest {
         var actual = Assertions.assertDoesNotThrow(
                 () -> GlushkovSetsBuild.makeGlushkovSets("a(ab)"));
 
-        Assertions.assertTrue(expected.glushkovSetsAreEqual(actual));
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
@@ -175,10 +175,31 @@ public class GlushkovSetsBuildTest {
         var actual = Assertions.assertDoesNotThrow(
                 () -> GlushkovSetsBuild.makeGlushkovSets("(ab)*"));
 
-        Assertions.assertTrue(expected.glushkovSetsAreEqual(actual));
+        Assertions.assertEquals(expected, actual);
     }
 
+    @Test
+    public void bigTest1(){
+        var start = new HashSet<LinearisedSymbol>();
+        start.add(new LinearisedSymbol('d', 5));
+        start.add(new LinearisedSymbol('d', 8));
+        start.add(new LinearisedSymbol('c', 0));
 
+        var end = new HashSet<LinearisedSymbol>();
+        end.add(new LinearisedSymbol('d', 11));
+        end.add(new LinearisedSymbol('c', 0));
+
+        var pairs = new HashSet<Pair<LinearisedSymbol, LinearisedSymbol>>();
+        pairs.add(makePair('d', 8, 'd', 11));
+        pairs.add(makePair('d', 5, 'd', 6));
+        pairs.add(makePair('d', 6, 'd', 11));
+
+        var expected = new GlushkovSets(start, end, pairs);
+
+        var actual = Assertions.assertDoesNotThrow(
+                () -> GlushkovSetsBuild.makeGlushkovSets("c + (dd+d)(d)"));
+        Assertions.assertEquals(expected, actual);
+    }
 
     private Pair<LinearisedSymbol, LinearisedSymbol> makePair(Character s1, Integer i1, Character s2, Integer i2){
         return new Pair<>(new LinearisedSymbol(s1, i1), new LinearisedSymbol(s2, i2));
