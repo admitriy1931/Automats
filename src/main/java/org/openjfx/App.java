@@ -19,13 +19,14 @@ public class App extends Application {
         URL url = App.class.getResource("/start.fxml");
         FXMLLoader loader = new FXMLLoader(url);
         Parent root = loader.load();
-        setUpStage(primaryStage);
+        setUpStage(primaryStage, false);
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 
-    public static void setUpStage(Stage stage) {
+    public static void setUpStage(Stage stage, boolean isMaximized) {
         stage.setTitle("Automaton");
+        stage.setMaximized(isMaximized);
         if (mainIcon != null) {
             stage.getIcons().add(mainIcon);
             return;
