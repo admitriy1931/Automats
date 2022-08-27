@@ -31,7 +31,7 @@ public class Controller {
         taskOneButton.setOnAction(event -> {
             taskOneButton.getScene().getWindow().hide();
             automatonList.clear();
-            Loader.loadFxml("/automatonInput.fxml");
+            Loader.loadFxml("/automatonInput.fxml", false);
         });
     }
 
@@ -40,7 +40,7 @@ public class Controller {
         taskTwoButton.setOnAction(event -> {
             taskTwoButton.getScene().getWindow().hide();
             automatonList.clear();
-            Loader.loadFxml("/automatonAndRegexInput.fxml");
+            Loader.loadFxml("/automatonAndRegexInput.fxml", false);
         });
     }
 
@@ -48,7 +48,7 @@ public class Controller {
     private void initAuthorsButton() {
         authorsButton.setOnAction(event -> {
             authorsButton.getScene().getWindow().hide();
-            Loader.loadFxml("/authors.fxml");
+            Loader.loadFxml("/authors.fxml", false);
         });
     }
 }
