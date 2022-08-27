@@ -75,7 +75,7 @@ public class GlushkovAlgo {
         }
         HashBasedTable<String,String,String> prepared = renameVertexes(res, -2, false);
         HashBasedTable<String,String,String> jumpTable = renameVertexes(prepared, 0, true);
-        return new Automat(false, jumpTable, "-1", terminals);
+        return new Automat(false, jumpTable, "0", terminals);
     }
 
     private static HashBasedTable<String, String, String>
@@ -115,7 +115,7 @@ public class GlushkovAlgo {
         HashSet<String> alphabet = new HashSet<>();
         for (int i = 0; i < regexp.length(); i++){
             String letter = regexp.substring(i, i+1);
-            if (letter.matches("[a-z0-9]")){
+            if (letter.matches("[a-z0-1A-Z]")){
                 alphabet.add(letter);
             }
         }
