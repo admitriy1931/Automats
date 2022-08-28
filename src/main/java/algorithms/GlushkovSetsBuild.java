@@ -28,7 +28,7 @@ public class GlushkovSetsBuild {
                     tree.canBeEmpty = true;
             }
         }
-        else if (Objects.equals(tree.value, "конкатенация")){
+        else if (Objects.equals(tree.value, RegExprBuild.CON)){
             tree.canBeEmpty = true;
             for (GrammarTree child: tree.children) {
                 symbols.addAll(makeSetOfStartSymbols(child));
@@ -57,7 +57,7 @@ public class GlushkovSetsBuild {
                     tree.canBeEmpty = true;
             }
         }
-        else if (Objects.equals(tree.value, "конкатенация")){
+        else if (Objects.equals(tree.value, RegExprBuild.CON)){
             tree.canBeEmpty = true;
             for (var i = tree.children.size()-1; i >= 0; i--){
                 var child = tree.children.get(i);
@@ -94,7 +94,7 @@ public class GlushkovSetsBuild {
             for (GrammarTree child: tree.children)
                 pairs.addAll(makeSetOfPairs(child));
         }
-        else if (Objects.equals(tree.value, "конкатенация")){
+        else if (Objects.equals(tree.value, RegExprBuild.CON)){
             for (var i = 0; i < tree.children.size(); i++){
                 var child = tree.children.get(i);
                 var ourTail = makeSetOfEndSymbols(child);

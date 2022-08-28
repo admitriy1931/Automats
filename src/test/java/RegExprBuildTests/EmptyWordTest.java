@@ -3,7 +3,6 @@ package RegExprBuildTests;
 import algorithms.RegExprBuild;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import regexp.GrammarTree;
 import regexp.RegexpExeption;
 
 public class EmptyWordTest {
