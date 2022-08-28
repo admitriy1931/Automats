@@ -3,16 +3,26 @@ package regexp;
 import java.util.Objects;
 
 public class LinearisedSymbol {
-    private final Character symbol;
+    private Character symbol;
     private final Integer number;
+    private String stringValue;
 
-    public LinearisedSymbol(Character value, Integer number){
-        this.symbol = value;
+    public LinearisedSymbol(Character symbol, Integer number){
+        this.symbol = symbol;
+        this.number = number;
+    }
+
+    public LinearisedSymbol(String value, Integer number){
+        this.stringValue = value;
         this.number = number;
     }
 
     public Character getSymbol(){
         return symbol;
+    }
+
+    public String getStringValue() {
+        return stringValue;
     }
 
     public Integer getNumber() {

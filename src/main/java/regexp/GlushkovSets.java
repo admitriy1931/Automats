@@ -29,9 +29,18 @@ public class GlushkovSets {
         return setOfPairs;
     }
 
-    public Boolean glushkovSetsAreEqual(GlushkovSets other){
-        return setOfPairs.equals(other.getSetOfPairs()) &&
-                !setOfEndSymbol.equals(other.getSetOfEndSymbol()) &&
-                (!setOfStartSymbol.equals(other.getSetOfStartSymbol()));
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GlushkovSets sets = (GlushkovSets) o;
+        return Objects.equals(setOfStartSymbol, sets.setOfStartSymbol)
+                && Objects.equals(setOfEndSymbol, sets.setOfEndSymbol)
+                && Objects.equals(setOfPairs, sets.setOfPairs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(setOfStartSymbol, setOfEndSymbol, setOfPairs);
     }
 }
