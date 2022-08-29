@@ -83,6 +83,7 @@ class BuildingDKATest{
     static final String wikiExample = "(a(ab)*)*+(ba)*";
     static final String simpleReg = "abc + abc";
     static final String complexReg = "a + bc* + ((d+e)f)*";
+    static final String superSimple = "a + b";
 
     @Test
     void simpleRegTest(){
@@ -96,6 +97,14 @@ class BuildingDKATest{
     void wikiRegTest(){
         try{
             Automat real = GlushkovAlgo.doGlushkovAlgo(wikiExample);
+        }catch (Exception e){e.printStackTrace();}
+
+    }
+
+    @Test
+    void superSimpleTest(){
+        try{
+            Automat real = GlushkovAlgo.doGlushkovAlgo(superSimple);
         }catch (Exception e){e.printStackTrace();}
 
     }
