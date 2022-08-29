@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
+import regexp.RegexpExeption;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -340,7 +341,11 @@ public class AutomatonAndRegexInputController {
             }
 
             automatonList.add(new Automat(false, jumpTable, startVertex, finalVertices));
-            automatonList.add(GlushkovAlgo.doGlushkovAlgo(regexTextField.getText()));
+            try {
+                automatonList.add(GlushkovAlgo.doGlushkovAlgo(regexTextField.getText()));
+            } catch (RegexpExeption e) {
+                e.printStackTrace();
+            }
 
             createAutomatonButton.getScene().getWindow().hide();
             Loader.loadFxml("/taskTwo.fxml", true);

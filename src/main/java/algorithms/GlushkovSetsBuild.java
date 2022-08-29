@@ -93,6 +93,16 @@ public class GlushkovSetsBuild {
         if (Objects.equals(tree.value, "+")){
             for (GrammarTree child: tree.children)
                 pairs.addAll(makeSetOfPairs(child));
+            if (tree.iterationAvailable){
+                for (GrammarTree child: tree.children) {
+                    var tail = makeSetOfEndSymbols(child);
+                    for (var j = 0; j < tree.children.size(); j++){
+                        var neighbourChild = tree.children.get(j);
+                        var start = makeSetOfStartSymbols(neighbourChild);
+                        pairs.addAll(makePairs(tail, start));
+                    }
+                }
+            }
         }
         else if (Objects.equals(tree.value, RegExprBuild.CON)){
             for (var i = 0; i < tree.children.size(); i++){
