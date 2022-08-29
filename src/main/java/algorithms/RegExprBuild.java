@@ -1,24 +1,33 @@
 package algorithms;
 
 import regexp.GrammarTree;
+import regexp.LinearisedSymbol;
 import regexp.RegexpExeption;
 
 import java.util.*;
 
+
 public class RegExprBuild {
+    public static final String CON = "con";
+    public static String emptyWordSymbol = "λ";
+
     public static Boolean allowEmptyWord(String regexp) throws RegexpExeption {
         return allowEmptyWord(makeGrammarTree(regexp));
     }
 
     private static Boolean allowEmptyWord(GrammarTree tree){
-        if (tree.iterationAvailable)
+        if (tree.iterationAvailable || tree.canBeEmpty){
             return true;
+        }
+        if (Objects.equals(tree.value, emptyWordSymbol)){
+            return true;
+        }
         if (Objects.equals(tree.value, "+")){
             for (var child: tree.children)
                 if (allowEmptyWord(child))
                     return true;
         }
-        if (Objects.equals(tree.value, "конкатенация")){
+        if (Objects.equals(tree.value, CON)){
             for (var child: tree.children)
                 if (!allowEmptyWord(child))
                     return false;
@@ -40,203 +49,124 @@ public class RegExprBuild {
         }
     }
 
+    private static HashMap<String, Integer> priorities = new HashMap<>() {{
+        put("+", 1);
+        put("con", 2);
+    }};
+
     public static GrammarTree makeGrammarTree(String regexp) throws RegexpExeption {
-        return completeRawTree(makeRawTree(regexp));
-    }
-
-    private static GrammarTree tryInsertNode(GrammarTree tree){
-        if (!tree.value.isEmpty() && (tree.parent == null || !tree.parent.value.isEmpty())){
-            if (tree.parent == null){
-                new GrammarTree("конкатенация").add(tree);
-                tree = tree.parent;
-            }
-            else{
-                var parent = new GrammarTree("конкатенация");
-                tree.parent = changeLastChild(tree.parent, parent);
-                parent.add(tree);
-                tree = parent;
-            }
-        }
-        return tree;
-    }
-
-    private static GrammarTree makeRawTree(String regexp) throws RegexpExeption {
-        var tree = new GrammarTree("");
-        var bracketsCount = 0;
-        var implicitMultiply = false;
-
         for (var i = 0; i < regexp.length(); i++){
-            var symbol = regexp.charAt(i);
-            if (Character.isWhitespace(symbol))
+            if (regexp.charAt(i) != ')')
+                continue;
+            var j = i-1;
+            while (j > 0 && Character.isWhitespace(regexp.charAt(j)))
+                j--;
+            if (j < 0)
                 continue;
 
+            if (regexp.charAt(j) == '(')
+                throw new RegexpExeption("Пустые скобки", i);
+        }
+        var rpn = makeReversePolishNotation(regexp);
+        return makeTreeFromRPN(rpn);
+    }
+
+    private static GrammarTree makeTreeFromRPN(List<LinearisedSymbol> rpn) throws RegexpExeption {
+        if (rpn.size() == 0)
+            throw new RegexpExeption("Пустой ввод", -1);
+        var current = new GrammarTree("");
+        var trees = new Stack<GrammarTree>();
+
+        for (var i = 0; i < rpn.size(); i++){
+            var symbol = rpn.get(i);
+
+            if (priorities.containsKey(symbol.getStringValue())){
+                current = new GrammarTree(symbol.getStringValue());
+                current.position = i;
+                if (trees.size() < 2)
+                    throw new RegexpExeption("Нехватает операнда", symbol.getNumber());
+
+                var previous = trees.pop();
+                current.add(trees.pop());
+                current.add(previous);
+                trees.add(current);
+            }
+            else if (Objects.equals(symbol.getStringValue(), "*")){
+                if (trees.size() == 0)
+                    throw new RegexpExeption("Неправильное использование итерации", symbol.getNumber());
+                trees.lastElement().iterationAvailable = true;
+            }
+            else{
+                current = new GrammarTree(symbol.getStringValue());
+                current.position = i;
+                trees.add(current);
+            }
+        }
+
+        if (trees.size() != 1)
+            throw new RegexpExeption("неправильное выражение", -1);
+        return trees.pop();
+    }
+
+    private static List<LinearisedSymbol> makeReversePolishNotation(String regexp) throws RegexpExeption {
+        var result = new ArrayList<LinearisedSymbol>();
+        var stack = new Stack<LinearisedSymbol>();
+        var implicitMultiply = false;
+        for (var i = 0; i < regexp.length(); i++){
+            var symbol = regexp.charAt(i);
             switch (symbol){
                 case '(':
-                    if (implicitMultiply){
-                        tree = tryInsertNode(tree);
-                        tree.value = "конкатенация";
-                        tree = getNewChild(tree);
-                    }
-
-                    bracketsCount += 1;
-                    tree = getNewChild(tree);
-
+                    if (implicitMultiply)
+                        handleImplicitMultiply(stack, result);
+                    stack.add(new LinearisedSymbol(Character.toString(symbol), i));
                     implicitMultiply = false;
                     break;
                 case ')':
-                    if (--bracketsCount < 0)
-                        throw new RegexpExeption("Нет открывающейся скобки", i);
-                    var prev = getPreviousSymbol(i, regexp);
-                    if (prev == null || prev == '(')
-                        throw new RegexpExeption("Пустые скобки", i);
-
-                    if (tree.value.isEmpty()){
-                        if (tree.children.size() == 0)
-                            throw new RegexpExeption("Нет правого операнда для " + tree.parent.value,
-                                    tree.parent.position);
-                        if (tree.parent != null)
-                            tree = changeLastChild(tree.parent, tree.children.get(0));
-                    }
-                    tree = Objects.equals(tree.value, "+") || Objects.equals(tree.value, "конкатенация")
-                            ? tree.parent : getEmptyAncestorOrParent(tree);
-
+                    while (stack.size() != 0 && !stack.lastElement().getStringValue().equals("("))
+                        result.add(new LinearisedSymbol(stack.pop().getStringValue(), i));
+                    if (stack.size() == 0)
+                        throw new RegexpExeption("Нет открывающей скобки", i);
+                    stack.pop();
                     implicitMultiply = true;
                     break;
                 case '+':
-                    if (tree.children.isEmpty())
-                        throw new RegexpExeption("Нет левого операнда для +", i);
-                    if (tree.parent != null && Objects.equals("+", tree.parent.value)){
-                        if (tree.value.isEmpty())
-                            processEmptyNode(tree, "+");
-                        tree = getNewChild(tree.parent);
-                    }
-                    else{
-                        if (tree.parent != null && Objects.equals(tree.parent.value, "конкатенация")
-                                && tree.value.isEmpty()){
-                            changeLastChild(tree.parent, tree.children.get(0));
-                            tree = tree.parent;
-                        }
-                        if (!Objects.equals(tree.value, "") && !Objects.equals(tree.value, "+")){
-                            if (tree.parent == null)
-                                new GrammarTree("").add(tree);
-                            tree = tree.parent;
-                        }
-                        tree.value = "+";
-                        tree.position = i;
-                        tree = getNewChild(tree);
-                    }
+                    while (stack.size() != 0 && priorities.containsKey(stack.lastElement().getStringValue())
+                            && priorities.get(stack.lastElement().getStringValue()) >= priorities.get("+"))
+                        result.add(new LinearisedSymbol(stack.pop().getStringValue(), i));
+                    stack.add(new LinearisedSymbol(Character.toString(symbol), i));
                     implicitMultiply = false;
                     break;
                 case '*':
-                    if (tree.children.isEmpty())
-                        throw new RegexpExeption("Неправильное использование итерации", i);
-                    var childTree = tree.children.get(tree.children.size()-1);
-                    if ((Objects.equals(childTree.value, "+") || Objects.equals(childTree.value, "конкатенация"))
-                            && !tree.value.isEmpty())
-                        tree.iterationAvailable = true;
-                    else
-                        childTree.iterationAvailable = true;
-
+                    result.add(new LinearisedSymbol(Character.toString(symbol), i));
+                    break;
+                case ' ':
+                    continue;
+                default:
+                    if (!Character.isLetterOrDigit(symbol)
+                            && !Objects.equals(emptyWordSymbol, Character.toString(symbol)))
+                        throw new RegexpExeption(String.format("Неизвестный символ, %c", symbol), i);
+                    if (implicitMultiply)
+                        handleImplicitMultiply(stack, result);
+                    result.add(new LinearisedSymbol(Character.toString(symbol), i));
                     implicitMultiply = true;
                     break;
-                default:
-                    if (!Character.isLetterOrDigit(symbol))
-                        throw new RegexpExeption("Неизвестный символ", i);
-                    if (implicitMultiply){
-                        if (tree.parent != null && Objects.equals(tree.parent.value, "конкатенация")){
-                            if (tree.value.isEmpty())
-                                processEmptyNode(tree, "конкатенация");
-                            tree = getNewChild(tree.parent);
-                        }
-                        else
-                            tree.value = "конкатенация";
-                    }
-                    var child = new GrammarTree(Character.toString(symbol));
-                    child.position = i;
-                    tree.add(child);
-
-                    implicitMultiply = true;
             }
         }
-        if (bracketsCount != 0)
-            throw new RegexpExeption("Нет закрывающей скобки", regexp.length()-1);
-
-        while (!tree.value.isEmpty() && tree.parent != null)
-            tree = tree.parent;
-        return tree;
-    }
-
-    private static void processEmptyNode(GrammarTree tree, String processedOperation){
-        var child = tree.children.get(0);
-        if (Objects.equals(child.value, processedOperation) && !child.iterationAvailable){
-            changeLastChild(tree.parent, child.children.get(0));
-            for (var j = 1; j < child.children.size(); j++)
-                tree.parent.add(child.children.get(j));
+        while (stack.size() != 0){
+            var s = stack.pop();
+            if (s.getStringValue().equals("("))
+                throw new RegexpExeption("Нет закрывающей скобки", regexp.length()-1);
+            result.add(new LinearisedSymbol(s.getStringValue(), s.getNumber()));
         }
-        else
-            changeNode(tree, child);
+        return result;
     }
 
-    private static GrammarTree getEmptyAncestorOrParent(GrammarTree tree){
-        var parent = tree;
-        while (!parent.value.isEmpty() && parent.parent != null)
-            parent = parent.parent;
-        return (parent.parent != null || parent.value.isEmpty())
-                ? parent : tree.parent;
-    }
-
-    private static GrammarTree completeRawTree(GrammarTree tree) throws RegexpExeption {
-        if (tree.value.isEmpty()){
-            if (!tree.children.isEmpty()){
-                var child = tree.children.get(0);
-                if (tree.parent != null)
-                    changeLastChild(tree.parent, child);
-                child.parent = tree.parent;
-                tree = child;
-            }
-            else if (tree.parent != null && !tree.parent.value.isEmpty())
-                throw new RegexpExeption("Нет правого операнда для " + tree.parent.value,
-                        tree.parent.position);
+    private static void handleImplicitMultiply(Stack<LinearisedSymbol> stack, List<LinearisedSymbol> result){
+        while (stack.size() != 0 && priorities.containsKey(stack.lastElement().getStringValue())
+                && priorities.get(stack.lastElement().getStringValue()) >= priorities.get(CON)){
+            var s = stack.pop();
+            result.add(new LinearisedSymbol(s.getStringValue(), s.getNumber()));
         }
-        while (tree.parent != null)
-            tree = tree.parent;
-
-        while (tree.value.isEmpty()){
-            if (tree.children.size() == 0)
-                return tree;
-            var child = tree.children.get(0);
-            child.parent = null;
-            tree = child;
-        }
-
-        return tree;
-    }
-
-    private static Character getPreviousSymbol(Integer currentPosition, String regexp){
-        var j = currentPosition-1;
-        while (j > 0 && Character.isWhitespace(regexp.charAt(j))){
-            j--;
-        }
-        return (j < 0) ? null : regexp.charAt(j);
-    }
-
-    private static GrammarTree getNewChild(GrammarTree tree){
-        var child = new GrammarTree("");
-        tree.add(child);
-        return child;
-    }
-
-    private static GrammarTree changeLastChild(GrammarTree tree, GrammarTree child){
-        tree.children.set(tree.children.size()-1, child);
-        child.parent = tree;
-
-        return child;
-    }
-
-    private static void changeNode(GrammarTree oldNode, GrammarTree newNode){
-        oldNode.value = newNode.value;
-        oldNode.position = newNode.position;
-        oldNode.children = newNode.children;
-        oldNode.iterationAvailable = newNode.iterationAvailable;
+        stack.add(new LinearisedSymbol(CON, -1));
     }
 }

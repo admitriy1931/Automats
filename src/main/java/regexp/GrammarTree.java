@@ -10,6 +10,7 @@ public class GrammarTree {
     public GrammarTree parent;
     public List<GrammarTree> children = new ArrayList<>();
     public Boolean iterationAvailable = false;
+    public Boolean canBeEmpty = false;
 
     public GrammarTree(String value){
         this.value = value;

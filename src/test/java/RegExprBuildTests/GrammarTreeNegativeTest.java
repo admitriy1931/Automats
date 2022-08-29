@@ -16,6 +16,11 @@ public class GrammarTreeNegativeTest {
     }
 
     @Test
+    public void treeForEmptyStringTest(){
+        standardTest("", "Пустой ввод", -1);
+    }
+
+    @Test
     public void noClosingBracketTest(){
         standardTest("(", "Нет закрывающей скобки", 0);
         standardTest("(a", "Нет закрывающей скобки", 1);
@@ -23,62 +28,56 @@ public class GrammarTreeNegativeTest {
 
         standardTest("a(", "Нет закрывающей скобки", 1);
         standardTest("((a + b)", "Нет закрывающей скобки", 7);
+        standardTest("+(", "Нет закрывающей скобки", 1);
+        standardTest("(*", "Нет закрывающей скобки", 1);
+        standardTest("*(", "Нет закрывающей скобки", 1);
     }
 
     @Test
     public void noOpeningBracketTest(){
-        standardTest(")", "Нет открывающейся скобки", 0);
-        standardTest(")+", "Нет открывающейся скобки", 0);
-        standardTest(")a", "Нет открывающейся скобки", 0);
-        standardTest(")*", "Нет открывающейся скобки", 0);
-        standardTest(")(", "Нет открывающейся скобки", 0);
-        standardTest("))", "Нет открывающейся скобки", 0);
-        standardTest(")_", "Нет открывающейся скобки", 0);
+        standardTest(")", "Нет открывающей скобки", 0);
+        standardTest(")+", "Нет открывающей скобки", 0);
+        standardTest(")a", "Нет открывающей скобки", 0);
+        standardTest(")*", "Нет открывающей скобки", 0);
+        standardTest(")(", "Нет открывающей скобки", 0);
+        standardTest("))", "Нет открывающей скобки", 0);
+        standardTest(")_", "Нет открывающей скобки", 0);
 
-        standardTest("a)", "Нет открывающейся скобки", 1);
-        standardTest("a + b)", "Нет открывающейся скобки", 5);
+        standardTest("a)", "Нет открывающей скобки", 1);
+        standardTest("a + b)", "Нет открывающей скобки", 5);
+        standardTest("+)", "Нет открывающей скобки", 1);
+        standardTest("*)", "Нет открывающей скобки", 1);
     }
 
     @Test
     public void wrongSymbolTest(){
-        standardTest("a +& b", "Неизвестный символ", 3);
+        standardTest("a +& b", "Неизвестный символ, &", 3);
     }
 
     @Test
-    public void noLeftOperandTest(){
-        standardTest("+b", "Нет левого операнда для +", 0);
-        standardTest("a(+b)", "Нет левого операнда для +", 2);
-        standardTest("(+)", "Нет левого операнда для +", 1);
-        standardTest("a++b", "Нет левого операнда для +", 2);
-
-        standardTest("++", "Нет левого операнда для +", 0);
-        standardTest("+*", "Нет левого операнда для +", 0);
-        standardTest("+(", "Нет левого операнда для +", 0);
-        standardTest("+)", "Нет левого операнда для +", 0);
-    }
-
-    @Test
-    public void noRightOperandTest(){
-        standardTest("a+", "Нет правого операнда для +", 1);
-        standardTest("(a+)+b", "Нет правого операнда для +", 2);
+    public void noOperandTest(){
+        standardTest("+b", "Нехватает операнда", 0);
+        standardTest("a(+b)", "Нехватает операнда", -1);
+        standardTest("(+)", "Нехватает операнда", 2);
+        standardTest("a++b", "Нехватает операнда", 2);
+        standardTest("++", "Нехватает операнда", 1);
+        standardTest("a+", "Нехватает операнда", 1);
+        standardTest("(a+)+b", "Нехватает операнда", 3);
     }
 
     @Test
     public void emptyBracketsTest(){
-        standardTest("a()", "Пустые скобки", 2);
         standardTest("((()))", "Пустые скобки", 3);
+        standardTest("a()", "Пустые скобки", 2);
         standardTest("((()a))", "Пустые скобки", 3);
         standardTest("((()*))", "Пустые скобки", 3);
     }
 
     @Test
     public void wrongIterationUsageTest(){
-        standardTest("(*)", "Неправильное использование итерации", 1);
-        standardTest("*)", "Неправильное использование итерации", 0);
-        standardTest("(*", "Неправильное использование итерации", 1);
-
+        standardTest("+*", "Неправильное использование итерации", 1);
         standardTest("*+", "Неправильное использование итерации", 0);
         standardTest("**", "Неправильное использование итерации", 0);
-        standardTest("*(", "Неправильное использование итерации", 0);
+        standardTest("(*)", "Неправильное использование итерации", 1);
     }
 }

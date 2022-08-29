@@ -6,16 +6,13 @@ import org.junit.jupiter.api.Test;
 import regexp.GrammarTree;
 
 public class GrammarTreePositiveTest {
+    private static final String s = RegExprBuild.emptyWordSymbol;
+
     private void standardTest(String regexp, GrammarTree expected){
         var actual = RegExprBuild.makeGrammarTreeOrNull(regexp);
 
         Assertions.assertNotNull(actual);
         Assertions.assertTrue(actual.subTreesAreEqual(expected));
-    }
-
-    @Test
-    public void treeForEmptyStringTest(){
-        standardTest("", new GrammarTree(""));
     }
 
     @Test
@@ -25,7 +22,7 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void letterLetterConcatTest(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
         expected.add(new GrammarTree("a"));
         expected.add(new GrammarTree("b"));
 
@@ -33,14 +30,12 @@ public class GrammarTreePositiveTest {
         standardTest("a(b)", expected);
         standardTest("(a)b", expected);
         standardTest("(a)(b)", expected);
-
     }
 
     @Test
     public void letterConcatConcat1Test(){
-        var expected = new GrammarTree("конкатенация");
-        expected.add(new GrammarTree("a"));
-        expected.add(new GrammarTree("b"));
+        var expected = new GrammarTree(RegExprBuild.CON);
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
         expected.add(new GrammarTree("b"));
 
         standardTest("abb", expected);
@@ -48,7 +43,7 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void letterConcatConcat2Test(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(new GrammarTree("a"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("bb"));
@@ -56,22 +51,22 @@ public class GrammarTreePositiveTest {
         standardTest("(a)(bb)", expected);
         standardTest("(a)(b(b))", expected);
         standardTest("(a)((b)(b))", expected);
-        standardTest("(a)(b)(b)", expected);
     }
 
     @Test
     public void letterConcatConcat3Test(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
         expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
         expected.add(new GrammarTree("b"));
 
+        standardTest("(a)(b)(b)", expected);
         standardTest("ab(b)", expected);
         standardTest("(ab)b", expected);
     }
 
     @Test
     public void letterSumConcatTest(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(new GrammarTree("a"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("b+c"));
@@ -84,19 +79,27 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void concatConcatConcat1Test(){
-        var expected = new GrammarTree("конкатенация");
-        expected.add(new GrammarTree("a"));
-        expected.add(new GrammarTree("b"));
-        expected.add(new GrammarTree("c"));
+        var expected = new GrammarTree(RegExprBuild.CON);
+
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("abc"));
         expected.add(new GrammarTree("d"));
 
         standardTest("abcd", expected);
-        standardTest("a(bc)d", expected);
     }
 
     @Test
     public void concatConcatConcat2Test(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
+
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(bc)"));
+        expected.add(new GrammarTree("d"));
+
+        standardTest("a(bc)d", expected);
+    }
+
+    @Test
+    public void concatConcatConcat3Test(){
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("cd"));
@@ -107,11 +110,10 @@ public class GrammarTreePositiveTest {
     }
 
     @Test
-    public void concatConcatConcat3Test(){
-        var expected = new GrammarTree("конкатенация");
+    public void concatConcatConcat4Test(){
+        var expected = new GrammarTree(RegExprBuild.CON);
 
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
-        expected.add(new GrammarTree("c"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("(ab)c"));
         expected.add(new GrammarTree("d"));
 
         standardTest("(ab) cd", expected);
@@ -119,7 +121,7 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void concatSumConcat2Test(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
@@ -132,17 +134,17 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void concatSumConcat3Test(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
-        expected.add(new GrammarTree("a"));
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("b(c+d)"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
 
         standardTest("(a) (b)((c)+(d))", expected);
     }
 
     @Test
     public void sumLetterConcatTest(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(RegExprBuild.makeGrammarTreeOrNull("b+c"));
         expected.add(new GrammarTree("a"));
@@ -155,31 +157,30 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void sumConcatConcat1Test(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
-        expected.add(new GrammarTree("a"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("(c+d)a"));
         expected.add(new GrammarTree("b"));
 
         standardTest("(c+d) ab", expected);
         standardTest("((c)+(d)) ab", expected);
+        standardTest("((c)+(d)) (a)(b)", expected);
     }
 
     @Test
     public void sumConcatConcat2Test(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
 
         standardTest("(c+d) (ab)", expected);
-        standardTest("((c)+(d)) (a)(b)", expected);
         standardTest("((c)+(d)) ((a)(b))", expected);
     }
 
     @Test
     public void sumSumConcatTest(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(RegExprBuild.makeGrammarTreeOrNull("a+b"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
@@ -271,7 +272,7 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void sumLetterSumTest(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
         expected.add(RegExprBuild.makeGrammarTreeOrNull("b+c"));
         expected.add(new GrammarTree("a"));
 
@@ -282,32 +283,8 @@ public class GrammarTreePositiveTest {
     }
 
     @Test
-    public void sumConcatSum1Test(){
-        var expected = new GrammarTree("конкатенация");
-
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
-        expected.add(new GrammarTree("a"));
-        expected.add(new GrammarTree("b"));
-
-        standardTest("(c+d) ab", expected);
-        standardTest("((c)+(d)) ab", expected);
-    }
-
-    @Test
-    public void sumConcatSum2Test(){
-        var expected = new GrammarTree("конкатенация");
-
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("ab"));
-
-        standardTest("(c+d) (ab)", expected);
-        standardTest("((c)+(d)) (a)(b)", expected);
-        standardTest("((c)+(d)) ((a)(b))", expected);
-    }
-
-    @Test
     public void sumSumSumTest(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(RegExprBuild.makeGrammarTreeOrNull("a+b"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("c+d"));
@@ -319,7 +296,7 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void wikiExamplePart1Test(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         var child = RegExprBuild.makeGrammarTreeOrNull("ab");
         Assertions.assertNotNull(child);
@@ -341,28 +318,34 @@ public class GrammarTreePositiveTest {
         standardTest("(ba)*", expected);
     }
 
-
-
     @Test
     public void wikiExampleTest(){
-        var tree = new GrammarTree("+");
+        var expected = new GrammarTree("+");
 
-        tree.add(RegExprBuild.makeGrammarTreeOrNull("(a(ab)*)*"));
-        tree.add(RegExprBuild.makeGrammarTreeOrNull("(ba)*"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("(a(ab)*)*"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("(ba)*"));
 
-        standardTest("(a(ab)*)* + (ba)*", tree);
+        standardTest("(a(ab)*)* + (ba)*", expected);
     }
 
     @Test
-    public void plusAndBracketsTest(){
+    public void plusAndBrackets1Test(){
         var expected = new GrammarTree("+");
-        expected.add(new GrammarTree("a"));
-        expected.add(new GrammarTree("b"));
-        expected.add(new GrammarTree("c"));
+
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a + b + c"));
+        expected.add(new GrammarTree("d"));
+
+        standardTest("a + b + c + d", expected);
+    }
+
+    @Test
+    public void plusAndBrackets2Test(){
+        var expected = new GrammarTree("+");
+
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a + (b + c)"));
         expected.add(new GrammarTree("d"));
 
         standardTest("a + (b + c) + d", expected);
-        standardTest("a + b + c + d", expected);
     }
 
     @Test
@@ -402,14 +385,20 @@ public class GrammarTreePositiveTest {
     }
 
     @Test
-    public void plusWithBracketsAndIterationTest(){
+    public void plusWithBracketsAndIteration1Test(){
         var expected = new GrammarTree("+");
 
         expected.add(new GrammarTree("a"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("(b+c)*"));
 
         standardTest("a + (b + c)*", expected);
+    }
 
+    @Test
+    public void plusWithBracketsAndIteration2Test(){
+        var expected = new GrammarTree("+");
+
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a + (b + c)*"));
         expected.add(new GrammarTree("d"));
 
         standardTest("a + (b + c)* + d", expected);
@@ -417,10 +406,9 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void multiplyBracketsIterationTest(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
-        expected.add(new GrammarTree("a"));
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("(bc)*"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(bc)*"));
         expected.add(new GrammarTree("d"));
 
         standardTest("a(bc)*d", expected);
@@ -437,7 +425,7 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void letterLetterIterationConcat(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(new GrammarTree("a"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("b*"));
@@ -447,16 +435,22 @@ public class GrammarTreePositiveTest {
     }
 
     @Test
-    public void complexTest(){
+    public void complex1Test(){
+        var expected = new GrammarTree(RegExprBuild.CON);
+
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("d+e"));
+        expected.add(new GrammarTree("f"));
+        expected.iterationAvailable = true;
+
+        standardTest("((d+e)f)*", expected);
+    }
+
+    @Test
+    public void complex2Test(){
         var expected = new GrammarTree("+");
 
-        var child = RegExprBuild.makeGrammarTreeOrNull("(d+e)f");
-        Assertions.assertNotNull(child);
-        child.iterationAvailable = true;
-
-        expected.add(new GrammarTree("a"));
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("bc*"));
-        expected.add(child);
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("a + bc*"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("((d+e)f)*"));
 
         standardTest("a + bc* + ((d+e)f)*", expected);
     }
@@ -473,7 +467,7 @@ public class GrammarTreePositiveTest {
 
     @Test
     public void complexProdTest(){
-        var expected = new GrammarTree("конкатенация");
+        var expected = new GrammarTree(RegExprBuild.CON);
 
         expected.add(RegExprBuild.makeGrammarTreeOrNull("a+b"));
         expected.add(RegExprBuild.makeGrammarTreeOrNull("c + de"));
@@ -485,7 +479,7 @@ public class GrammarTreePositiveTest {
     public void bigTest1(){
         var expected = new GrammarTree("+");
 
-        var child = new GrammarTree("конкатенация");
+        var child = new GrammarTree(RegExprBuild.CON);
         child.add(RegExprBuild.makeGrammarTreeOrNull("dd+d"));
         child.add(new GrammarTree("d"));
 
@@ -509,7 +503,7 @@ public class GrammarTreePositiveTest {
     public void bigTest3(){
         var expected = new GrammarTree("+");
 
-        var child = new GrammarTree("конкатенация");
+        var child = new GrammarTree(RegExprBuild.CON);
         child.add(RegExprBuild.makeGrammarTreeOrNull("(d+d)(e+e)+(f+f)"));
         child.add(new GrammarTree("d"));
 
@@ -551,5 +545,75 @@ public class GrammarTreePositiveTest {
         expected.add(new GrammarTree("e"));
 
         standardTest("( (( ((a) + b) + cd )) + e)", expected);
+    }
+
+    @Test
+    public void emptyWordTest(){
+        var expected = new GrammarTree("+");
+        expected.add(new GrammarTree("a"));
+        expected.add(new GrammarTree(s));
+        standardTest("a + " + s, expected);
+    }
+
+    @Test
+    public void Exam2smallTest(){
+        var expected = new GrammarTree(RegExprBuild.CON);
+        expected.add(new GrammarTree("a"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("aa + " + s));
+        standardTest(String.format("a(aa + %s)", s), expected);
+    }
+
+    @Test
+    public void Exam2Test(){
+        var expected = new GrammarTree("+");
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a(aa + %s) + b", s)));
+        expected.add(new GrammarTree(s));
+
+        standardTest(String.format("a(aa + %s) + b + %s", s, s), expected);
+    }
+
+    @Test
+    public void letterConcatSumTest(){
+        var expected = new GrammarTree("+");
+        expected.add(new GrammarTree("a"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a(aa + %s)", s)));
+
+        standardTest(String.format("a + a(aa + %s)", s), expected);
+    }
+
+    @Test
+    public void twoLettersAndConcatSumTest(){
+        var expected = new GrammarTree("+");
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a + a(aa + %s)", s)));
+        expected.add(new GrammarTree("b"));
+
+        standardTest(String.format("a + a(aa + %s) + b", s), expected);
+    }
+
+    @Test
+    public void Exam2modifiedTest(){
+        var expected = new GrammarTree("+");
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a + a(aa + %s) + b", s)));
+        expected.add(new GrammarTree(s));
+
+        standardTest(String.format("a + a(aa + %s) + b + %s", s, s), expected);
+    }
+
+    @Test
+    public void threeConcatTest(){
+        var expected = new GrammarTree(RegExprBuild.CON);
+        expected.add(new GrammarTree("a"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a(aa + %s)", s)));
+
+        standardTest(String.format("a(a(aa + %s))", s), expected);
+    }
+
+    @Test
+    public void Exam2modified2Test(){
+        var expected = new GrammarTree("+");
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a(a(aa + %s)) + b", s)));
+        expected.add(new GrammarTree(s));
+
+        standardTest(String.format("a(a(aa + %s)) + b + %s", s, s), expected);
     }
 }
