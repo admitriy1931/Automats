@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import regexp.GrammarTree;
 
 public class GrammarTreePositiveTest {
+    private static final String s = RegExprBuild.emptyWordSymbol;
+
     private void standardTest(String regexp, GrammarTree expected){
         var actual = RegExprBuild.makeGrammarTreeOrNull(regexp);
 
@@ -549,69 +551,69 @@ public class GrammarTreePositiveTest {
     public void emptyWordTest(){
         var expected = new GrammarTree("+");
         expected.add(new GrammarTree("a"));
-        expected.add(new GrammarTree("-"));
-        standardTest("a + -", expected);
+        expected.add(new GrammarTree(s));
+        standardTest("a + " + s, expected);
     }
 
     @Test
     public void Exam2smallTest(){
         var expected = new GrammarTree(RegExprBuild.CON);
         expected.add(new GrammarTree("a"));
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("aa + -"));
-        standardTest("a(aa + -)", expected);
+        expected.add(RegExprBuild.makeGrammarTreeOrNull("aa + " + s));
+        standardTest(String.format("a(aa + %s)", s), expected);
     }
 
     @Test
     public void Exam2Test(){
         var expected = new GrammarTree("+");
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(aa + -) + b"));
-        expected.add(new GrammarTree("-"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a(aa + %s) + b", s)));
+        expected.add(new GrammarTree(s));
 
-        standardTest("a(aa + -) + b + -", expected);
+        standardTest(String.format("a(aa + %s) + b + %s", s, s), expected);
     }
 
     @Test
     public void letterConcatSumTest(){
         var expected = new GrammarTree("+");
         expected.add(new GrammarTree("a"));
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(aa + -)"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a(aa + %s)", s)));
 
-        standardTest("a + a(aa + -)", expected);
+        standardTest(String.format("a + a(aa + %s)", s), expected);
     }
 
     @Test
     public void twoLettersAndConcatSumTest(){
         var expected = new GrammarTree("+");
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("a + a(aa + -)"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a + a(aa + %s)", s)));
         expected.add(new GrammarTree("b"));
 
-        standardTest("a + a(aa + -) + b", expected);
+        standardTest(String.format("a + a(aa + %s) + b", s), expected);
     }
 
     @Test
     public void Exam2modifiedTest(){
         var expected = new GrammarTree("+");
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("a + a(aa + -) + b"));
-        expected.add(new GrammarTree("-"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a + a(aa + %s) + b", s)));
+        expected.add(new GrammarTree(s));
 
-        standardTest("a + a(aa + -) + b + -", expected);
+        standardTest(String.format("a + a(aa + %s) + b + %s", s, s), expected);
     }
 
     @Test
     public void threeConcatTest(){
         var expected = new GrammarTree(RegExprBuild.CON);
         expected.add(new GrammarTree("a"));
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(aa + -)"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a(aa + %s)", s)));
 
-        standardTest("a(a(aa + -))", expected);
+        standardTest(String.format("a(a(aa + %s))", s), expected);
     }
 
     @Test
     public void Exam2modified2Test(){
         var expected = new GrammarTree("+");
-        expected.add(RegExprBuild.makeGrammarTreeOrNull("a(a(aa + -)) + b"));
-        expected.add(new GrammarTree("-"));
+        expected.add(RegExprBuild.makeGrammarTreeOrNull(String.format("a(a(aa + %s)) + b", s)));
+        expected.add(new GrammarTree(s));
 
-        standardTest("a(a(aa + -)) + b + -", expected);
+        standardTest(String.format("a(a(aa + %s)) + b + %s", s, s), expected);
     }
 }

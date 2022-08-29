@@ -9,7 +9,7 @@ import java.util.*;
 
 public class RegExprBuild {
     public static final String CON = "con";
-    public static String emptyWordSymbol = "-";
+    public static String emptyWordSymbol = "λ";
 
     public static Boolean allowEmptyWord(String regexp) throws RegexpExeption {
         return allowEmptyWord(makeGrammarTree(regexp));
