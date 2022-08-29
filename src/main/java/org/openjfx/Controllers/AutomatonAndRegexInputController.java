@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
+import regexp.RegexpExeption;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -150,12 +151,15 @@ public class AutomatonAndRegexInputController {
                 TableView<String[]> automatonTableView = getAutomatonTableView(data, alphabet);
                 TextField startVertexTextField = getTextField("Введите начальное состояние", 325);
                 TextField finalVerticesTextField = getTextField("Введите через запятую конечные состояния автомата", 325);
-                TextField regexTextField = getTextField("Введите регулярное выражение, '*' - итерация, '+' - объединение, две буквы рядом - конкатенация", 570);
+                TextField regexTextField = getTextField("Введите регулярное выражение, '*' - итерация, '+' - объединение, 'λ' - символ пустого слов, две буквы рядом - конкатенация", 715);
                 regexTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.matches("[a-z0-1+*]*")) {
-                        regexTextField.setText(newValue.replaceAll("[^a-z0-1+*]", ""));
+                    if (!newValue.matches("[a-z0-1+*λ]*")) {
+                        regexTextField.setText(newValue.replaceAll("[^a-z0-1+*λ]", ""));
                     }
                 });
+
+                var lambdaButton = new Button("λ");
+                lambdaButton.setOnAction(ev -> regexTextField.setText(regexTextField.getText() + "λ"));
                 Button createAutomatonButton = getCreateAutomatonButton(automatonTableView, startVertexTextField, finalVerticesTextField, states, alphabet, regexTextField);
                 Text automatonHintText = getText("Введите таблицу переходов автомата", Color.WHITESMOKE, Font.font("System", FontPosture.ITALIC, 12));
                 Text regexHintText = getText("Например, a*b*c* или a+b+c", Color.WHITESMOKE, Font.font("System", FontPosture.ITALIC, 12));
@@ -167,7 +171,8 @@ public class AutomatonAndRegexInputController {
                         regexTextField,
                         regexHintText,
                         automatonHintText,
-                        checkRegexCorrectnessButton);
+                        checkRegexCorrectnessButton,
+                        lambdaButton);
                 Loader.showStage(new Scene(mainPane), true);
             } catch (NumberFormatException ignored) {
             }
@@ -254,8 +259,8 @@ public class AutomatonAndRegexInputController {
                               TextField regexTextField,
                               Text regexHintText,
                               Text automatonHintText,
-                              Button checkRegexCorrectnessButton) {
-        mainPane = new AnchorPane(automatonTableView, createAutomatonButton, startVertexTextField, finalVerticesTextField, automatonHintText, regexTextField, regexHintText, checkRegexCorrectnessButton);
+                              Button checkRegexCorrectnessButton, Button lambdaButton) {
+        mainPane = new AnchorPane(automatonTableView, createAutomatonButton, startVertexTextField, finalVerticesTextField, automatonHintText, regexTextField, regexHintText, checkRegexCorrectnessButton, lambdaButton);
         mainPane.setStyle("-fx-background-color: #2e3348;");
 
         AnchorPane.setLeftAnchor(automatonTableView, 10.0);
@@ -281,6 +286,9 @@ public class AutomatonAndRegexInputController {
 
         AnchorPane.setBottomAnchor(checkRegexCorrectnessButton, 10.0);
         AnchorPane.setLeftAnchor(checkRegexCorrectnessButton, regexTextField.getPrefWidth() + 10 - checkRegexCorrectnessButton.getPrefWidth());
+
+        AnchorPane.setBottomAnchor(lambdaButton, 10.0);
+        AnchorPane.setLeftAnchor(lambdaButton, regexTextField.getPrefWidth() + 10 - checkRegexCorrectnessButton.getPrefWidth() - 30);
     }
 
     private Button getCreateAutomatonButton(TableView<String[]> automatonTableView, TextField startVertexTextField, TextField finalVerticesTextField, String[] states, String[] alphabet, TextField regexTextField) {
@@ -340,7 +348,12 @@ public class AutomatonAndRegexInputController {
             }
 
             automatonList.add(new Automat(false, jumpTable, startVertex, finalVertices));
-            automatonList.add(GlushkovAlgo.doGlushkovAlgo(regexTextField.getText()));
+            try {
+                automatonList.add(GlushkovAlgo.doGlushkovAlgo(regexTextField.getText()));
+            } catch (RegexpExeption e) {
+                //TODO: И что тут делать?
+                e.printStackTrace();
+            }
 
             createAutomatonButton.getScene().getWindow().hide();
             Loader.loadFxml("/taskTwo.fxml", true);
