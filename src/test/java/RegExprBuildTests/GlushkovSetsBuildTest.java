@@ -11,6 +11,49 @@ import java.util.HashSet;
 
 public class GlushkovSetsBuildTest {
     @Test
+    public void iteration1Test(){
+        var start = new HashSet<LinearisedSymbol>();
+        start.add(new LinearisedSymbol('a', 0));
+
+        var end = new HashSet<LinearisedSymbol>();
+        end.add(new LinearisedSymbol('a', 0));
+
+        var pairs = new HashSet<Pair<LinearisedSymbol, LinearisedSymbol>>();
+        pairs.add(makePair('a', 0, 'a', 0));
+
+        var expected = new GlushkovSets(start, end, pairs);
+
+        var actual = Assertions.assertDoesNotThrow(
+                () -> GlushkovSetsBuild.makeGlushkovSets("a*"));
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void iteration2Test(){
+        var start = new HashSet<LinearisedSymbol>();
+        start.add(new LinearisedSymbol('a', 0));
+        start.add(new LinearisedSymbol('b', 1));
+
+        var end = new HashSet<LinearisedSymbol>();
+        end.add(new LinearisedSymbol('a', 0));
+        end.add(new LinearisedSymbol('b', 1));
+
+        var pairs = new HashSet<Pair<LinearisedSymbol, LinearisedSymbol>>();
+        pairs.add(makePair('a', 0, 'a', 0));
+        pairs.add(makePair('a', 0, 'b', 1));
+        pairs.add(makePair('b', 1, 'a', 0));
+        pairs.add(makePair('b', 1, 'b', 1));
+
+        var expected = new GlushkovSets(start, end, pairs);
+
+        var actual = Assertions.assertDoesNotThrow(
+                () -> GlushkovSetsBuild.makeGlushkovSets("(a + b)*"));
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
     public void simpleTest(){
         var start = new HashSet<LinearisedSymbol>();
         start.add(new LinearisedSymbol('a', 0));

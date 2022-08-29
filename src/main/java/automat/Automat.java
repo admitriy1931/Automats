@@ -69,7 +69,7 @@ public class Automat implements Cloneable, Serializable{
     public boolean isVertexStock(String vertex) {
         if (!vertexes.contains(vertex)) throw new IllegalArgumentException(VERTEX_NOT_EXISTING);
         List<String> distinctJumps = getAllJumpsByVertex(vertex).stream().distinct().collect(Collectors.toList());
-        return distinctJumps.size() == 1 && distinctJumps.contains(vertex);
+        return distinctJumps.size() == 1 && distinctJumps.contains(vertex) && !finalVertexes.contains(vertex);
     }
 
     @Override

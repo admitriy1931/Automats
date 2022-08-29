@@ -32,10 +32,11 @@ public class FullTask2Tests {
     public void plusIterationTest(){
         var aut1 = doGlushkovAlgo("(b + c)*");
         var aut2 = doGlushkovAlgo("b + c");
+        var expected = new IsomorphismResult("", null ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
