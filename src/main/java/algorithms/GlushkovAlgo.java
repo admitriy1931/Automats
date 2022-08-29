@@ -10,6 +10,11 @@ import regexp.RegexpExeption;
 import java.util.*;
 
 public class GlushkovAlgo {
+    private static String regular;
+    private static GlushkovSets glushkovSets;
+    private static HashMap<String, String> dictionary1 = new HashMap<>();
+    private static HashMap<String, String> dictionary2 = new HashMap<>();
+
     public static Automat doGlushkovAlgo (String regexp) throws RegexpExeption{
         GlushkovSets sets = new GlushkovSets(null, null,null);
         try {
@@ -17,10 +22,10 @@ public class GlushkovAlgo {
         } catch (regexp.RegexpExeption e) {
             e.printStackTrace();
         }
-
+        regular = regexp;
+        glushkovSets = sets;
         HashSet<String> alphabet = findAlphabet(regexp);
-        List<String> terminals = makeSetOfTerminal(sets, regexp);
-        return transformNKA2DKA(buildNKA(sets), alphabet, terminals);
+        return transformNKA2DKA(buildNKA(sets), alphabet);
     }
 
     public static HashBasedTable<String, String, ArrayList<String>> buildNKAFromReg (String regexp){
@@ -35,7 +40,7 @@ public class GlushkovAlgo {
 
 
     private static Automat transformNKA2DKA
-            (HashBasedTable<String, String, ArrayList<String>> nka, HashSet<String> alphabet, List<String> terminals){
+            (HashBasedTable<String, String, ArrayList<String>> nka, HashSet<String> alphabet) throws RegexpExeption{
         boolean hasStock = false;
 
         HashBasedTable<String, String, String> res = HashBasedTable.create();
@@ -73,12 +78,21 @@ public class GlushkovAlgo {
                 vertexTo.clear();
             }
         }
+        List<String> terminals = makeSetOfTerminal(glushkovSets, regular);
         HashBasedTable<String,String,String> prepared = renameVertexes(res, -2, false);
         HashBasedTable<String,String,String> jumpTable = renameVertexes(prepared, 0, true);
-        return new Automat(false, jumpTable, "0", terminals);
+        List<String> preparedTerminals = new ArrayList<>();
+        List<String> finalTerminals = new ArrayList<>();
+        for (String old: terminals){
+            preparedTerminals.add(dictionary1.get(old));
+        }
+        for (String old: preparedTerminals){
+            finalTerminals.add(dictionary2.get(old));
+        }
+        return new Automat(false, jumpTable, "0", finalTerminals);
     }
 
-    private static HashBasedTable<String, String, String>
+    public static HashBasedTable<String, String, String>
             renameVertexes(HashBasedTable<String, String, String> raw, int startName, boolean up){
         HashBasedTable<String, String, String> renamed = HashBasedTable.create();
         HashMap<String, String> dictionary = new HashMap<>();
@@ -90,6 +104,14 @@ public class GlushkovAlgo {
             dictionary.put(rowKey, Integer.toString(newName));
             if (up){newName++;} else {newName--;}
         }
+
+        if (startName == -2){
+            dictionary1 = dictionary;
+        }
+        if (startName == 0){
+            dictionary2 = dictionary;
+        }
+
         for (String rowKey: renamed.rowKeySet()){
             for (String columnKey: renamed.columnKeySet()){
                 String value = Objects.requireNonNull(renamed.get(rowKey, columnKey));
