@@ -75,6 +75,11 @@ public class Isomorphism {
 
         for (var letter : aut1.letters) {
             var q1 = aut1.getJumpByVertexAndLetter(u, letter);
+            if (!aut2.letters.contains(letter) && !aut1.isVertexStock(q1)) {
+                var result = getEndOfWord(q1, letter, aut1);
+                result.add(prevLetter); // null не вылетит если q1 не сток, а мы это проверили
+                return result;
+            }
             var q2 = aut2.getJumpByVertexAndLetter(v, letter);
             if (!aut1.isVertexStock(q1)){
                 if (aut2.isVertexStock(q2)){

@@ -43,10 +43,11 @@ public class FullTask2Tests {
     public void bigRegexp1and2Test(){
         var aut1 = doGlushkovAlgo("c + (dd+d)(d)");
         var aut2 = doGlushkovAlgo("(d+d)(e+e)+(f+f)");
+        var expected = new IsomorphismResult("c", "de" ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
