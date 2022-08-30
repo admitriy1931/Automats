@@ -1,7 +1,7 @@
 package algorithms;
 
-import automat.Automat;
-import automat.IsomorphismResult;
+import automaton.Automaton;
+import automaton.IsomorphismResult;
 import com.google.common.collect.Lists;
 
 import java.util.*;
@@ -17,7 +17,7 @@ public class Isomorphism {
         startOfCycle = null;
     }
 
-    public static IsomorphismResult automatsAreIsomorphic(Automat aut1, Automat aut2) throws CloneNotSupportedException {
+    public static IsomorphismResult automatsAreIsomorphic(Automaton aut1, Automaton aut2) throws CloneNotSupportedException {
         aut1 = Adduction.buildAdductedAutomat(aut1);
         aut2 = Adduction.buildAdductedAutomat(aut2);
         clear();
@@ -33,14 +33,14 @@ public class Isomorphism {
                 (wordIn1ThatNotIn2.size() == 0 && wordIn2ThatNotIn1.size() == 0 ? associations : null));
     }
 
-    public static List<String> getEndOfWord(String currentVertex, String prevLetter, Automat aut){
+    public static List<String> getEndOfWord(String currentVertex, String prevLetter, Automaton aut){
         return getEndOfWord(currentVertex, prevLetter, aut, new HashSet<>());
     }
 
     public static List<String> getEndOfWord(String currentVertex, String prevLetter,
-                                            Automat aut, HashSet<String> visited){
+                                            Automaton aut, HashSet<String> visited){
         visited.add(currentVertex);
-        if (aut.finalVertexes.contains(currentVertex)){
+        if (aut.finalVertices.contains(currentVertex)){
             var result = new ArrayList<String>();
             result.add(prevLetter);
             return result;
@@ -61,7 +61,7 @@ public class Isomorphism {
     }
 
     public static List<String> findWordIn1ThatNotIn2(
-            Automat aut1, Automat aut2, String u, String v, String prevLetter){
+            Automaton aut1, Automaton aut2, String u, String v, String prevLetter){
         var wordWithCycle = findWordIn1ThatNotIn2(aut1, aut2, u, v, prevLetter, new HashMap<>());
         if (wordWithCycle == null)
             return new ArrayList<>();
@@ -82,7 +82,7 @@ public class Isomorphism {
         return currentWord;
     }
 
-    private static Boolean automatonTakeWord(Automat aut, List<String> word){
+    private static Boolean automatonTakeWord(Automaton aut, List<String> word){
         var currentVertex = aut.startVertex;
         for (var i = word.size()-1; i >= 0; i--){
             var letter = word.get(i);
@@ -90,17 +90,17 @@ public class Isomorphism {
                 return false;
             currentVertex = aut.getJumpByVertexAndLetter(currentVertex, letter);
         }
-        return aut.finalVertexes.contains(currentVertex);
+        return aut.finalVertices.contains(currentVertex);
     }
 
     public static WordWithCycle findWordIn1ThatNotIn2(
-            Automat aut1, Automat aut2, String u, String v, String prevLetter, HashMap<String, Boolean> prevVisited){
+            Automaton aut1, Automaton aut2, String u, String v, String prevLetter, HashMap<String, Boolean> prevVisited){
         var visited = (HashMap<String, Boolean>)prevVisited.clone();
 
         visited.put(u, true);
 
-        if (aut1.finalVertexes.contains(u) != aut2.finalVertexes.contains(v)){
-            if (aut1.finalVertexes.contains(u)){
+        if (aut1.finalVertices.contains(u) != aut2.finalVertices.contains(v)){
+            if (aut1.finalVertices.contains(u)){
                 var result = new ArrayList<String>();
                 result.add(prevLetter);
                 return new WordWithCycle(result);
@@ -181,7 +181,7 @@ public class Isomorphism {
         return null;
     }
 
-    private static List<String> buildCycle(List<String> result, Automat aut, String startOfCycle){
+    private static List<String> buildCycle(List<String> result, Automaton aut, String startOfCycle){
         var cycle = new ArrayList<String>();
         if (result.size() == 1){
             cycle.add(result.get(0));

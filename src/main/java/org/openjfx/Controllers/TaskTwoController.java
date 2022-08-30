@@ -2,8 +2,8 @@ package org.openjfx.Controllers;
 
 import algorithms.Adduction;
 import algorithms.Isomorphism;
-import automat.Automat;
-import automat.IsomorphismResult;
+import automaton.Automaton;
+import automaton.IsomorphismResult;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,8 +33,8 @@ public class TaskTwoController {
 
     @FXML
     void initialize() {
-        Automat tableBasedAutomaton = automatonList.get(0);
-        Automat regexBasedAutomaton = automatonList.get(1);
+        Automaton tableBasedAutomaton = automatonList.get(0);
+        Automaton regexBasedAutomaton = automatonList.get(1);
         TableView<String[]> firstAutomatonTableView = TaskOneController.createAutomatonJumpTableTableView(tableBasedAutomaton);
         TableView<String[]> secondAutomatonTableView = TaskOneController.createAutomatonJumpTableTableView(regexBasedAutomaton);
 
@@ -69,12 +69,12 @@ public class TaskTwoController {
         AnchorPane.setRightAnchor(finalizeAutomatonsButton, 800.0);
     }
 
-    private Button getFinalizeAutomatonsButton(Automat tableBasedAutomaton, Automat regexBasedAutomaton) {
+    private Button getFinalizeAutomatonsButton(Automaton tableBasedAutomaton, Automaton regexBasedAutomaton) {
         Button button = new Button("Привести ДКА");
         button.setOnAction(event -> {
             button.getScene().getWindow().hide();
-            Automat adductedTableBasedAutomaton;
-            Automat adductedRegexBasedAutomaton;
+            Automaton adductedTableBasedAutomaton;
+            Automaton adductedRegexBasedAutomaton;
             try {
                  adductedTableBasedAutomaton = Adduction.buildAdductedAutomat(tableBasedAutomaton);
                  adductedRegexBasedAutomaton = Adduction.buildAdductedAutomat(regexBasedAutomaton);
@@ -126,7 +126,7 @@ public class TaskTwoController {
         return mainPane;
     }
 
-    private Button getCheckIfIsomorphicButton(Automat first, Automat second) {
+    private Button getCheckIfIsomorphicButton(Automaton first, Automaton second) {
         Button checkIfIsomorphicButton = new Button("Проверить автоматы на изоморфность");
         checkIfIsomorphicButton.setOnAction(event -> {
             IsomorphismResult result;
@@ -166,7 +166,10 @@ public class TaskTwoController {
                 newPane.getChildren().add(text);
                 Text text1 = null;
                 if (result.wordIn1ThatNotIn2 != null) {
-                    text1 = new Text("Слово, принимаемое первым автоматом, но не принимаемое вторым: '" + result.wordIn1ThatNotIn2 + "'");
+                    if (result.wordIn1ThatNotIn2.equals(""))
+                        text1 = new Text("Слово, принимаемое первым автоматом, но не принимаемое вторым: Пустое слово");
+                    else
+                        text1 = new Text("Слово, принимаемое первым автоматом, но не принимаемое вторым: '" + result.wordIn1ThatNotIn2 + "'");
                     text1.setFont(Font.font("System", 16));
                     text1.setFill(Color.WHITESMOKE);
                     newPane.getChildren().add(text1);
@@ -175,7 +178,10 @@ public class TaskTwoController {
                 }
                 Text text2;
                 if (result.wordIn2ThatNotIn1 != null) {
-                    text2 = new Text("Слово, принимаемое вторым автоматом, но не принимаемое первым: '" + result.wordIn2ThatNotIn1 + "'");
+                    if (result.wordIn2ThatNotIn1.equals(""))
+                        text2 = new Text("Слово, принимаемое вторым автоматом, но не принимаемое первым: Пустое слово");
+                    else
+                        text2 = new Text("Слово, принимаемое вторым автоматом, но не принимаемое первым: '" + result.wordIn2ThatNotIn1 + "'");
                     text2.setFont(Font.font("System", 16));
                     text2.setFill(Color.WHITESMOKE);
                     newPane.getChildren().add(text2);

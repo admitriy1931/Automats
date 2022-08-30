@@ -1,7 +1,7 @@
 package AdductionTests;
 
 import algorithms.Adduction;
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -31,13 +31,13 @@ public class ReachabilityTest {
 
         List<String> firstFinal = Lists.newArrayList("4", "5", "6");
 
-        Automat result = null;
+        Automaton result = null;
         try {
-            result = Adduction.excludeUnreachableVertexes(new Automat(false, first, "0", firstFinal));
+            result = Adduction.excludeUnreachableVertexes(new Automaton(false, first, "0", firstFinal));
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        Automat expected = new Automat(false, first, "0", firstFinal);
+        Automaton expected = new Automaton(false, first, "0", firstFinal);
 
         Assertions.assertEquals(expected.jumpTable, result.jumpTable);
     }
@@ -62,9 +62,9 @@ public class ReachabilityTest {
         first.put("6", "b", "5");
 
         List<String> firstFinal = Lists.newArrayList("2", "3", "4");
-        Automat result = null;
+        Automaton result = null;
         try {
-            result = Adduction.excludeUnreachableVertexes(new Automat(false, first, "0", firstFinal));
+            result = Adduction.excludeUnreachableVertexes(new Automaton(false, first, "0", firstFinal));
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -73,7 +73,7 @@ public class ReachabilityTest {
         first.row("5").clear();
         first.row("6").clear();
 
-        Automat expected = new Automat(false, first, "0", firstFinal);
+        Automaton expected = new Automaton(false, first, "0", firstFinal);
 
         assert result != null;
         Assertions.assertEquals(expected.jumpTable, result.jumpTable);

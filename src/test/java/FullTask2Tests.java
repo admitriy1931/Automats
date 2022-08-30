@@ -1,8 +1,8 @@
 import algorithms.GlushkovAlgo;
 import algorithms.Isomorphism;
 import algorithms.RegExprBuild;
-import automat.Automat;
-import automat.IsomorphismResult;
+import automaton.Automaton;
+import automaton.IsomorphismResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import regexp.RegexpException;
@@ -10,7 +10,7 @@ import regexp.RegexpException;
 import java.util.HashMap;
 
 public class FullTask2Tests {
-    public IsomorphismResult automatsAreIsomorphic(Automat aut1, Automat aut2){
+    public IsomorphismResult automatsAreIsomorphic(Automaton aut1, Automaton aut2){
         try {
             return Isomorphism.automatsAreIsomorphic(aut1, aut2);
         }
@@ -20,7 +20,7 @@ public class FullTask2Tests {
         return null;
     }
 
-    private Automat doGlushkovAlgo(String regexp){
+    private Automaton doGlushkovAlgo(String regexp){
         try
         {
             return GlushkovAlgo.doGlushkovAlgo(regexp);

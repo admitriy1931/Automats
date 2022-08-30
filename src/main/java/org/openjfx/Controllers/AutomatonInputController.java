@@ -1,6 +1,6 @@
 package org.openjfx.Controllers;
 
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -21,7 +21,6 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static org.openjfx.Controllers.Controller.automatonList;
 
@@ -128,13 +127,12 @@ public class AutomatonInputController {
 
                 String[][] jumpTable = new String[states.length][alphabet.length + 1];
 
-                //TODO: Не забыть убрать рандомное заполнение таблицы
                 for (int i = 0; i < states.length; i++) {
                     for (int j = 0; j < alphabet.length + 1; j++) {
                         if (j == 0)
                             jumpTable[i][j] = Integer.toString(i + 1);
                         else {
-                            jumpTable[i][j] = Integer.toString(ThreadLocalRandom.current().nextInt(1, states.length + 1));
+                            jumpTable[i][j] = "";
                         }
                     }
                 }
@@ -250,7 +248,7 @@ public class AutomatonInputController {
                 }
             }
 
-            automatonList.add(new Automat(false, jumpTable, startVertex, Arrays.asList(finalVertices)));
+            automatonList.add(new Automaton(false, jumpTable, startVertex, Arrays.asList(finalVertices)));
 
             button.getScene().getWindow().hide();
 

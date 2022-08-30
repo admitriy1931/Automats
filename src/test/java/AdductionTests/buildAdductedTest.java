@@ -1,7 +1,7 @@
 package AdductionTests;
 
 import algorithms.Adduction;
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -31,9 +31,9 @@ public class buildAdductedTest {
 
         List<String> firstFinal = Lists.newArrayList("4", "5", "6");
 
-        Automat result = null;
+        Automaton result = null;
         try {
-            result = Adduction.buildAdductedAutomat(new Automat(
+            result = Adduction.buildAdductedAutomat(new Automaton(
                     false, first, "0", firstFinal));
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class buildAdductedTest {
 
         assert result != null;
         Assertions.assertEquals("0, 1", result.startVertex);
-        Assertions.assertEquals(expectedFinalVertexes, result.finalVertexes);
+        Assertions.assertEquals(expectedFinalVertexes, result.finalVertices);
         Assertions.assertEquals(expected, result.jumpTable);
     }
 }

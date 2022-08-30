@@ -1,6 +1,6 @@
 package algorithms;
 
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import regexp.GlushkovSets;
 import regexp.LinearisedSymbol;
@@ -15,7 +15,7 @@ public class GlushkovAlgo {
     private static HashMap<String, String> dictionary1 = new HashMap<>();
     private static HashMap<String, String> dictionary2 = new HashMap<>();
 
-    public static Automat doGlushkovAlgo (String regexp) throws RegexpException {
+    public static Automaton doGlushkovAlgo (String regexp) throws RegexpException {
         GlushkovSets sets = GlushkovSetsBuild.makeGlushkovSets(regexp);
 
         regular = regexp;
@@ -35,7 +35,7 @@ public class GlushkovAlgo {
     }
 
 
-    private static Automat transformNKA2DKA
+    private static Automaton transformNKA2DKA
             (HashBasedTable<String, String, ArrayList<String>> nka, HashSet<String> alphabet) throws RegexpException {
         boolean hasStock = false;
         List<String> terminals = makeSetOfTerminal(glushkovSets, regular);
@@ -102,7 +102,7 @@ public class GlushkovAlgo {
             finalTerminals.add(dictionary2.get(old));
         }
         String newStart = dictionary2.get(dictionary1.get("-1"));
-        return new Automat(false, jumpTable, newStart, finalTerminals);
+        return new Automaton(false, jumpTable, newStart, finalTerminals);
     }
 
     public static HashBasedTable<String, String, String>

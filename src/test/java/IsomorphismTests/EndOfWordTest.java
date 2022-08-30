@@ -1,7 +1,7 @@
 package IsomorphismTests;
 
 import algorithms.Isomorphism;
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -45,7 +45,7 @@ public class EndOfWordTest {
         Assertions.assertEquals(expected, actual);
     }
 
-    public static Automat makeAut1(Integer shift){
+    public static Automaton makeAut1(Integer shift){
         HashBasedTable<String, String, String> jumpTable = HashBasedTable.create();
 
         var v1 = String.valueOf(1 + shift);
@@ -68,10 +68,10 @@ public class EndOfWordTest {
         var finalVertexes = new ArrayList<String>();
         finalVertexes.add(v3);
 
-        return new Automat(false, jumpTable, v1, finalVertexes);
+        return new Automaton(false, jumpTable, v1, finalVertexes);
     }
 
-    public static Automat makeAut2(Integer shift){
+    public static Automaton makeAut2(Integer shift){
         HashBasedTable<String, String, String> jumpTable = HashBasedTable.create();
 
         var v1 = String.valueOf(1 + shift);
@@ -113,6 +113,6 @@ public class EndOfWordTest {
         var finalVertexes = new ArrayList<String>();
         finalVertexes.add(v6);
 
-        return new Automat(false, jumpTable, v1, finalVertexes);
+        return new Automaton(false, jumpTable, v1, finalVertexes);
     }
 }

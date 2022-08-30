@@ -1,6 +1,6 @@
 package org.openjfx.Controllers;
 
-import automat.Automat;
+import automaton.Automaton;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Controller {
 
-    public static final ArrayList<Automat> automatonList = new ArrayList<>();
+    public static final ArrayList<Automaton> automatonList = new ArrayList<>();
 
     @FXML
     private Button authorsButton;
