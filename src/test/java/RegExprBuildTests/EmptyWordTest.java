@@ -140,10 +140,7 @@ public class EmptyWordTest {
 
     @Test
     public void emptyWordSymbolExam5Test(){
-        standardNegativeTest(String.format(
-                "(ab + ba)*a(a + %s)",
-                RegExprBuild.emptyWordSymbol,
-                RegExprBuild.emptyWordSymbol));
+        standardNegativeTest(String.format("(ab + ba)*a(a + %s)", RegExprBuild.emptyWordSymbol));
     }
 
     @Test

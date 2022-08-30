@@ -9,11 +9,9 @@ import java.util.*;
 public class Isomorphism {
     private Isomorphism() {}
 
-    static HashMap<String, Boolean> visited = new HashMap<>();
     static HashMap<String, String> associations = new HashMap<>();
 
     public static void clear(){
-        visited.clear();
         associations.clear();
     }
 
@@ -60,7 +58,15 @@ public class Isomorphism {
         return null;
     }
 
-    public static List<String> findWordIn1ThatNotIn2(Automat aut1, Automat aut2, String u, String v, String prevLetter){
+    public static List<String> findWordIn1ThatNotIn2(
+            Automat aut1, Automat aut2, String u, String v, String prevLetter){
+        return findWordIn1ThatNotIn2(aut1, aut2, u, v, prevLetter, new HashMap<>());
+    }
+
+    public static List<String> findWordIn1ThatNotIn2(
+            Automat aut1, Automat aut2, String u, String v, String prevLetter, HashMap<String, Boolean> prevVisited){
+        var visited = (HashMap<String, Boolean>)prevVisited.clone();
+
         visited.put(u, true);
 
         if (aut1.finalVertexes.contains(u) != aut2.finalVertexes.contains(v)){
@@ -80,6 +86,9 @@ public class Isomorphism {
                 result.add(prevLetter); // null не вылетит если q1 не сток, а мы это проверили
                 return result;
             }
+            else if (!aut2.letters.contains(letter)){
+                continue;
+            }
             var q2 = aut2.getJumpByVertexAndLetter(v, letter);
             if (!aut1.isVertexStock(q1)){
                 if (aut2.isVertexStock(q2)){
@@ -95,7 +104,7 @@ public class Isomorphism {
                     }
                 }
                 else{
-                    var result = findWordIn1ThatNotIn2(aut1, aut2, q1, q2, letter);
+                    var result = findWordIn1ThatNotIn2(aut1, aut2, q1, q2, letter, visited);
                     if (result.size() != 0){
                         result.add(prevLetter);
                         return result;
