@@ -41,6 +41,7 @@ public class GlushkovAlgo {
         List<String> terminals = makeSetOfTerminal(glushkovSets, regular);
         HashSet<String> renamedTerminals = new HashSet<>();
 
+
         HashBasedTable<String, String, String> res = HashBasedTable.create();
         Deque<ArrayList<String>> pool = new ArrayDeque<>();
         HashSet<ArrayList<String>> visited = new HashSet<>();
@@ -63,10 +64,16 @@ public class GlushkovAlgo {
                         }
                     }
                 }
+
                 for (String finalVertex: terminals){
                     if (vertexTo.contains(finalVertex)){
                         Collections.sort(vertexTo);
                         renamedTerminals.add(getName(vertexTo));
+
+                    }
+                    if (current.contains(finalVertex)){
+                        Collections.sort(current);
+                        renamedTerminals.add(getName(current));
                     }
                 }
                 if (vertexTo.isEmpty()){
@@ -94,7 +101,8 @@ public class GlushkovAlgo {
         for (String old: preparedTerminals){
             finalTerminals.add(dictionary2.get(old));
         }
-        return new Automat(false, jumpTable, "0", finalTerminals);
+        String newStart = dictionary2.get(dictionary1.get("-1"));
+        return new Automat(false, jumpTable, newStart, finalTerminals);
     }
 
     public static HashBasedTable<String, String, String>
