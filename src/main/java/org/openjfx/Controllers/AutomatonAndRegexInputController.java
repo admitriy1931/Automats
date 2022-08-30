@@ -234,7 +234,7 @@ public class AutomatonAndRegexInputController {
                 regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 24));
                 AnchorPane.setBottomAnchor(regexStatusText, 46.0);
             }
-            catch (RegexpExeption e) {
+            catch (RegexpException e) {
                 regexStatusText.setText("Некорректное регулярное выражение: " + e.getText());
                 regexStatusText.setFill(Color.RED);
                 regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 18));
@@ -311,7 +311,7 @@ public class AutomatonAndRegexInputController {
             try {
                 regexBasedAutomaton = GlushkovAlgo.doGlushkovAlgo(regexTextField.getText());
             }
-            catch (RegexpExeption e) {
+            catch (RegexpException e) {
                 mainPane.getChildren().remove(regexStatusText);
                 regexStatusText = new Text("Некорректное регулярное выражение: " + e.getText());
                 regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 18));
