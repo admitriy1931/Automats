@@ -1,7 +1,7 @@
 package org.openjfx.Controllers;
 
 import algorithms.GlushkovAlgo;
-import automat.Automaton;
+import automat.Automat;
 import com.google.common.collect.HashBasedTable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -307,7 +307,7 @@ public class AutomatonAndRegexInputController {
             }
             mainPane.getChildren().remove(inputCorrectnessText);
 
-            Automaton regexBasedAutomaton;
+            Automat regexBasedAutomaton;
             try {
                 regexBasedAutomaton = GlushkovAlgo.doGlushkovAlgo(regexTextField.getText());
             }
@@ -350,7 +350,7 @@ public class AutomatonAndRegexInputController {
                 }
             }
 
-            automatonList.add(new Automaton(false, jumpTable, startVertex, finalVertices));
+            automatonList.add(new Automat(false, jumpTable, startVertex, finalVertices));
             automatonList.add(regexBasedAutomaton);
 
             createAutomatonButton.getScene().getWindow().hide();

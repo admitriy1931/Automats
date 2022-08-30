@@ -2,7 +2,7 @@ package org.openjfx.Controllers;
 
 import algorithms.Adduction;
 import algorithms.Isomorphism;
-import automat.Automaton;
+import automat.Automat;
 import automat.IsomorphismResult;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -33,8 +33,8 @@ public class TaskOneController {
 
     @FXML
     void initialize() {
-        Automaton firstFinalizedAutomaton;
-        Automaton secondFinalizedAutomaton;
+        Automat firstFinalizedAutomaton;
+        Automat secondFinalizedAutomaton;
 
         try {
             firstFinalizedAutomaton = Adduction.buildAdductedAutomat(automatonList.get(0));
@@ -82,7 +82,7 @@ public class TaskOneController {
         AnchorPane.setRightAnchor(checkIfIsomorphicButton, 800.0);
     }
 
-    private Button getCheckIfIsomorphicButton(Automaton first, Automaton second) {
+    private Button getCheckIfIsomorphicButton(Automat first, Automat second) {
         Button checkIfIsomorphicButton = new Button("Проверить автоматы на изоморфность");
         checkIfIsomorphicButton.setFont(Font.font(Font.getDefault().getName(), 14));
         checkIfIsomorphicButton.setOnAction(event -> {
@@ -163,7 +163,7 @@ public class TaskOneController {
         return checkIfIsomorphicButton;
     }
 
-    public static TableView<String[]> createAutomatonJumpTableTableView(Automaton automaton) {
+    public static TableView<String[]> createAutomatonJumpTableTableView(Automat automaton) {
         String[][] jumpTable = new String[automaton.jumpTable.rowMap().size()][automaton.letters.size() + 1];
 
         String[] arr = automaton.jumpTable.rowKeySet().toArray(new String[0]);
@@ -186,7 +186,7 @@ public class TaskOneController {
         });
 
         ObservableList<String[]> data = FXCollections.observableArrayList(jumpTable);
-        TableView<String[]> automatonTableView = new TableView<String[]>();
+        TableView<String[]> automatonTableView = new TableView<>();
 
         int stateColumnWidth = 150;
         int regularColumnWidth = 75;
@@ -237,7 +237,7 @@ public class TaskOneController {
         });
 
         ObservableList<String[]> data = FXCollections.observableArrayList(isomorphismTable);
-        TableView<String[]> isomorphismTableView = new TableView<String[]>();
+        TableView<String[]> isomorphismTableView = new TableView<>();
 
         int columnWidth = 150;
         for (int i = 0; i < 2; i++) {
@@ -246,7 +246,7 @@ public class TaskOneController {
                 name = "Первый автомат";
             else
                 name = "Второй автомат";
-            TableColumn<String[], String> tableColumn = new TableColumn<String[], String>(name);
+            TableColumn<String[], String> tableColumn = new TableColumn<>(name);
             tableColumn.setMinWidth(columnWidth);
             tableColumn.setPrefWidth(columnWidth);
             tableColumn.setMaxWidth(columnWidth);

@@ -2,7 +2,7 @@ package org.openjfx.Controllers;
 
 import algorithms.Adduction;
 import algorithms.Isomorphism;
-import automat.Automaton;
+import automat.Automat;
 import automat.IsomorphismResult;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -33,8 +33,8 @@ public class TaskTwoController {
 
     @FXML
     void initialize() {
-        Automaton tableBasedAutomaton = automatonList.get(0);
-        Automaton regexBasedAutomaton = automatonList.get(1);
+        Automat tableBasedAutomaton = automatonList.get(0);
+        Automat regexBasedAutomaton = automatonList.get(1);
         TableView<String[]> firstAutomatonTableView = TaskOneController.createAutomatonJumpTableTableView(tableBasedAutomaton);
         TableView<String[]> secondAutomatonTableView = TaskOneController.createAutomatonJumpTableTableView(regexBasedAutomaton);
 
@@ -69,12 +69,12 @@ public class TaskTwoController {
         AnchorPane.setRightAnchor(finalizeAutomatonsButton, 800.0);
     }
 
-    private Button getFinalizeAutomatonsButton(Automaton tableBasedAutomaton, Automaton regexBasedAutomaton) {
+    private Button getFinalizeAutomatonsButton(Automat tableBasedAutomaton, Automat regexBasedAutomaton) {
         Button button = new Button("Привести ДКА");
         button.setOnAction(event -> {
             button.getScene().getWindow().hide();
-            Automaton adductedTableBasedAutomaton;
-            Automaton adductedRegexBasedAutomaton;
+            Automat adductedTableBasedAutomaton;
+            Automat adductedRegexBasedAutomaton;
             try {
                  adductedTableBasedAutomaton = Adduction.buildAdductedAutomat(tableBasedAutomaton);
                  adductedRegexBasedAutomaton = Adduction.buildAdductedAutomat(regexBasedAutomaton);
@@ -126,7 +126,7 @@ public class TaskTwoController {
         return mainPane;
     }
 
-    private Button getCheckIfIsomorphicButton(Automaton first, Automaton second) {
+    private Button getCheckIfIsomorphicButton(Automat first, Automat second) {
         Button checkIfIsomorphicButton = new Button("Проверить автоматы на изоморфность");
         checkIfIsomorphicButton.setOnAction(event -> {
             IsomorphismResult result;
