@@ -10,9 +10,11 @@ public class Isomorphism {
     private Isomorphism() {}
 
     static HashMap<String, String> associations = new HashMap<>();
+    static String startOfCycle;
 
     public static void clear(){
         associations.clear();
+        startOfCycle = null;
     }
 
     public static IsomorphismResult automatsAreIsomorphic(Automat aut1, Automat aut2) throws CloneNotSupportedException {
@@ -60,10 +62,38 @@ public class Isomorphism {
 
     public static List<String> findWordIn1ThatNotIn2(
             Automat aut1, Automat aut2, String u, String v, String prevLetter){
-        return findWordIn1ThatNotIn2(aut1, aut2, u, v, prevLetter, new HashMap<>());
+        var wordWithCycle = findWordIn1ThatNotIn2(aut1, aut2, u, v, prevLetter, new HashMap<>());
+        if (wordWithCycle == null)
+            return new ArrayList<>();
+        var currentWord = new ArrayList<>(wordWithCycle.end);
+        currentWord.addAll(wordWithCycle.cycle);
+        currentWord.addAll(wordWithCycle.start);
+
+        var cyclesCount = 1;
+        while (automatonTakeWord(aut2, currentWord)){
+            if (cyclesCount > 20)
+                return new ArrayList<>();
+            cyclesCount++;
+            currentWord = new ArrayList<>(wordWithCycle.end);
+            for (var i = 0; i < cyclesCount; i++)
+                currentWord.addAll(wordWithCycle.cycle);
+            currentWord.addAll(wordWithCycle.start);
+        }
+        return currentWord;
     }
 
-    public static List<String> findWordIn1ThatNotIn2(
+    private static Boolean automatonTakeWord(Automat aut, List<String> word){
+        var currentVertex = aut.startVertex;
+        for (var i = word.size()-1; i >= 0; i--){
+            var letter = word.get(i);
+            if (!aut.letters.contains(letter))
+                return false;
+            currentVertex = aut.getJumpByVertexAndLetter(currentVertex, letter);
+        }
+        return aut.finalVertexes.contains(currentVertex);
+    }
+
+    public static WordWithCycle findWordIn1ThatNotIn2(
             Automat aut1, Automat aut2, String u, String v, String prevLetter, HashMap<String, Boolean> prevVisited){
         var visited = (HashMap<String, Boolean>)prevVisited.clone();
 
@@ -73,7 +103,7 @@ public class Isomorphism {
             if (aut1.finalVertexes.contains(u)){
                 var result = new ArrayList<String>();
                 result.add(prevLetter);
-                return result;
+                return new WordWithCycle(result);
             }
         }
         if (!associations.containsKey(u))
@@ -84,7 +114,7 @@ public class Isomorphism {
             if (!aut2.letters.contains(letter) && !aut1.isVertexStock(q1)) {
                 var result = getEndOfWord(q1, letter, aut1);
                 result.add(prevLetter); // null не вылетит если q1 не сток, а мы это проверили
-                return result;
+                return new WordWithCycle(result);
             }
             else if (!aut2.letters.contains(letter)){
                 continue;
@@ -94,20 +124,52 @@ public class Isomorphism {
                 if (aut2.isVertexStock(q2)){
                     var result = getEndOfWord(q1, letter, aut1);
                     result.add(prevLetter); // null не вылетит если q1 не сток, а мы это проверили
-                    return result;
+                    return new WordWithCycle(result);
                 }
                 if (visited.containsKey(q1)){
                     if (!Objects.equals(q2, associations.get(q1))){
-                        var result = getEndOfWord(q1, letter, aut1);
-                        result.add(prevLetter);
-                        return result;
+                        startOfCycle = q1;
+                        var end = getEndOfWord(q1, letter, aut1);
+                        end = end.subList(0, end.size()-1);
+                        if (prevLetter.isEmpty()){
+                            var cycle = new ArrayList<String>();
+                            cycle.add(letter);
+                            return new WordWithCycle(new ArrayList<>(), cycle, end);
+                        }
+                        else{
+                            var start = new ArrayList<String>();
+                            start.add(letter);
+                            start.add(prevLetter);
+                            return new WordWithCycle(start, new ArrayList<>(), end);
+                        }
                     }
                 }
                 else{
-                    var result = findWordIn1ThatNotIn2(aut1, aut2, q1, q2, letter, visited);
-                    if (result.size() != 0){
-                        result.add(prevLetter);
-                        return result;
+                    var word = findWordIn1ThatNotIn2(aut1, aut2, q1, q2, letter, visited);
+                    if (word != null){
+                        if (Objects.equals(q1, startOfCycle)){
+                            word.cycle = buildCycle(word.start, aut1, q1);
+
+                            word.start = new ArrayList<>();
+                            word.start.add(letter);
+                            if (!prevLetter.isEmpty())
+                                word.start.add(prevLetter);
+
+                            return word;
+                        }
+                        else if (prevLetter.isEmpty()){
+                            if (Objects.equals(u, startOfCycle)){
+                                word.start.add(prevLetter);
+                                word.cycle = buildCycle(word.start, aut1, u);
+
+                                word.start = new ArrayList<>();
+
+                                return word;
+                            }
+                        }
+                        if (!prevLetter.isEmpty())
+                            word.start.add(prevLetter);
+                        return word;
                     }
                 }
             }
@@ -116,6 +178,26 @@ public class Isomorphism {
                     associations.put(q1, q2);
             }
         }
-        return new ArrayList<>();
+        return null;
+    }
+
+    private static List<String> buildCycle(List<String> result, Automat aut, String startOfCycle){
+        var cycle = new ArrayList<String>();
+        if (result.size() == 1){
+            cycle.add(result.get(0));
+        }
+        else{
+            var i = result.size()-2;
+            var currentState = aut.getJumpByVertexAndLetter(startOfCycle, result.get(i));
+            cycle.add(result.get(i));
+            while (!Objects.equals(currentState, startOfCycle)){
+                i--;
+                var l = result.get(i);
+                currentState = aut.getJumpByVertexAndLetter(currentState, l);
+                cycle.add(l);
+            }
+        }
+        Collections.reverse(cycle);
+        return cycle;
     }
 }

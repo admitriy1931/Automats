@@ -60,9 +60,8 @@ public class WordIn1ThatNotIn2 {
         clear();
         actual = Isomorphism.findWordIn1ThatNotIn2(aut2, aut1, aut2.startVertex, aut1.startVertex, "");
 
-        Assertions.assertEquals(2, actual.size());
+        Assertions.assertEquals(1, actual.size());
         Assertions.assertEquals("b", actual.get(0));
-        Assertions.assertEquals("", actual.get(1));
     }
 
     @Test
@@ -86,18 +85,16 @@ public class WordIn1ThatNotIn2 {
         var aut2 = new Automat(false, jumpTable, "1", finalVertexes);
 
         var actual = Isomorphism.findWordIn1ThatNotIn2(aut1, aut2, aut1.startVertex, aut2.startVertex, "");
-        Assertions.assertEquals(3, actual.size());
+        Assertions.assertEquals(2, actual.size());
         Assertions.assertEquals("a", actual.get(0));
         Assertions.assertEquals("b", actual.get(1));
-        Assertions.assertEquals("", actual.get(2));
 
         clear();
         actual = Isomorphism.findWordIn1ThatNotIn2(aut2, aut1, aut2.startVertex, aut1.startVertex, "");
-        Assertions.assertEquals(5, actual.size());
+        Assertions.assertEquals(4, actual.size());
         Assertions.assertEquals("b", actual.get(0));
         Assertions.assertEquals("b", actual.get(1));
         Assertions.assertEquals("a", actual.get(2));
         Assertions.assertEquals("b", actual.get(3));
-        Assertions.assertEquals("", actual.get(4));
     }
 }
