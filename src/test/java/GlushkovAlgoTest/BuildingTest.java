@@ -1,13 +1,10 @@
 package GlushkovAlgoTest;
 
 import algorithms.GlushkovAlgo;
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Lists;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import regexp.GlushkovSets;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +85,7 @@ class BuildingDKATest{
     @Test
     void simpleRegTest(){
         try {
-            Automat real = GlushkovAlgo.doGlushkovAlgo(simpleReg);
+            Automaton real = GlushkovAlgo.doGlushkovAlgo(simpleReg);
         }catch (Exception e){e.printStackTrace();}
 
     }
@@ -96,7 +93,7 @@ class BuildingDKATest{
     @Test
     void wikiRegTest(){
         try{
-            Automat real = GlushkovAlgo.doGlushkovAlgo(wikiExample);
+            Automaton real = GlushkovAlgo.doGlushkovAlgo(wikiExample);
         }catch (Exception e){e.printStackTrace();}
 
     }
@@ -104,7 +101,7 @@ class BuildingDKATest{
     @Test
     void superSimpleTest(){
         try{
-            Automat real = GlushkovAlgo.doGlushkovAlgo(superSimple);
+            Automaton real = GlushkovAlgo.doGlushkovAlgo(superSimple);
         }catch (Exception e){e.printStackTrace();}
 
     }

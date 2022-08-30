@@ -1,7 +1,7 @@
 package AdductionTests;
 
 import algorithms.Adduction;
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.Assertions;
@@ -31,7 +31,7 @@ public class MaxCongruenceTest {
 
         List<String> firstFinal = Lists.newArrayList("4", "5", "6");
 
-        List<List<String>> result = Adduction.buildMaxCongruence(new Automat(
+        List<List<String>> result = Adduction.buildMaxCongruence(new Automaton(
                 false, first, "0", firstFinal));
 
         List<List<String>> expected = Lists.newArrayList();
@@ -59,7 +59,7 @@ public class MaxCongruenceTest {
 
         List<String> firstFinal = Lists.newArrayList("2", "3");
 
-        List<List<String>> result = Adduction.buildMaxCongruence(new Automat(
+        List<List<String>> result = Adduction.buildMaxCongruence(new Automaton(
                 false, first, "0", firstFinal));
 
         List<List<String>> expected = Lists.newArrayList();

@@ -4,7 +4,7 @@ module org.openjfx {
     requires com.google.common;
     exports org.openjfx;
     exports algorithms;
-    exports automat;
+    exports automaton;
     exports org.openjfx.Controllers;
     opens org.openjfx.Controllers;
 }

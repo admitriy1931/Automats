@@ -1,7 +1,7 @@
 package org.openjfx.Controllers;
 
 import algorithms.GlushkovAlgo;
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -23,7 +23,6 @@ import javafx.scene.text.Text;
 import regexp.RegexpException;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static org.openjfx.Controllers.Controller.automatonList;
 
@@ -132,13 +131,12 @@ public class AutomatonAndRegexInputController {
 
                 String[][] jumpTable = new String[states.length][alphabet.length + 1];
 
-                //TODO: Не забыть убрать рандомное заполнение таблицы
                 for (int i = 0; i < states.length; i++) {
                     for (int j = 0; j < alphabet.length + 1; j++) {
                         if (j == 0)
                             jumpTable[i][j] = Integer.toString(i + 1);
                         else {
-                            jumpTable[i][j] = Integer.toString(ThreadLocalRandom.current().nextInt(1, states.length + 1));
+                            jumpTable[i][j] = "";
                         }
                     }
                 }
@@ -150,8 +148,8 @@ public class AutomatonAndRegexInputController {
                 TextField finalVerticesTextField = getTextField("Введите через запятую конечные состояния автомата", 325);
                 TextField regexTextField = getTextField("Введите регулярное выражение, '*' - итерация, '+' - объединение, 'λ' - символ пустого слов, две буквы рядом - конкатенация", 715);
                 regexTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!newValue.matches("[a-z0-1+*λ]*")) {
-                        regexTextField.setText(newValue.replaceAll("[^a-z0-1+*λ]", ""));
+                    if (!newValue.matches("[a-z0-1+*λ()]*")) {
+                        regexTextField.setText(newValue.replaceAll("[^a-z0-1+*λ()]", ""));
                     }
                 });
 
@@ -177,7 +175,7 @@ public class AutomatonAndRegexInputController {
     }
 
     private TableView<String[]> getAutomatonTableView(ObservableList<String[]> tableData, String[] alphabet) {
-        TableView<String[]> automatonTableView = new TableView<String[]>();
+        TableView<String[]> automatonTableView = new TableView<>();
         automatonTableView.setEditable(true);
 
         int stateColumnMinWidth = 150;
@@ -307,7 +305,7 @@ public class AutomatonAndRegexInputController {
             }
             mainPane.getChildren().remove(inputCorrectnessText);
 
-            Automat regexBasedAutomaton;
+            Automaton regexBasedAutomaton;
             try {
                 regexBasedAutomaton = GlushkovAlgo.doGlushkovAlgo(regexTextField.getText());
             }
@@ -319,10 +317,6 @@ public class AutomatonAndRegexInputController {
                 AnchorPane.setBottomAnchor(regexStatusText, 45.0);
                 AnchorPane.setLeftAnchor(regexStatusText, Math.max(regexTextField.getPrefWidth(), regexTextField.getMaxWidth()) + 20.0);
                 mainPane.getChildren().add(regexStatusText);
-                return;
-            }
-            catch (Exception e1) {
-                var a = 2;
                 return;
             }
 
@@ -350,7 +344,7 @@ public class AutomatonAndRegexInputController {
                 }
             }
 
-            automatonList.add(new Automat(false, jumpTable, startVertex, finalVertices));
+            automatonList.add(new Automaton(false, jumpTable, startVertex, finalVertices));
             automatonList.add(regexBasedAutomaton);
 
 

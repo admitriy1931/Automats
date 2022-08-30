@@ -1,7 +1,7 @@
 package IsomorphismTests;
 
 import algorithms.Isomorphism;
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ public class WordIn1ThatNotIn2 {
     @Test
     public void emptyWordTest(){
         var aut1 = EndOfWordTest.makeAut1(0);
-        aut1.finalVertexes.add("1");
+        aut1.finalVertices.add("1");
         var aut2 = EndOfWordTest.makeAut1(0);
 
         var actual = Isomorphism.findWordIn1ThatNotIn2(aut1, aut2, aut1.startVertex, aut2.startVertex, "");
@@ -51,7 +51,7 @@ public class WordIn1ThatNotIn2 {
     public void shortWordTest(){
         var aut1 = EndOfWordTest.makeAut1(0);
         var aut2 = EndOfWordTest.makeAut1(0);
-        aut2.finalVertexes.add("2");
+        aut2.finalVertices.add("2");
 
         var actual = Isomorphism.findWordIn1ThatNotIn2(aut1, aut2, aut1.startVertex, aut2.startVertex, "");
 
@@ -82,7 +82,7 @@ public class WordIn1ThatNotIn2 {
         finalVertexes.add("3");
 
         var aut1 = EndOfWordTest.makeAut1(0);
-        var aut2 = new Automat(false, jumpTable, "1", finalVertexes);
+        var aut2 = new Automaton(false, jumpTable, "1", finalVertexes);
 
         var actual = Isomorphism.findWordIn1ThatNotIn2(aut1, aut2, aut1.startVertex, aut2.startVertex, "");
         Assertions.assertEquals(2, actual.size());

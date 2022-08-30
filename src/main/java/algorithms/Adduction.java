@@ -1,6 +1,6 @@
 package algorithms;
 
-import automat.Automat;
+import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -15,8 +15,8 @@ import java.util.Set;
 public class Adduction {
     private Adduction() {}
 
-    public static Automat excludeUnreachableVertexes(Automat automat) throws CloneNotSupportedException {
-        Automat clone = automat.clone();
+    public static Automaton excludeUnreachableVertexes(Automaton automaton) throws CloneNotSupportedException {
+        Automaton clone = automaton.clone();
         Set<String> reachedVertexes = Sets.newHashSet();
         reachedVertexes.add(clone.startVertex);
         boolean running = true;
@@ -29,15 +29,15 @@ public class Adduction {
             reachedVertexes = iteratedReachedVertexes;
         }
 
-        Set<String> notReachedVertexes = Sets.difference(new HashSet<>(clone.vertexes), reachedVertexes);
+        Set<String> notReachedVertexes = Sets.difference(new HashSet<>(clone.vertices), reachedVertexes);
         notReachedVertexes.forEach(clone::removeVertex);
         return clone;
     }
 
-    public static List<List<String>> buildMaxCongruence(Automat automat) {
+    public static List<List<String>> buildMaxCongruence(Automaton automaton) {
         List<List<String>> eqClasses = Lists.newArrayList();
-        eqClasses.add(automat.finalVertexes);
-        eqClasses.add(Lists.newArrayList(Sets.difference(new HashSet<>(automat.vertexes), new HashSet<>(automat.finalVertexes))));
+        eqClasses.add(automaton.finalVertices);
+        eqClasses.add(Lists.newArrayList(Sets.difference(new HashSet<>(automaton.vertices), new HashSet<>(automaton.finalVertices))));
         int notSplitCounter = 0;
         do {
             List<String> pickedClass = eqClasses.get(0);
@@ -46,9 +46,9 @@ public class Adduction {
 
             for (String vertex : pickedClass) {
                 StringBuilder hash = new StringBuilder();
-                for (String letter : automat.letters)
+                for (String letter : automaton.letters)
                     for (int i = 0; i < eqClasses.size(); i++)
-                        if ((eqClasses.get(i)).contains(automat.getJumpByVertexAndLetter(vertex, letter))) hash.append(i);
+                        if ((eqClasses.get(i)).contains(automaton.getJumpByVertexAndLetter(vertex, letter))) hash.append(i);
 
                 hashes.add(hash.toString());
             }
@@ -76,10 +76,10 @@ public class Adduction {
         return eqClasses;
     }
 
-    public static Automat buildAdductedAutomat(Automat automat) throws CloneNotSupportedException {
-        Automat clone = automat.clone();
-        Automat modifiedAutomat = excludeUnreachableVertexes(clone);
-        List<List<String>> maxCongruence = buildMaxCongruence(modifiedAutomat);
+    public static Automaton buildAdductedAutomat(Automaton automaton) throws CloneNotSupportedException {
+        Automaton clone = automaton.clone();
+        Automaton modifiedAutomaton = excludeUnreachableVertexes(clone);
+        List<List<String>> maxCongruence = buildMaxCongruence(modifiedAutomaton);
 
         List<String> maxCongruenceJoined = Lists.newArrayList();
         maxCongruence.forEach(x -> maxCongruenceJoined.add(String.join(", ", x)));
@@ -90,7 +90,7 @@ public class Adduction {
         for (int i = 0; i < maxCongruence.size(); i++) {
             List<String> eqClass = maxCongruence.get(i);
             if (eqClass.contains(clone.startVertex)) clone.startVertex = maxCongruenceJoined.get(i);
-            for (String finalVertex : clone.finalVertexes) {
+            for (String finalVertex : clone.finalVertices) {
                 if (eqClass.contains(finalVertex)) newFinalVertexes.add(maxCongruenceJoined.get(i));
             }
             for (String letter : clone.letters) {
@@ -104,10 +104,10 @@ public class Adduction {
             }
         }
 
-        clone.isFinalised = true;
+        clone.isFinalized = true;
         clone.jumpTable = newJumpTable;
-        clone.vertexes = Lists.newArrayList(newJumpTable.rowKeySet());
-        clone.finalVertexes = Lists.newArrayList(newFinalVertexes);
+        clone.vertices = Lists.newArrayList(newJumpTable.rowKeySet());
+        clone.finalVertices = Lists.newArrayList(newFinalVertexes);
 
         return clone;
     }

@@ -1,8 +1,8 @@
 package IsomorphismTests;
 
 import algorithms.Isomorphism;
-import automat.Automat;
-import automat.IsomorphismResult;
+import automaton.Automaton;
+import automaton.IsomorphismResult;
 import com.google.common.collect.HashBasedTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class IsomorphismTest {
-    public IsomorphismResult automatsAreIsomorphic(Automat aut1, Automat aut2){
+    public IsomorphismResult automatsAreIsomorphic(Automaton aut1, Automaton aut2){
         try {
             return Isomorphism.automatsAreIsomorphic(aut1, aut2);
         }
@@ -41,7 +41,7 @@ public class IsomorphismTest {
     @Test
     public void emptyWordTest(){
         var aut1 = EndOfWordTest.makeAut1(0);
-        aut1.finalVertexes.add("1");
+        aut1.finalVertices.add("1");
         var aut2 = EndOfWordTest.makeAut1(0);
 
         var expected = new IsomorphismResult("", null, null);
@@ -56,7 +56,7 @@ public class IsomorphismTest {
     @Test
     public void differentFinalVertexesTest(){
         var aut1 = EndOfWordTest.makeAut1(0);
-        aut1.finalVertexes.add("2");
+        aut1.finalVertices.add("2");
         var aut2 = EndOfWordTest.makeAut1(0);
 
         var expected = new IsomorphismResult("b", null, null);
@@ -80,7 +80,7 @@ public class IsomorphismTest {
         finalVertexes.add("3");
 
         var aut1 = EndOfWordTest.makeAut1(0);
-        var aut2 = new Automat(false, jumpTable, "1", finalVertexes);
+        var aut2 = new Automaton(false, jumpTable, "1", finalVertexes);
 
         var expected = new IsomorphismResult("ba", null, null);
         var actual = automatsAreIsomorphic(aut1, aut2);
@@ -103,7 +103,7 @@ public class IsomorphismTest {
         finalVertexes.add("3");
 
         var aut1 = EndOfWordTest.makeAut1(0);
-        var aut2 = new Automat(false, jumpTable, "1", finalVertexes);
+        var aut2 = new Automaton(false, jumpTable, "1", finalVertexes);
 
         var expected = new IsomorphismResult(null, "bbba", null);
         var actual = automatsAreIsomorphic(aut1, aut2);
@@ -126,7 +126,7 @@ public class IsomorphismTest {
         finalVertexes.add("3");
 
         var aut1 = EndOfWordTest.makeAut1(0);
-        var aut2 = new Automat(false, jumpTable, "1", finalVertexes);
+        var aut2 = new Automaton(false, jumpTable, "1", finalVertexes);
 
         var expected = new IsomorphismResult("ba", "babb", null);
         var actual = automatsAreIsomorphic(aut1, aut2);
@@ -147,7 +147,7 @@ public class IsomorphismTest {
         var finalVertexes1 = new ArrayList<String>();
         finalVertexes1.add("2");
 
-        var aut1 = new Automat(false, jumpTable1, "1", finalVertexes1);
+        var aut1 = new Automaton(false, jumpTable1, "1", finalVertexes1);
 
         var jumpTable2 = makeTable(
                 "1a3\n" + "1b2\n" +
@@ -159,7 +159,7 @@ public class IsomorphismTest {
         finalVertexes2.add("2");
         finalVertexes2.add("3");
 
-        var aut2 = new Automat(false, jumpTable2, "1", finalVertexes2);
+        var aut2 = new Automaton(false, jumpTable2, "1", finalVertexes2);
 
         var expectedAssociations = new HashMap<String, String>();
         expectedAssociations.put("1", "1");
@@ -202,7 +202,7 @@ public class IsomorphismTest {
         var finalVertexes1 = new ArrayList<String>();
         finalVertexes1.add("2");
         finalVertexes1.add("4");
-        var aut1 = new Automat(false, jumpTable1, "1", finalVertexes1);
+        var aut1 = new Automaton(false, jumpTable1, "1", finalVertexes1);
 
         var jumpTable2 = makeTable(
                 "1a2\n" + "1b3\n" +
@@ -210,7 +210,7 @@ public class IsomorphismTest {
                 "3a3\n" + "3b3");
         var finalVertexes2 = new ArrayList<String>();
         finalVertexes2.add("2");
-        var aut2 = new Automat(false, jumpTable2, "1", finalVertexes2);
+        var aut2 = new Automaton(false, jumpTable2, "1", finalVertexes2);
 
         var expectedAssociations = new HashMap<String, String>();
         expectedAssociations.put("1, 3, 5", "1");

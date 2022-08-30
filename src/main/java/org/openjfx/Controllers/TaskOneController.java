@@ -2,8 +2,8 @@ package org.openjfx.Controllers;
 
 import algorithms.Adduction;
 import algorithms.Isomorphism;
-import automat.Automat;
-import automat.IsomorphismResult;
+import automaton.Automaton;
+import automaton.IsomorphismResult;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,8 +33,8 @@ public class TaskOneController {
 
     @FXML
     void initialize() {
-        Automat firstFinalizedAutomaton;
-        Automat secondFinalizedAutomaton;
+        Automaton firstFinalizedAutomaton;
+        Automaton secondFinalizedAutomaton;
 
         try {
             firstFinalizedAutomaton = Adduction.buildAdductedAutomat(automatonList.get(0));
@@ -82,7 +82,7 @@ public class TaskOneController {
         AnchorPane.setRightAnchor(checkIfIsomorphicButton, 800.0);
     }
 
-    private Button getCheckIfIsomorphicButton(Automat first, Automat second) {
+    private Button getCheckIfIsomorphicButton(Automaton first, Automaton second) {
         Button checkIfIsomorphicButton = new Button("Проверить автоматы на изоморфность");
         checkIfIsomorphicButton.setFont(Font.font(Font.getDefault().getName(), 14));
         checkIfIsomorphicButton.setOnAction(event -> {
@@ -163,7 +163,7 @@ public class TaskOneController {
         return checkIfIsomorphicButton;
     }
 
-    public static TableView<String[]> createAutomatonJumpTableTableView(Automat automaton) {
+    public static TableView<String[]> createAutomatonJumpTableTableView(Automaton automaton) {
         String[][] jumpTable = new String[automaton.jumpTable.rowMap().size()][automaton.letters.size() + 1];
 
         String[] arr = automaton.jumpTable.rowKeySet().toArray(new String[0]);
