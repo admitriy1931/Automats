@@ -16,12 +16,8 @@ public class GlushkovAlgo {
     private static HashMap<String, String> dictionary2 = new HashMap<>();
 
     public static Automat doGlushkovAlgo (String regexp) throws RegexpException {
-        GlushkovSets sets = new GlushkovSets(null, null,null);
-        try {
-            sets = GlushkovSetsBuild.makeGlushkovSets(regexp);
-        } catch (RegexpException e) {
-            e.printStackTrace();
-        }
+        GlushkovSets sets = GlushkovSetsBuild.makeGlushkovSets(regexp);
+
         regular = regexp;
         glushkovSets = sets;
         HashSet<String> alphabet = findAlphabet(regexp);
