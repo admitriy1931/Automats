@@ -1,5 +1,6 @@
 import algorithms.GlushkovAlgo;
 import algorithms.Isomorphism;
+import algorithms.RegExprBuild;
 import automat.Automat;
 import automat.IsomorphismResult;
 import org.junit.jupiter.api.Assertions;
@@ -32,7 +33,7 @@ public class FullTask2Tests {
     public void plusIterationTest(){
         var aut1 = doGlushkovAlgo("(b + c)*");
         var aut2 = doGlushkovAlgo("b + c");
-        var expected = new IsomorphismResult("", null ,null);
+        var expected = new IsomorphismResult("bb", null ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
@@ -43,89 +44,201 @@ public class FullTask2Tests {
     public void bigRegexp1and2Test(){
         var aut1 = doGlushkovAlgo("c + (dd+d)(d)");
         var aut2 = doGlushkovAlgo("(d+d)(e+e)+(f+f)");
+        var expected = new IsomorphismResult("c", "de" ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void bigRegexp3and4Test(){
         var aut1 = doGlushkovAlgo("(c+((d+d)(e+e)+(f+f))(d))");
         var aut2 = doGlushkovAlgo("(c+((d+d)(e+e)+(f+f))(d)) + g");
+        var expected = new IsomorphismResult(null, "g" ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void bigRegexp4and5Test(){
         var aut1 = doGlushkovAlgo("(c+((d+d)(e+e)+(f+f))(d)) + g");
         var aut2 = doGlushkovAlgo("((c+((d+d)(e+e)+(f+f))(d)) + g) + h");
+        var expected = new IsomorphismResult(null, "h" ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void complexProdTest(){
         var aut1 = doGlushkovAlgo("(a + b)(c + de)");
         var aut2 = doGlushkovAlgo("(a + b)de");
+        var expected = new IsomorphismResult("ac", null ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void plusWithBracketsAndIteration1Test(){
+        var aut1 = doGlushkovAlgo("a + b*");
+        var aut2 = doGlushkovAlgo("a + b");
+        var expected = new IsomorphismResult("bb", null ,null);
+
+        var actual = automatsAreIsomorphic(aut1, aut2);
+
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void plusWithBracketsAndIterationTest(){
         var aut1 = doGlushkovAlgo("a + (b + c)* + d");
         var aut2 = doGlushkovAlgo("a + b + c + d");
+        var expected = new IsomorphismResult("bb", null ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void plusMultiplyIterationTest(){
         var aut1 = doGlushkovAlgo("(a + b + cd)*");
         var aut2 = doGlushkovAlgo("(a + b + c)*");
+        var expected = new IsomorphismResult("acd", "ac" ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void wikiExampleTest(){
         var aut1 = doGlushkovAlgo("(a(ab)*)* + (ba)*");
         var aut2 = doGlushkovAlgo("(a(ab)*)* + (b)*");
+        var expected = new IsomorphismResult("ba", "b" ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void sumSumSumTest(){
         var aut1 = doGlushkovAlgo("ab + (c+d)");
         var aut2 = doGlushkovAlgo("ab + (c+d+e)");
+        var expected = new IsomorphismResult(null, "e" ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     @Test
     public void letterSumSumTest(){
         var aut1 = doGlushkovAlgo("a + (b+c)");
         var aut2 = doGlushkovAlgo("a + (b+cd)");
+        var expected = new IsomorphismResult("c", "cd" ,null);
 
         var actual = automatsAreIsomorphic(aut1, aut2);
 
-        Assertions.assertEquals(null, actual);
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void Exam1and2Test(){
+        var regexp1 = String.format(
+                "b(ba)*(b(b + %s) + a) + %s",
+                RegExprBuild.emptyWordSymbol,
+                RegExprBuild.emptyWordSymbol);
+        var regexp2 = String.format(
+                "b(ba)*(b(b + %s) + a) + %s",
+                RegExprBuild.emptyWordSymbol,
+                RegExprBuild.emptyWordSymbol);
+
+        var aut1 = doGlushkovAlgo(regexp1);
+        var aut2 = doGlushkovAlgo(regexp2);
+
+
+        var expected = new IsomorphismResult(null, null,null);
+
+        var actual = automatsAreIsomorphic(aut1, aut2);
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void Exam3and4Test(){
+        var aut1 = doGlushkovAlgo(String.format(
+                "b*a(b(b + %s) + %s)",
+                RegExprBuild.emptyWordSymbol,
+                RegExprBuild.emptyWordSymbol));
+        var aut2 = doGlushkovAlgo(String.format(
+                "ab*a(b + %s) + %s",
+                RegExprBuild.emptyWordSymbol,
+                RegExprBuild.emptyWordSymbol));
+
+        var expected = new IsomorphismResult("a", "aa",null);
+
+        var actual = automatsAreIsomorphic(aut1, aut2);
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void Exam5and6Test(){
+        var aut1 = doGlushkovAlgo(String.format(
+                "(ab + ba)*a(a + %s)",
+                RegExprBuild.emptyWordSymbol));
+        var aut2 = doGlushkovAlgo(String.format(
+                "a(aa + %s) + b + %s",
+                RegExprBuild.emptyWordSymbol,
+                RegExprBuild.emptyWordSymbol));
+
+        var expected = new IsomorphismResult("aa", "aaa",null);
+
+        var actual = automatsAreIsomorphic(aut1, aut2);
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void Exam7and8Test(){
+        var aut1 = doGlushkovAlgo(String.format(
+                "(bb + a)b + b(a + %s)",
+                RegExprBuild.emptyWordSymbol));
+        var aut2 = doGlushkovAlgo(String.format(
+                "(a + b)(b(a + b + %s) + a) + %s",
+                RegExprBuild.emptyWordSymbol,
+                RegExprBuild.emptyWordSymbol));
+
+        var expected = new IsomorphismResult("b", "aa",null);
+
+        var actual = automatsAreIsomorphic(aut1, aut2);
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void Exam9and10Test(){
+        var s = RegExprBuild.emptyWordSymbol;
+//        var aut1 = doGlushkovAlgo(String.format(
+//                "a(b(b + %s) + %s) + %s", s, s, s));
+        var aut2 = doGlushkovAlgo(String.format(
+                "(baa)*(ba(ba* + %s) + %s)", s, s));
+//        var aut1 = doGlushkovAlgo(String.format("b(b + %s) + %s", s, s));
+        var aut1 = doGlushkovAlgo("b");
+//        var aut2 = doGlushkovAlgo("(ba)*");
+
+        var expected = new IsomorphismResult("b", "aa",null);
+
+        var actual = automatsAreIsomorphic(aut1, aut2);
+
+        Assertions.assertEquals(expected, actual);
     }
 }
