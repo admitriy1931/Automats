@@ -42,6 +42,8 @@ public class GlushkovAlgo {
     private static Automat transformNKA2DKA
             (HashBasedTable<String, String, ArrayList<String>> nka, HashSet<String> alphabet) throws RegexpExeption{
         boolean hasStock = false;
+        List<String> terminals = makeSetOfTerminal(glushkovSets, regular);
+        HashSet<String> renamedTerminals = new HashSet<>();
 
         HashBasedTable<String, String, String> res = HashBasedTable.create();
         Deque<ArrayList<String>> pool = new ArrayDeque<>();
@@ -65,6 +67,12 @@ public class GlushkovAlgo {
                         }
                     }
                 }
+                for (String finalVertex: terminals){
+                    if (vertexTo.contains(finalVertex)){
+                        Collections.sort(vertexTo);
+                        renamedTerminals.add(getName(vertexTo));
+                    }
+                }
                 if (vertexTo.isEmpty()){
                     res.put(getName(current), letter, "s");
                 }else {
@@ -78,12 +86,13 @@ public class GlushkovAlgo {
                 vertexTo.clear();
             }
         }
-        List<String> terminals = makeSetOfTerminal(glushkovSets, regular);
+
         HashBasedTable<String,String,String> prepared = renameVertexes(res, -2, false);
         HashBasedTable<String,String,String> jumpTable = renameVertexes(prepared, 0, true);
         List<String> preparedTerminals = new ArrayList<>();
         List<String> finalTerminals = new ArrayList<>();
-        for (String old: terminals){
+
+        for (String old: renamedTerminals){
             preparedTerminals.add(dictionary1.get(old));
         }
         for (String old: preparedTerminals){
