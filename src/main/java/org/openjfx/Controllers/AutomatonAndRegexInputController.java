@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.Text;
-import regexp.RegexpExeption;
+import regexp.RegexpException;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -343,7 +343,7 @@ public class AutomatonAndRegexInputController {
             automatonList.add(new Automat(false, jumpTable, startVertex, finalVertices));
             try {
                 automatonList.add(GlushkovAlgo.doGlushkovAlgo(regexTextField.getText()));
-            } catch (RegexpExeption e) {
+            } catch (RegexpException e) {
                 e.printStackTrace();
             }
 

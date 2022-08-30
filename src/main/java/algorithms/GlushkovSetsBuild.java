@@ -4,13 +4,13 @@ import javafx.util.Pair;
 import regexp.GlushkovSets;
 import regexp.GrammarTree;
 import regexp.LinearisedSymbol;
-import regexp.RegexpExeption;
+import regexp.RegexpException;
 
 import java.util.HashSet;
 import java.util.Objects;
 
 public class GlushkovSetsBuild {
-    public static GlushkovSets makeGlushkovSets(String regexp) throws RegexpExeption {
+    public static GlushkovSets makeGlushkovSets(String regexp) throws RegexpException {
         var tree = RegExprBuild.makeGrammarTree(regexp);
 
         return new GlushkovSets(

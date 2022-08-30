@@ -5,7 +5,7 @@ import com.google.common.collect.HashBasedTable;
 import regexp.GlushkovSets;
 import regexp.LinearisedSymbol;
 import javafx.util.Pair;
-import regexp.RegexpExeption;
+import regexp.RegexpException;
 
 import java.util.*;
 
@@ -15,11 +15,11 @@ public class GlushkovAlgo {
     private static HashMap<String, String> dictionary1 = new HashMap<>();
     private static HashMap<String, String> dictionary2 = new HashMap<>();
 
-    public static Automat doGlushkovAlgo (String regexp) throws RegexpExeption{
+    public static Automat doGlushkovAlgo (String regexp) throws RegexpException {
         GlushkovSets sets = new GlushkovSets(null, null,null);
         try {
             sets = GlushkovSetsBuild.makeGlushkovSets(regexp);
-        } catch (regexp.RegexpExeption e) {
+        } catch (RegexpException e) {
             e.printStackTrace();
         }
         regular = regexp;
@@ -32,7 +32,7 @@ public class GlushkovAlgo {
         GlushkovSets sets = new GlushkovSets(null, null,null);
         try {
             sets = GlushkovSetsBuild.makeGlushkovSets(regexp);
-        } catch (regexp.RegexpExeption e) {
+        } catch (RegexpException e) {
             e.printStackTrace();
         }
         return buildNKA(sets);
@@ -40,7 +40,7 @@ public class GlushkovAlgo {
 
 
     private static Automat transformNKA2DKA
-            (HashBasedTable<String, String, ArrayList<String>> nka, HashSet<String> alphabet) throws RegexpExeption{
+            (HashBasedTable<String, String, ArrayList<String>> nka, HashSet<String> alphabet) throws RegexpException {
         boolean hasStock = false;
         List<String> terminals = makeSetOfTerminal(glushkovSets, regular);
         HashSet<String> renamedTerminals = new HashSet<>();
@@ -195,7 +195,7 @@ public class GlushkovAlgo {
         return automaton;
     }
 
-    private static List<String> makeSetOfTerminal(GlushkovSets sets, String regexp) throws RegexpExeption{
+    private static List<String> makeSetOfTerminal(GlushkovSets sets, String regexp) throws RegexpException {
         List<String> terminalVertexes = new ArrayList<>();
         for (LinearisedSymbol terminal: sets.getSetOfEndSymbol()){
             terminalVertexes.add(terminal.getNumber().toString());
@@ -206,7 +206,7 @@ public class GlushkovAlgo {
         return terminalVertexes;
     }
 
-    private static boolean checkFirst(String regexp) throws RegexpExeption{
+    private static boolean checkFirst(String regexp) throws RegexpException {
         return RegExprBuild.allowEmptyWord(regexp);
     }
 

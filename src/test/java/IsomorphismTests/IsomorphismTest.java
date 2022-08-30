@@ -1,13 +1,11 @@
 package IsomorphismTests;
 
-import algorithms.GlushkovAlgo;
 import algorithms.Isomorphism;
 import automat.Automat;
 import automat.IsomorphismResult;
 import com.google.common.collect.HashBasedTable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import regexp.RegexpExeption;
 
 import java.util.ArrayList;
 import java.util.HashMap;

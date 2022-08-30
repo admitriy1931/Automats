@@ -4,7 +4,7 @@ import automat.Automat;
 import automat.IsomorphismResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import regexp.RegexpExeption;
+import regexp.RegexpException;
 
 public class FullTask2Tests {
     public IsomorphismResult automatsAreIsomorphic(Automat aut1, Automat aut2){
@@ -22,7 +22,7 @@ public class FullTask2Tests {
         {
             return GlushkovAlgo.doGlushkovAlgo(regexp);
         }
-        catch (RegexpExeption e){
+        catch (RegexpException e){
             e.printStackTrace();
         }
         return null;
