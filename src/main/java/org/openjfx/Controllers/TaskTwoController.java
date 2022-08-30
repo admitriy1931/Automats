@@ -46,9 +46,9 @@ public class TaskTwoController {
         secondAutomatonInfo.setFill(Color.WHITESMOKE);
         secondAutomatonInfo.setFont(Font.font("System", 20));
 
-        Button finaliseAutomatonsButton = getFinaliseAutomatonsButton(tableBasedAutomaton, regexBasedAutomaton);
+        Button finalizeAutomatonsButton = getFinalizeAutomatonsButton(tableBasedAutomaton, regexBasedAutomaton);
 
-        mainPane.getChildren().addAll(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, finaliseAutomatonsButton);
+        mainPane.getChildren().addAll(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, finalizeAutomatonsButton);
 
         mainPane.setStyle("-fx-background-color: #2e3348;");
 
@@ -64,12 +64,12 @@ public class TaskTwoController {
         AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
 
-        AnchorPane.setBottomAnchor(finaliseAutomatonsButton, 35.0);
-        AnchorPane.setLeftAnchor(finaliseAutomatonsButton, 800.0);
-        AnchorPane.setRightAnchor(finaliseAutomatonsButton, 800.0);
+        AnchorPane.setBottomAnchor(finalizeAutomatonsButton, 35.0);
+        AnchorPane.setLeftAnchor(finalizeAutomatonsButton, 800.0);
+        AnchorPane.setRightAnchor(finalizeAutomatonsButton, 800.0);
     }
 
-    private Button getFinaliseAutomatonsButton(Automat tableBasedAutomaton, Automat regexBasedAutomaton) {
+    private Button getFinalizeAutomatonsButton(Automat tableBasedAutomaton, Automat regexBasedAutomaton) {
         Button button = new Button("Привести ДКА");
         button.setOnAction(event -> {
             button.getScene().getWindow().hide();

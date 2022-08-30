@@ -21,7 +21,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import java.util.Arrays;
 
@@ -34,18 +33,18 @@ public class TaskOneController {
 
     @FXML
     void initialize() {
-        Automat firstFinalisedAutomaton;
-        Automat secondFinalisedAutomaton;
+        Automat firstFinalizedAutomaton;
+        Automat secondFinalizedAutomaton;
 
         try {
-            firstFinalisedAutomaton = Adduction.buildAdductedAutomat(automatonList.get(0));
-            secondFinalisedAutomaton = Adduction.buildAdductedAutomat(automatonList.get(1));
+            firstFinalizedAutomaton = Adduction.buildAdductedAutomat(automatonList.get(0));
+            secondFinalizedAutomaton = Adduction.buildAdductedAutomat(automatonList.get(1));
         } catch (CloneNotSupportedException e) {
             return;
         }
 
-        TableView<String[]> firstAutomatonTableView = createAutomatonJumpTableTableView(firstFinalisedAutomaton);
-        TableView<String[]> secondAutomatonTableView = createAutomatonJumpTableTableView(secondFinalisedAutomaton);
+        TableView<String[]> firstAutomatonTableView = createAutomatonJumpTableTableView(firstFinalizedAutomaton);
+        TableView<String[]> secondAutomatonTableView = createAutomatonJumpTableTableView(secondFinalizedAutomaton);
 
         Text firstAutomatonInfo = new Text("Первый автомат");
         firstAutomatonInfo.setFill(Color.WHITESMOKE);
@@ -55,7 +54,7 @@ public class TaskOneController {
         secondAutomatonInfo.setFill(Color.WHITESMOKE);
         secondAutomatonInfo.setFont(Font.font("System", 20));
 
-        Button checkIfIsomorphicButton = getCheckIfIsomorphicButton(firstFinalisedAutomaton, secondFinalisedAutomaton);
+        Button checkIfIsomorphicButton = getCheckIfIsomorphicButton(firstFinalizedAutomaton, secondFinalizedAutomaton);
 
         initMainPane(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, checkIfIsomorphicButton);
     }
@@ -187,7 +186,7 @@ public class TaskOneController {
         });
 
         ObservableList<String[]> data = FXCollections.observableArrayList(jumpTable);
-        TableView<String[]> automatonTableView = new TableView<String[]>();
+        TableView<String[]> automatonTableView = new TableView<>();
 
         int stateColumnWidth = 150;
         int regularColumnWidth = 75;
@@ -238,7 +237,7 @@ public class TaskOneController {
         });
 
         ObservableList<String[]> data = FXCollections.observableArrayList(isomorphismTable);
-        TableView<String[]> isomorphismTableView = new TableView<String[]>();
+        TableView<String[]> isomorphismTableView = new TableView<>();
 
         int columnWidth = 150;
         for (int i = 0; i < 2; i++) {
@@ -247,7 +246,7 @@ public class TaskOneController {
                 name = "Первый автомат";
             else
                 name = "Второй автомат";
-            TableColumn<String[], String> tableColumn = new TableColumn<String[], String>(name);
+            TableColumn<String[], String> tableColumn = new TableColumn<>(name);
             tableColumn.setMinWidth(columnWidth);
             tableColumn.setPrefWidth(columnWidth);
             tableColumn.setMaxWidth(columnWidth);
