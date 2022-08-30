@@ -2,7 +2,7 @@ package algorithms;
 
 import regexp.GrammarTree;
 import regexp.LinearisedSymbol;
-import regexp.RegexpExeption;
+import regexp.RegexpException;
 
 import java.util.*;
 
@@ -11,7 +11,7 @@ public class RegExprBuild {
     public static final String CON = "con";
     public static String emptyWordSymbol = "λ";
 
-    public static Boolean allowEmptyWord(String regexp) throws RegexpExeption {
+    public static Boolean allowEmptyWord(String regexp) throws RegexpException {
         return allowEmptyWord(makeGrammarTree(regexp));
     }
 
@@ -44,7 +44,7 @@ public class RegExprBuild {
         try {
             return makeGrammarTree(regexp);
         }
-        catch (RegexpExeption e){
+        catch (RegexpException e){
             return null;
         }
     }
@@ -54,7 +54,7 @@ public class RegExprBuild {
         put("con", 2);
     }};
 
-    public static GrammarTree makeGrammarTree(String regexp) throws RegexpExeption {
+    public static GrammarTree makeGrammarTree(String regexp) throws RegexpException {
         for (var i = 0; i < regexp.length(); i++){
             if (regexp.charAt(i) != ')')
                 continue;
@@ -65,15 +65,15 @@ public class RegExprBuild {
                 continue;
 
             if (regexp.charAt(j) == '(')
-                throw new RegexpExeption("Пустые скобки", i);
+                throw new RegexpException("Пустые скобки", i);
         }
         var rpn = makeReversePolishNotation(regexp);
         return makeTreeFromRPN(rpn);
     }
 
-    private static GrammarTree makeTreeFromRPN(List<LinearisedSymbol> rpn) throws RegexpExeption {
+    private static GrammarTree makeTreeFromRPN(List<LinearisedSymbol> rpn) throws RegexpException {
         if (rpn.size() == 0)
-            throw new RegexpExeption("Пустой ввод", -1);
+            throw new RegexpException("Пустой ввод", -1);
         var current = new GrammarTree("");
         var trees = new Stack<GrammarTree>();
 
@@ -84,7 +84,7 @@ public class RegExprBuild {
                 current = new GrammarTree(symbol.getStringValue());
                 current.position = i;
                 if (trees.size() < 2)
-                    throw new RegexpExeption("Нехватает операнда", symbol.getNumber());
+                    throw new RegexpException("Не хватает операнда", symbol.getNumber());
 
                 var previous = trees.pop();
                 current.add(trees.pop());
@@ -93,7 +93,7 @@ public class RegExprBuild {
             }
             else if (Objects.equals(symbol.getStringValue(), "*")){
                 if (trees.size() == 0)
-                    throw new RegexpExeption("Неправильное использование итерации", symbol.getNumber());
+                    throw new RegexpException("Неправильное использование итерации", symbol.getNumber());
                 trees.lastElement().iterationAvailable = true;
             }
             else{
@@ -104,11 +104,11 @@ public class RegExprBuild {
         }
 
         if (trees.size() != 1)
-            throw new RegexpExeption("неправильное выражение", -1);
+            throw new RegexpException("неправильное выражение", -1);
         return trees.pop();
     }
 
-    private static List<LinearisedSymbol> makeReversePolishNotation(String regexp) throws RegexpExeption {
+    private static List<LinearisedSymbol> makeReversePolishNotation(String regexp) throws RegexpException {
         var result = new ArrayList<LinearisedSymbol>();
         var stack = new Stack<LinearisedSymbol>();
         var implicitMultiply = false;
@@ -125,7 +125,7 @@ public class RegExprBuild {
                     while (stack.size() != 0 && !stack.lastElement().getStringValue().equals("("))
                         result.add(new LinearisedSymbol(stack.pop().getStringValue(), i));
                     if (stack.size() == 0)
-                        throw new RegexpExeption("Нет открывающей скобки", i);
+                        throw new RegexpException("Нет открывающей скобки", i);
                     stack.pop();
                     implicitMultiply = true;
                     break;
@@ -144,7 +144,7 @@ public class RegExprBuild {
                 default:
                     if (!Character.isLetterOrDigit(symbol)
                             && !Objects.equals(emptyWordSymbol, Character.toString(symbol)))
-                        throw new RegexpExeption(String.format("Неизвестный символ, %c", symbol), i);
+                        throw new RegexpException(String.format("Неизвестный символ, %c", symbol), i);
                     if (implicitMultiply)
                         handleImplicitMultiply(stack, result);
                     result.add(new LinearisedSymbol(Character.toString(symbol), i));
@@ -155,7 +155,7 @@ public class RegExprBuild {
         while (stack.size() != 0){
             var s = stack.pop();
             if (s.getStringValue().equals("("))
-                throw new RegexpExeption("Нет закрывающей скобки", regexp.length()-1);
+                throw new RegexpException("Нет закрывающей скобки", regexp.length()-1);
             result.add(new LinearisedSymbol(s.getStringValue(), s.getNumber()));
         }
         return result;

@@ -3,12 +3,12 @@ package RegExprBuildTests;
 import algorithms.RegExprBuild;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import regexp.RegexpExeption;
+import regexp.RegexpException;
 
 public class GrammarTreeNegativeTest {
     private void standardTest(String regexp, String expectedText, Integer expectedPosition){
-        var thrown = Assertions.assertThrows(
-                RegexpExeption.class,
+        var thrown  = Assertions.assertThrows(
+                RegexpException.class,
                 () -> RegExprBuild.makeGrammarTree(regexp));
 
         Assertions.assertEquals(expectedText, thrown.getText());
@@ -56,13 +56,13 @@ public class GrammarTreeNegativeTest {
 
     @Test
     public void noOperandTest(){
-        standardTest("+b", "Нехватает операнда", 0);
-        standardTest("a(+b)", "Нехватает операнда", -1);
-        standardTest("(+)", "Нехватает операнда", 2);
-        standardTest("a++b", "Нехватает операнда", 2);
-        standardTest("++", "Нехватает операнда", 1);
-        standardTest("a+", "Нехватает операнда", 1);
-        standardTest("(a+)+b", "Нехватает операнда", 3);
+        standardTest("+b", "Не хватает операнда", 0);
+        standardTest("a(+b)", "Не хватает операнда", -1);
+        standardTest("(+)", "Не хватает операнда", 2);
+        standardTest("a++b", "Не хватает операнда", 2);
+        standardTest("++", "Не хватает операнда", 1);
+        standardTest("a+", "Не хватает операнда", 1);
+        standardTest("(a+)+b", "Не хватает операнда", 3);
     }
 
     @Test

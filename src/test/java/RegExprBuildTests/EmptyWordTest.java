@@ -3,14 +3,14 @@ package RegExprBuildTests;
 import algorithms.RegExprBuild;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import regexp.RegexpExeption;
+import regexp.RegexpException;
 
 public class EmptyWordTest {
     private Boolean standardTest(String regexp){
         try {
             return RegExprBuild.allowEmptyWord(regexp);
         }
-        catch (RegexpExeption regexpExeption){
+        catch (RegexpException regexpExeption){
             return null;
         }
     }
