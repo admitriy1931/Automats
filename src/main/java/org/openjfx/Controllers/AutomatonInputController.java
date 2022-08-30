@@ -1,6 +1,6 @@
 package org.openjfx.Controllers;
 
-import automat.Automat;
+import automat.Automaton;
 import com.google.common.collect.HashBasedTable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -250,7 +250,7 @@ public class AutomatonInputController {
                 }
             }
 
-            automatonList.add(new Automat(false, jumpTable, startVertex, Arrays.asList(finalVertices)));
+            automatonList.add(new Automaton(false, jumpTable, startVertex, Arrays.asList(finalVertices)));
 
             button.getScene().getWindow().hide();
 

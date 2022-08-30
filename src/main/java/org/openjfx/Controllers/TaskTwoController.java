@@ -2,7 +2,7 @@ package org.openjfx.Controllers;
 
 import algorithms.Adduction;
 import algorithms.Isomorphism;
-import automat.Automat;
+import automat.Automaton;
 import automat.IsomorphismResult;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -33,8 +33,8 @@ public class TaskTwoController {
 
     @FXML
     void initialize() {
-        Automat tableBasedAutomaton = automatonList.get(0);
-        Automat regexBasedAutomaton = automatonList.get(1);
+        Automaton tableBasedAutomaton = automatonList.get(0);
+        Automaton regexBasedAutomaton = automatonList.get(1);
         TableView<String[]> firstAutomatonTableView = TaskOneController.createAutomatonJumpTableTableView(tableBasedAutomaton);
         TableView<String[]> secondAutomatonTableView = TaskOneController.createAutomatonJumpTableTableView(regexBasedAutomaton);
 
@@ -46,9 +46,9 @@ public class TaskTwoController {
         secondAutomatonInfo.setFill(Color.WHITESMOKE);
         secondAutomatonInfo.setFont(Font.font("System", 20));
 
-        Button finaliseAutomatonsButton = getFinaliseAutomatonsButton(tableBasedAutomaton, regexBasedAutomaton);
+        Button finalizeAutomatonsButton = getFinalizeAutomatonsButton(tableBasedAutomaton, regexBasedAutomaton);
 
-        mainPane.getChildren().addAll(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, finaliseAutomatonsButton);
+        mainPane.getChildren().addAll(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, finalizeAutomatonsButton);
 
         mainPane.setStyle("-fx-background-color: #2e3348;");
 
@@ -64,17 +64,17 @@ public class TaskTwoController {
         AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
 
-        AnchorPane.setBottomAnchor(finaliseAutomatonsButton, 35.0);
-        AnchorPane.setLeftAnchor(finaliseAutomatonsButton, 800.0);
-        AnchorPane.setRightAnchor(finaliseAutomatonsButton, 800.0);
+        AnchorPane.setBottomAnchor(finalizeAutomatonsButton, 35.0);
+        AnchorPane.setLeftAnchor(finalizeAutomatonsButton, 800.0);
+        AnchorPane.setRightAnchor(finalizeAutomatonsButton, 800.0);
     }
 
-    private Button getFinaliseAutomatonsButton(Automat tableBasedAutomaton, Automat regexBasedAutomaton) {
+    private Button getFinalizeAutomatonsButton(Automaton tableBasedAutomaton, Automaton regexBasedAutomaton) {
         Button button = new Button("Привести ДКА");
         button.setOnAction(event -> {
             button.getScene().getWindow().hide();
-            Automat adductedTableBasedAutomaton;
-            Automat adductedRegexBasedAutomaton;
+            Automaton adductedTableBasedAutomaton;
+            Automaton adductedRegexBasedAutomaton;
             try {
                  adductedTableBasedAutomaton = Adduction.buildAdductedAutomat(tableBasedAutomaton);
                  adductedRegexBasedAutomaton = Adduction.buildAdductedAutomat(regexBasedAutomaton);
@@ -126,7 +126,7 @@ public class TaskTwoController {
         return mainPane;
     }
 
-    private Button getCheckIfIsomorphicButton(Automat first, Automat second) {
+    private Button getCheckIfIsomorphicButton(Automaton first, Automaton second) {
         Button checkIfIsomorphicButton = new Button("Проверить автоматы на изоморфность");
         checkIfIsomorphicButton.setOnAction(event -> {
             IsomorphismResult result;

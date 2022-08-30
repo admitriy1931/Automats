@@ -1,8 +1,7 @@
 package org.openjfx.Controllers;
 
 import algorithms.GlushkovAlgo;
-import algorithms.RegExprBuild;
-import automat.Automat;
+import automat.Automaton;
 import com.google.common.collect.HashBasedTable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -50,8 +49,6 @@ public class AutomatonAndRegexInputController {
     private Text regexStatusText;
 
     private Text inputCorrectnessText;
-
-    private boolean regexStatus = false;
 
     private Text statesInputCorrectnessText;
 
@@ -228,24 +225,22 @@ public class AutomatonAndRegexInputController {
         checkRegexCorrectnessButton.setPrefWidth(300);
         checkRegexCorrectnessButton.setOnAction(event -> {
             String regex = regexTextField.getText();
-            boolean result = RegExprBuild.isCorrect(regex);
             mainPane.getChildren().remove(regexStatusText);
             regexStatusText = new Text();
-            if (result) {
+            try {
+                GlushkovAlgo.doGlushkovAlgo(regex);
                 regexStatusText.setText("✓");
                 regexStatusText.setFill(Color.GREEN);
                 regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 24));
-                AnchorPane.setBottomAnchor(regexStatusText, 45.0);
-                regexStatus = true;
+                AnchorPane.setBottomAnchor(regexStatusText, 46.0);
             }
-            else {
-                regexStatusText.setText("×");
+            catch (RegexpExeption e) {
+                regexStatusText.setText("Некорректное регулярное выражение: " + e.getText());
                 regexStatusText.setFill(Color.RED);
-                regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 30));
-                AnchorPane.setBottomAnchor(regexStatusText, 41.0);
-                regexStatus = false;
+                regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 18));
+                AnchorPane.setBottomAnchor(regexStatusText, 46.0);
             }
-            AnchorPane.setLeftAnchor(regexStatusText, Math.max(regexTextField.getPrefWidth(), regexTextField.getMaxWidth()) + 15.0);
+            AnchorPane.setLeftAnchor(regexStatusText, Math.max(regexTextField.getPrefWidth(), regexTextField.getMaxWidth()) + 20.0);
             mainPane.getChildren().add(regexStatusText);
             mainPane.requestLayout();
         });
@@ -294,18 +289,6 @@ public class AutomatonAndRegexInputController {
     private Button getCreateAutomatonButton(TableView<String[]> automatonTableView, TextField startVertexTextField, TextField finalVerticesTextField, String[] states, String[] alphabet, TextField regexTextField) {
         Button createAutomatonButton = new Button("Создать автоматы");
         createAutomatonButton.setOnAction(event2 -> {
-            regexStatus = RegExprBuild.isCorrect(regexTextField.getText());
-            if (!regexStatus) {
-                mainPane.getChildren().remove(regexStatusText);
-                regexStatusText = new Text("Некорректное регулярное выражение");
-                regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 14));
-                regexStatusText.setFill(Color.RED);
-                AnchorPane.setBottomAnchor(regexStatusText, 48.0);
-                AnchorPane.setLeftAnchor(regexStatusText, Math.max(regexTextField.getPrefWidth(), regexTextField.getMaxWidth()) + 20.0);
-                mainPane.getChildren().add(regexStatusText);
-                return;
-            }
-
             String startVertex = startVertexTextField.getText().strip();
             List<String> finalVertices = Arrays.asList(finalVerticesTextField.getText().split(","));
             String[][] firstAutomatonTable = new String[automatonTableView.getItems().size()][automatonTableView.getColumns().size()];
@@ -320,6 +303,26 @@ public class AutomatonAndRegexInputController {
             if (!checkInputCorrectness(startVertex, finalVerticesTextField.getText().split(","), states, automatonTableView)) {
                 mainPane.getChildren().add(inputCorrectnessText);
                 mainPane.requestLayout();
+                return;
+            }
+            mainPane.getChildren().remove(inputCorrectnessText);
+
+            Automaton regexBasedAutomaton;
+            try {
+                regexBasedAutomaton = GlushkovAlgo.doGlushkovAlgo(regexTextField.getText());
+            }
+            catch (RegexpExeption e) {
+                mainPane.getChildren().remove(regexStatusText);
+                regexStatusText = new Text("Некорректное регулярное выражение: " + e.getText());
+                regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 18));
+                regexStatusText.setFill(Color.RED);
+                AnchorPane.setBottomAnchor(regexStatusText, 45.0);
+                AnchorPane.setLeftAnchor(regexStatusText, Math.max(regexTextField.getPrefWidth(), regexTextField.getMaxWidth()) + 20.0);
+                mainPane.getChildren().add(regexStatusText);
+                return;
+            }
+            catch (Exception e1) {
+                var a = 2;
                 return;
             }
 
@@ -347,13 +350,8 @@ public class AutomatonAndRegexInputController {
                 }
             }
 
-            automatonList.add(new Automat(false, jumpTable, startVertex, finalVertices));
-            try {
-                automatonList.add(GlushkovAlgo.doGlushkovAlgo(regexTextField.getText()));
-            } catch (RegexpExeption e) {
-                //TODO: И что тут делать?
-                e.printStackTrace();
-            }
+            automatonList.add(new Automaton(false, jumpTable, startVertex, finalVertices));
+            automatonList.add(regexBasedAutomaton);
 
             createAutomatonButton.getScene().getWindow().hide();
             Loader.loadFxml("/taskTwo.fxml", true);
