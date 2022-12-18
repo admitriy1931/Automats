@@ -24,6 +24,7 @@ import javafx.scene.text.Text;
 
 import java.util.Arrays;
 
+import static org.openjfx.Controllers.AutomatonInputController.setupButtonAsReturnToStart;
 import static org.openjfx.Controllers.Controller.automatonList;
 
 public class TaskOneController {
@@ -77,9 +78,8 @@ public class TaskOneController {
         AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
 
-        AnchorPane.setBottomAnchor(checkIfIsomorphicButton, 35.0);
-        AnchorPane.setLeftAnchor(checkIfIsomorphicButton, 800.0);
-        AnchorPane.setRightAnchor(checkIfIsomorphicButton, 800.0);
+        AnchorPane.setBottomAnchor(checkIfIsomorphicButton, 10.0);
+        AnchorPane.setRightAnchor(checkIfIsomorphicButton, 10.0);
     }
 
     private Button getCheckIfIsomorphicButton(Automaton first, Automaton second) {
@@ -147,11 +147,7 @@ public class TaskOneController {
             }
 
             Button returnToStartButton = new Button("Вернуться в начало");
-            returnToStartButton.setOnAction(e -> {
-                returnToStartButton.getScene().getWindow().hide();
-                automatonList.clear();
-                Loader.loadFxmlStartupPage();
-            });
+            setupButtonAsReturnToStart(returnToStartButton);
             AnchorPane.setTopAnchor(returnToStartButton, 10.0);
             AnchorPane.setRightAnchor(returnToStartButton, 10.0);
 

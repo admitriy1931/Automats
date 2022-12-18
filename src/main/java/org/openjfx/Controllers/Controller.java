@@ -20,27 +20,22 @@ public class Controller {
     private Button taskTwoButton;
 
     @FXML
+    private Button taskThreeButton;
+
+    @FXML
     void initialize() {
         initAuthorsButton();
-        initTaskOneButton();
-        initTaskTwoButton();
+        setupTaskButton(taskOneButton, "/automatonInput.fxml");
+        setupTaskButton(taskTwoButton, "/automatonAndRegexInput.fxml");
+        setupTaskButton(taskThreeButton, "/automatonInputWithGeneration.fxml");
     }
 
     @FXML
-    private void initTaskOneButton() {
-        taskOneButton.setOnAction(event -> {
-            taskOneButton.getScene().getWindow().hide();
+    private void setupTaskButton(Button button, String fxmlName) {
+        button.setOnAction(event -> {
+            button.getScene().getWindow().hide();
             automatonList.clear();
-            Loader.loadFxml("/automatonInput.fxml", false);
-        });
-    }
-
-    @FXML
-    private void initTaskTwoButton() {
-        taskTwoButton.setOnAction(event -> {
-            taskTwoButton.getScene().getWindow().hide();
-            automatonList.clear();
-            Loader.loadFxml("/automatonAndRegexInput.fxml", false);
+            Loader.loadFxml(fxmlName, false);
         });
     }
 

@@ -24,6 +24,7 @@ import javafx.scene.text.Text;
 
 import java.util.Arrays;
 
+import static org.openjfx.Controllers.AutomatonInputController.setupButtonAsReturnToStart;
 import static org.openjfx.Controllers.Controller.automatonList;
 
 public class TaskTwoController {
@@ -64,9 +65,8 @@ public class TaskTwoController {
         AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
 
-        AnchorPane.setBottomAnchor(finalizeAutomatonsButton, 35.0);
-        AnchorPane.setLeftAnchor(finalizeAutomatonsButton, 800.0);
-        AnchorPane.setRightAnchor(finalizeAutomatonsButton, 800.0);
+        AnchorPane.setBottomAnchor(finalizeAutomatonsButton, 10.0);
+        AnchorPane.setRightAnchor(finalizeAutomatonsButton, 10.0);
     }
 
     private Button getFinalizeAutomatonsButton(Automaton tableBasedAutomaton, Automaton regexBasedAutomaton) {
@@ -102,8 +102,8 @@ public class TaskTwoController {
         return button;
     }
 
-    private AnchorPane getMainPane(TableView<String[]> firstAutomatonTableView, TableView<String[]> secondAutomatonTableView, Text firstAutomatonInfo, Text secondAutomatonInfo, Button button) {
-        AnchorPane mainPane = new AnchorPane(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, button);
+    private AnchorPane getMainPane(TableView<String[]> firstAutomatonTableView, TableView<String[]> secondAutomatonTableView, Text firstAutomatonInfo, Text secondAutomatonInfo, Button checkIfIsomorphicButton) {
+        AnchorPane mainPane = new AnchorPane(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, checkIfIsomorphicButton);
 
         mainPane.setStyle("-fx-background-color: #2e3348;");
 
@@ -119,9 +119,8 @@ public class TaskTwoController {
         AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
 
-        AnchorPane.setBottomAnchor(button, 35.0);
-        AnchorPane.setLeftAnchor(button, 800.0);
-        AnchorPane.setRightAnchor(button, 800.0);
+        AnchorPane.setBottomAnchor(checkIfIsomorphicButton, 10.0);
+        AnchorPane.setRightAnchor(checkIfIsomorphicButton, 10.0);
 
         return mainPane;
     }
@@ -194,11 +193,7 @@ public class TaskTwoController {
             }
 
             var returnToStartButton = new Button("Вернуться в начало");
-            returnToStartButton.setOnAction(e -> {
-                returnToStartButton.getScene().getWindow().hide();
-                automatonList.clear();
-                Loader.loadFxmlStartupPage();
-            });
+            setupButtonAsReturnToStart(returnToStartButton);
             AnchorPane.setTopAnchor(returnToStartButton, 10.0);
             AnchorPane.setRightAnchor(returnToStartButton, 10.0);
 

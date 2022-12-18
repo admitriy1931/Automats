@@ -3,6 +3,8 @@ package org.openjfx.Controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
+import static org.openjfx.Controllers.AutomatonInputController.setupButtonAsReturnToStart;
+
 public class AuthorsController {
 
     @FXML
@@ -10,10 +12,7 @@ public class AuthorsController {
 
     @FXML
     void initialize() {
-        backButton.setOnAction(event -> {
-            backButton.getScene().getWindow().hide();
-            Loader.loadFxmlStartupPage();
-        });
+        setupButtonAsReturnToStart(backButton);
     }
 
 }
