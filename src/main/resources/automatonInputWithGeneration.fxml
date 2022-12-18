@@ -10,6 +10,6 @@
       <TextField fx:id="statesCountField" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="396.0" promptText="Введите количество состояний автомата" style="-fx-background-color: #fafafa;" />
       <Button fx:id="createTableButton" layoutX="14.0" layoutY="77.0" mnemonicParsing="false" text="Создать таблицу" />
       <TextField fx:id="alphabetField" layoutX="14.0" layoutY="46.0" prefHeight="25.0" prefWidth="396.0" promptText="Введите буквы алфавита через запятую, например &quot;a, b, c&quot; или &quot;0, 1&quot;" style="-fx-background-color: #fafafa;" />
-      <Button fx:id="generateRandomAutomatonButton" layoutX="376.0" layoutY="361.0" mnemonicParsing="false" text="Сгенерировать случайный автомат" />
+      <Button fx:id="generateRandomAutomatonButton" layoutX="127.0" layoutY="77.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="283.0" text="Сгенерировать случайную таблицу переходов" />
     </children>
 </AnchorPane>

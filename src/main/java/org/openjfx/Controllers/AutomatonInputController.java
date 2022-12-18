@@ -45,10 +45,6 @@ public class AutomatonInputController {
 
     protected Text inputCorrectnessText;
 
-    protected Text statesInputCorrectnessText;
-
-    protected Text alphabetInputCorrectnessText;
-
     @FXML
     protected void initialize() {
         setupButtonAsReturnToStart(returnToStartButton);
@@ -96,24 +92,57 @@ public class AutomatonInputController {
         return textField;
     }
 
-    protected Text getInputCorrectnessCheckResult(String startVertex, String[] finalVertices, String[] states, TableView<String[]> automatonTableView) {
+    protected boolean checkAlphabetAndStatesCorrectness(String[] states, String[] alphabet) {
+        inputWindowMainPane.getChildren().remove(inputCorrectnessText);
+
+        if (states.length == 0) {
+            inputCorrectnessText = new Text("В автомате не может быть 0 состояний");
+            inputCorrectnessText.setFill(Color.RED);
+            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
+            AnchorPane.setBottomAnchor(inputCorrectnessText, 10.0);
+            AnchorPane.setLeftAnchor(inputCorrectnessText, 10.0);
+            inputWindowMainPane.getChildren().add(inputCorrectnessText);
+            return false;
+        }
+
+        if (alphabetField.getText().equals("") || (alphabetField.getText().trim().length() == 0)  || containsDuplicates(alphabet)) {
+            if (containsDuplicates(alphabet))
+                inputCorrectnessText = new Text("Алфавит содержит повторяющиеся элементы");
+            else
+                inputCorrectnessText = new Text("Алфавит не может быть пустым");
+            inputCorrectnessText.setFill(Color.RED);
+            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
+            AnchorPane.setBottomAnchor(inputCorrectnessText, 10.0);
+            AnchorPane.setLeftAnchor(inputCorrectnessText, 10.0);
+            inputWindowMainPane.getChildren().add(inputCorrectnessText);
+            return false;
+        }
+
+        return true;
+    }
+
+    protected boolean checkInputCorrectness(String startVertex, String[] finalVertices, String[] states, TableView<String[]> automatonTableView) {
         if (startVertex.equals("") || finalVertices.length == 0 || finalVertices.length == 1 && Objects.equals(finalVertices[0], "")) {
-            return setupInputCorrectnessText("Неправильно заданы параметры начальной и конечной вершины", automatonTableView);
+            setupInputCorrectnessText(inputCorrectnessText, "Неправильно заданы параметры начальной и конечной вершины", automatonTableView);
+            return false;
         }
 
         List<String> statesAsList = Arrays.asList(states);
         if (!statesAsList.contains(startVertex)) {
-            return setupInputCorrectnessText("Автомат не содержит вершины '" + startVertex + "'", automatonTableView);
+            setupInputCorrectnessText(inputCorrectnessText, "Автомат не содержит вершины '" + startVertex + "'", automatonTableView);
+            return false;
         }
 
         for (String finalVertex : finalVertices) {
             if (!statesAsList.contains(finalVertex)) {
-                return setupInputCorrectnessText("Автомат не содержит вершины '" + finalVertex + "'", automatonTableView);
+                setupInputCorrectnessText(inputCorrectnessText, "Автомат не содержит вершины '" + finalVertex + "'", automatonTableView);
+                return false;
             }
         }
 
         if (containsDuplicates(finalVertices)) {
-            return setupInputCorrectnessText("В списке конечных вершин некоторые вершины встречаются больше одного раза", automatonTableView);
+            setupInputCorrectnessText(inputCorrectnessText, "В списке конечных вершин некоторые вершины встречаются больше одного раза", automatonTableView);
+            return false;
         }
 
         ObservableList<String[]> items = automatonTableView.getItems();
@@ -128,19 +157,19 @@ public class AutomatonInputController {
         }
 
         if (count <= items.size()) {
-            return setupInputCorrectnessText("Таблица переходов автомата не заполнена либо заполнена некорректно", automatonTableView);
+            setupInputCorrectnessText(inputCorrectnessText, "Таблица переходов автомата не заполнена либо заполнена некорректно", automatonTableView);
+            return false;
         }
 
-        return null;
+        return true;
     }
 
-    protected Text setupInputCorrectnessText(String text, TableView<String[]> tableView) {
-        Text inputCorrectnessText = new Text(text);
+    protected void setupInputCorrectnessText(Text inputCorrectnessText, String text, TableView<String[]> tableView) {
+        inputCorrectnessText.setText(text);
         inputCorrectnessText.setFill(Color.RED);
         inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
         AnchorPane.setTopAnchor(inputCorrectnessText, 105.0);
         AnchorPane.setLeftAnchor(inputCorrectnessText, Math.min(tableView.getPrefWidth(), tableView.getMaxWidth()) + 20.0);
-        return inputCorrectnessText;
     }
 
     public static boolean containsDuplicates(String[] array)
@@ -164,31 +193,8 @@ public class AutomatonInputController {
                     states[i] = Integer.toString(i + 1);
                 }
 
-                inputWindowMainPane.getChildren().remove(inputCorrectnessText);
-                inputWindowMainPane.getChildren().remove(alphabetInputCorrectnessText);
-
-                if (states.length == 0) {
-                    statesInputCorrectnessText = new Text("В автомате не может быть 0 состояний");
-                    statesInputCorrectnessText.setFill(Color.RED);
-                    statesInputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
-                    AnchorPane.setTopAnchor(statesInputCorrectnessText, 80.0);
-                    AnchorPane.setLeftAnchor(statesInputCorrectnessText, 130.0);
-                    inputWindowMainPane.getChildren().add(statesInputCorrectnessText);
+                if (!checkAlphabetAndStatesCorrectness(states, alphabet))
                     return;
-                }
-
-                if (alphabetField.getText().equals("") || (alphabetField.getText().trim().length() == 0)  || containsDuplicates(alphabet)) {
-                    if (containsDuplicates(alphabet))
-                        alphabetInputCorrectnessText = new Text("Алфавит содержит повторяющиеся элементы");
-                    else
-                        alphabetInputCorrectnessText = new Text("Алфавит не может быть пустым");
-                    alphabetInputCorrectnessText.setFill(Color.RED);
-                    alphabetInputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
-                    AnchorPane.setTopAnchor(alphabetInputCorrectnessText, 80.0);
-                    AnchorPane.setLeftAnchor(alphabetInputCorrectnessText, 130.0);
-                    inputWindowMainPane.getChildren().add(alphabetInputCorrectnessText);
-                    return;
-                }
 
                 returnToStartButton.getScene().getWindow().hide();
 
@@ -221,7 +227,7 @@ public class AutomatonInputController {
                 );
                 Button returnToStartButton = new Button("Вернуться в начало");
                 setupButtonAsReturnToStart(returnToStartButton);
-                tableWindowMainPane = getMainPane(automatonTableView, createAutomatonButton, startVertexTextField, finalVerticesTextField, automatonInfoText, returnToStartButton);
+                tableWindowMainPane = setupMainPaneForTableCreationPage(automatonTableView, createAutomatonButton, startVertexTextField, finalVerticesTextField, automatonInfoText, returnToStartButton);
                 Loader.showStage(new Scene(tableWindowMainPane), true);
             } catch (NumberFormatException ignored) {
             }
@@ -279,7 +285,7 @@ public class AutomatonInputController {
         return automatonTableView;
     }
 
-    private Button getCreateAutomatonButton(TextField startVertexTextField, TextField finalVerticesTextField, TableView<String[]> automatonTableView, String[] states, String[] alphabet) {
+    protected Button getCreateAutomatonButton(TextField startVertexTextField, TextField finalVerticesTextField, TableView<String[]> automatonTableView, String[] states, String[] alphabet) {
         Button button;
         if (automatonList.size() == 0)
             button = new Button("Создать автомат");
@@ -296,8 +302,7 @@ public class AutomatonInputController {
             }
 
             tableWindowMainPane.getChildren().remove(inputCorrectnessText);
-            inputCorrectnessText = getInputCorrectnessCheckResult(startVertex, finalVertices, states, automatonTableView);
-            if (inputCorrectnessText != null) {
+            if (!checkInputCorrectness(startVertex, finalVertices, states, automatonTableView)) {
                 tableWindowMainPane.getChildren().add(inputCorrectnessText);
                 tableWindowMainPane.requestLayout();
                 return;
@@ -337,12 +342,12 @@ public class AutomatonInputController {
         return button;
     }
 
-    private AnchorPane getMainPane(TableView<String[]> automatonTableView,
-                                   Button createAutomatonButton,
-                                   TextField startVertexTextField,
-                                   TextField finalVerticesTextField,
-                                   Text automatonInfoText,
-                                   Button returnToStartButton) {
+    protected AnchorPane setupMainPaneForTableCreationPage(TableView<String[]> automatonTableView,
+                                                           Button createAutomatonButton,
+                                                           TextField startVertexTextField,
+                                                           TextField finalVerticesTextField,
+                                                           Text automatonInfoText,
+                                                           Button returnToStartButton) {
         AnchorPane mainPane = new AnchorPane(automatonTableView, createAutomatonButton, startVertexTextField, finalVerticesTextField, automatonInfoText, returnToStartButton);
         mainPane.setStyle("-fx-background-color: #2e3348;");
 

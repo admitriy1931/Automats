@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import static org.openjfx.Controllers.AutomatonInputController.setupButtonAsReturnToStart;
 import static org.openjfx.Controllers.Controller.automatonList;
+import static org.openjfx.Controllers.TaskOneController.setupMainPaneForAutomatonsTableViewDisplay;
 
 public class TaskTwoController {
 
@@ -49,24 +50,7 @@ public class TaskTwoController {
 
         Button finalizeAutomatonsButton = getFinalizeAutomatonsButton(tableBasedAutomaton, regexBasedAutomaton);
 
-        mainPane.getChildren().addAll(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, finalizeAutomatonsButton);
-
-        mainPane.setStyle("-fx-background-color: #2e3348;");
-
-        AnchorPane.setLeftAnchor(firstAutomatonTableView, 25.0);
-        AnchorPane.setTopAnchor(firstAutomatonTableView, 50.0);
-
-        AnchorPane.setRightAnchor(secondAutomatonTableView, 25.0);
-        AnchorPane.setTopAnchor(secondAutomatonTableView, 50.0);
-
-        AnchorPane.setLeftAnchor(firstAutomatonInfo, 25.0);
-        AnchorPane.setTopAnchor(firstAutomatonInfo, 10.0);
-
-        AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
-        AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
-
-        AnchorPane.setBottomAnchor(finalizeAutomatonsButton, 10.0);
-        AnchorPane.setRightAnchor(finalizeAutomatonsButton, 10.0);
+        setupMainPaneForAutomatonsTableViewDisplay(mainPane, firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, finalizeAutomatonsButton);
     }
 
     private Button getFinalizeAutomatonsButton(Automaton tableBasedAutomaton, Automaton regexBasedAutomaton) {

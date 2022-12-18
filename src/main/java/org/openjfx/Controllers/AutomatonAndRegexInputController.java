@@ -43,28 +43,27 @@ public class AutomatonAndRegexInputController extends AutomatonInputController {
                 }
 
                 inputWindowMainPane.getChildren().remove(inputCorrectnessText);
-                inputWindowMainPane.getChildren().remove(alphabetInputCorrectnessText);
 
                 if (states.length == 0) {
-                    statesInputCorrectnessText = new Text("В автомате не может быть 0 состояний");
-                    statesInputCorrectnessText.setFill(Color.RED);
-                    statesInputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
-                    AnchorPane.setTopAnchor(statesInputCorrectnessText, 80.0);
-                    AnchorPane.setLeftAnchor(statesInputCorrectnessText, 130.0);
-                    inputWindowMainPane.getChildren().add(statesInputCorrectnessText);
+                    inputCorrectnessText = new Text("В автомате не может быть 0 состояний");
+                    inputCorrectnessText.setFill(Color.RED);
+                    inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
+                    AnchorPane.setTopAnchor(inputCorrectnessText, 80.0);
+                    AnchorPane.setLeftAnchor(inputCorrectnessText, 130.0);
+                    inputWindowMainPane.getChildren().add(inputCorrectnessText);
                     return;
                 }
 
                 if (alphabetField.getText().equals("") || (alphabetField.getText().trim().length() == 0)  || containsDuplicates(alphabet)) {
                     if (containsDuplicates(alphabet))
-                        alphabetInputCorrectnessText = new Text("Алфавит содержит повторяющиеся элементы");
+                        inputCorrectnessText = new Text("Алфавит содержит повторяющиеся элементы");
                     else
-                        alphabetInputCorrectnessText = new Text("Алфавит не может быть пустым");
-                    alphabetInputCorrectnessText.setFill(Color.RED);
-                    alphabetInputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
-                    AnchorPane.setTopAnchor(alphabetInputCorrectnessText, 80.0);
-                    AnchorPane.setLeftAnchor(alphabetInputCorrectnessText, 130.0);
-                    inputWindowMainPane.getChildren().add(alphabetInputCorrectnessText);
+                        inputCorrectnessText = new Text("Алфавит не может быть пустым");
+                    inputCorrectnessText.setFill(Color.RED);
+                    inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
+                    AnchorPane.setTopAnchor(inputCorrectnessText, 80.0);
+                    AnchorPane.setLeftAnchor(inputCorrectnessText, 130.0);
+                    inputWindowMainPane.getChildren().add(inputCorrectnessText);
                     return;
                 }
 
@@ -102,7 +101,7 @@ public class AutomatonAndRegexInputController extends AutomatonInputController {
                 Button checkRegexCorrectnessButton = getCheckRegexCorrectnessButton(regexTextField);
                 Button returnToStartButton = new Button("Вернуться в начало");
                 setupButtonAsReturnToStart(returnToStartButton);
-                mainPane = getMainPane(automatonTableView,
+                mainPane = getMainPaneForTableAndRegexInputPage(automatonTableView,
                         createAutomatonButton,
                         startVertexTextField,
                         finalVerticesTextField,
@@ -145,16 +144,16 @@ public class AutomatonAndRegexInputController extends AutomatonInputController {
         return checkRegexCorrectnessButton;
     }
 
-    private AnchorPane getMainPane(TableView<String[]> automatonTableView,
-                                   Button createAutomatonButton,
-                                   TextField startVertexTextField,
-                                   TextField finalVerticesTextField,
-                                   TextField regexTextField,
-                                   Text regexHintText,
-                                   Text automatonHintText,
-                                   Button checkRegexCorrectnessButton,
-                                   Button lambdaButton,
-                                   Button returnToStartButton) {
+    private AnchorPane getMainPaneForTableAndRegexInputPage(TableView<String[]> automatonTableView,
+                                                            Button createAutomatonButton,
+                                                            TextField startVertexTextField,
+                                                            TextField finalVerticesTextField,
+                                                            TextField regexTextField,
+                                                            Text regexHintText,
+                                                            Text automatonHintText,
+                                                            Button checkRegexCorrectnessButton,
+                                                            Button lambdaButton,
+                                                            Button returnToStartButton) {
         AnchorPane mainPane = new AnchorPane(automatonTableView, createAutomatonButton, startVertexTextField,
                 finalVerticesTextField, automatonHintText, regexTextField, regexHintText, checkRegexCorrectnessButton,
                 lambdaButton, returnToStartButton);
@@ -207,8 +206,7 @@ public class AutomatonAndRegexInputController extends AutomatonInputController {
             }
 
             mainPane.getChildren().remove(inputCorrectnessText);
-            inputCorrectnessText = getInputCorrectnessCheckResult(startVertex, finalVerticesTextField.getText().split(","), states, automatonTableView);
-            if (inputCorrectnessText != null) {
+            if (!checkInputCorrectness(startVertex, finalVerticesTextField.getText().split(","), states, automatonTableView)) {
                 mainPane.getChildren().add(inputCorrectnessText);
                 mainPane.requestLayout();
                 return;
