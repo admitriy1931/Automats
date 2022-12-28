@@ -24,7 +24,9 @@ import javafx.scene.text.Text;
 
 import java.util.Arrays;
 
+import static org.openjfx.Controllers.AutomatonInputController.setupButtonAsReturnToStart;
 import static org.openjfx.Controllers.Controller.automatonList;
+import static org.openjfx.Controllers.TaskOneController.setupMainPaneForAutomatonsTableViewDisplay;
 
 public class TaskTwoController {
 
@@ -48,25 +50,7 @@ public class TaskTwoController {
 
         Button finalizeAutomatonsButton = getFinalizeAutomatonsButton(tableBasedAutomaton, regexBasedAutomaton);
 
-        mainPane.getChildren().addAll(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, finalizeAutomatonsButton);
-
-        mainPane.setStyle("-fx-background-color: #2e3348;");
-
-        AnchorPane.setLeftAnchor(firstAutomatonTableView, 25.0);
-        AnchorPane.setTopAnchor(firstAutomatonTableView, 50.0);
-
-        AnchorPane.setRightAnchor(secondAutomatonTableView, 25.0);
-        AnchorPane.setTopAnchor(secondAutomatonTableView, 50.0);
-
-        AnchorPane.setLeftAnchor(firstAutomatonInfo, 25.0);
-        AnchorPane.setTopAnchor(firstAutomatonInfo, 10.0);
-
-        AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
-        AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
-
-        AnchorPane.setBottomAnchor(finalizeAutomatonsButton, 35.0);
-        AnchorPane.setLeftAnchor(finalizeAutomatonsButton, 800.0);
-        AnchorPane.setRightAnchor(finalizeAutomatonsButton, 800.0);
+        setupMainPaneForAutomatonsTableViewDisplay(mainPane, firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, finalizeAutomatonsButton);
     }
 
     private Button getFinalizeAutomatonsButton(Automaton tableBasedAutomaton, Automaton regexBasedAutomaton) {
@@ -102,8 +86,8 @@ public class TaskTwoController {
         return button;
     }
 
-    private AnchorPane getMainPane(TableView<String[]> firstAutomatonTableView, TableView<String[]> secondAutomatonTableView, Text firstAutomatonInfo, Text secondAutomatonInfo, Button button) {
-        AnchorPane mainPane = new AnchorPane(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, button);
+    private AnchorPane getMainPane(TableView<String[]> firstAutomatonTableView, TableView<String[]> secondAutomatonTableView, Text firstAutomatonInfo, Text secondAutomatonInfo, Button checkIfIsomorphicButton) {
+        AnchorPane mainPane = new AnchorPane(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, checkIfIsomorphicButton);
 
         mainPane.setStyle("-fx-background-color: #2e3348;");
 
@@ -119,9 +103,8 @@ public class TaskTwoController {
         AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
 
-        AnchorPane.setBottomAnchor(button, 35.0);
-        AnchorPane.setLeftAnchor(button, 800.0);
-        AnchorPane.setRightAnchor(button, 800.0);
+        AnchorPane.setBottomAnchor(checkIfIsomorphicButton, 10.0);
+        AnchorPane.setRightAnchor(checkIfIsomorphicButton, 10.0);
 
         return mainPane;
     }
@@ -194,11 +177,7 @@ public class TaskTwoController {
             }
 
             var returnToStartButton = new Button("Вернуться в начало");
-            returnToStartButton.setOnAction(e -> {
-                returnToStartButton.getScene().getWindow().hide();
-                automatonList.clear();
-                Loader.loadFxmlStartupPage();
-            });
+            setupButtonAsReturnToStart(returnToStartButton);
             AnchorPane.setTopAnchor(returnToStartButton, 10.0);
             AnchorPane.setRightAnchor(returnToStartButton, 10.0);
 

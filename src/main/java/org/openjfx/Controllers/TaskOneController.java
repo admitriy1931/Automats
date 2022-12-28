@@ -24,6 +24,7 @@ import javafx.scene.text.Text;
 
 import java.util.Arrays;
 
+import static org.openjfx.Controllers.AutomatonInputController.setupButtonAsReturnToStart;
 import static org.openjfx.Controllers.Controller.automatonList;
 
 public class TaskOneController {
@@ -56,12 +57,12 @@ public class TaskOneController {
 
         Button checkIfIsomorphicButton = getCheckIfIsomorphicButton(firstFinalizedAutomaton, secondFinalizedAutomaton);
 
-        initMainPane(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, checkIfIsomorphicButton);
+        setupMainPaneForAutomatonsTableViewDisplay(mainPane, firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, checkIfIsomorphicButton);
     }
 
 
-    private void initMainPane(TableView<String[]> firstAutomatonTableView, TableView<String[]> secondAutomatonTableView, Text firstAutomatonInfo, Text secondAutomatonInfo, Button checkIfIsomorphicButton) {
-        mainPane.getChildren().addAll(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, checkIfIsomorphicButton);
+    public static void setupMainPaneForAutomatonsTableViewDisplay(AnchorPane mainPane, TableView<String[]> firstAutomatonTableView, TableView<String[]> secondAutomatonTableView, Text firstAutomatonInfo, Text secondAutomatonInfo, Button button) {
+        mainPane.getChildren().addAll(firstAutomatonTableView, secondAutomatonTableView, firstAutomatonInfo, secondAutomatonInfo, button);
 
         mainPane.setStyle("-fx-background-color: #2e3348;");
 
@@ -77,9 +78,8 @@ public class TaskOneController {
         AnchorPane.setRightAnchor(secondAutomatonInfo, 25.0);
         AnchorPane.setTopAnchor(secondAutomatonInfo, 10.0);
 
-        AnchorPane.setBottomAnchor(checkIfIsomorphicButton, 35.0);
-        AnchorPane.setLeftAnchor(checkIfIsomorphicButton, 800.0);
-        AnchorPane.setRightAnchor(checkIfIsomorphicButton, 800.0);
+        AnchorPane.setBottomAnchor(button, 10.0);
+        AnchorPane.setRightAnchor(button, 10.0);
     }
 
     private Button getCheckIfIsomorphicButton(Automaton first, Automaton second) {
@@ -147,11 +147,7 @@ public class TaskOneController {
             }
 
             Button returnToStartButton = new Button("Вернуться в начало");
-            returnToStartButton.setOnAction(e -> {
-                returnToStartButton.getScene().getWindow().hide();
-                automatonList.clear();
-                Loader.loadFxmlStartupPage();
-            });
+            setupButtonAsReturnToStart(returnToStartButton);
             AnchorPane.setTopAnchor(returnToStartButton, 10.0);
             AnchorPane.setRightAnchor(returnToStartButton, 10.0);
 
@@ -169,8 +165,27 @@ public class TaskOneController {
         String[] arr = automaton.jumpTable.rowKeySet().toArray(new String[0]);
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < automaton.letters.size() + 1; j++) {
-                if (j == 0)
-                    jumpTable[i][j] = arr[i];
+                if (j == 0) {
+                    boolean isStart = false;
+                    boolean isFinal = false;
+                    if (arr[i].equals(automaton.startVertex))
+                        isStart = true;
+                    if (automaton.finalVertices.contains(arr[i]))
+                        isFinal = true;
+
+                    if (!isStart && !isFinal) {
+                        jumpTable[i][j] = arr[i];
+                    }
+                    else if (isStart && !isFinal) {
+                        jumpTable[i][j] = "-> " + arr[i] + "    ";
+                    }
+                    else if (!isStart) {
+                        jumpTable[i][j] = "<- " + arr[i] + "    ";
+                    }
+                    else {
+                        jumpTable[i][j] = "<- " + arr[i] + " ->";
+                    }
+                }
                 else
                     jumpTable[i][j] = automaton.jumpTable.get(arr[i], automaton.letters.get(j - 1));
             }
