@@ -212,7 +212,7 @@ public class TaskOneController {
         for (int i = 0; i < automaton.letters.size() + 1; i++) {
             TableColumn<String[], String> tableColumn;
             if (i == 0) {
-                tableColumn = new TableColumn<>("Название состояния");
+                tableColumn = new TableColumn<>("Состояние \\ Буква");
                 width = stateColumnWidth;
             } else {
                 tableColumn = new TableColumn<>(automaton.letters.get(i - 1).strip());

@@ -246,7 +246,7 @@ public class AutomatonInputController {
         for (int i = 0; i < alphabet.length + 1; i++) {
             TableColumn<String[], String> tableColumn;
             if (i == 0) {
-                tableColumn = new TableColumn<>("Название состояния");
+                tableColumn = new TableColumn<>("Состояние \\ Буква");
                 width = stateColumnWidth;
             } else {
                 tableColumn = new TableColumn<>(alphabet[i - 1].strip());
