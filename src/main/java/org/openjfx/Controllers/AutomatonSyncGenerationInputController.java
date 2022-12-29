@@ -84,12 +84,12 @@ public class AutomatonSyncGenerationInputController extends AutomatonInputContro
             return false;
         }
 
-        if (lettersCount == 0 || lettersCount > 3) {
-            if (lettersCount == 0) {
-                inputCorrectnessText = new Text("Алфавит не может быть пустым");
+        if (lettersCount < 2 || lettersCount > 4) {
+            if (lettersCount < 2) {
+                inputCorrectnessText = new Text("Алфавит не может содержать меньше двух букв");
             }
             else {
-                inputCorrectnessText = new Text("Алфавит не может содержать больше 3-х букв");
+                inputCorrectnessText = new Text("Алфавит не может содержать больше 4-х букв");
             }
             inputCorrectnessText.setFill(Color.RED);
             inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));

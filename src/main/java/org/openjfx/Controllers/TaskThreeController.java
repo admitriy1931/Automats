@@ -52,7 +52,6 @@ public class TaskThreeController {
                     syncAutomaton = GreedySyncWordFinding.addCombinedElementVertices(syncAutomaton);
                     syncAutomaton = GreedySyncWordFinding.greedyShortestWordFindingAlg(syncAutomaton);
                     syncWord = new Text("Синхронизирующее слово: " + "'" + syncAutomaton.syncWord + "'");
-                    //TODO: Случай пустого кратчайшего слова?
                     shortestSyncWord = new Text("Кратчайшее синхронизирующее слово: " + "'" + syncAutomaton.shortestSyncWord + "'");
                 }
                 else {
