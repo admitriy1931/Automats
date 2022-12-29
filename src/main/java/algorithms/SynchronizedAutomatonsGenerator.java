@@ -17,8 +17,11 @@ public class SynchronizedAutomatonsGenerator {
      */
     public static List<SynchronizedAutomaton> synchronizedAutomatonsGenerator
     (int automatonsNumber, int verticesNumber, int lettersNumber) throws CloneNotSupportedException {
+        if (verticesNumber < 2)
+            return new ArrayList<>();
+
         List<SynchronizedAutomaton> syncAutsList = new ArrayList<>();
-        List<String> letters = new ArrayList<>(List.of("a", "b", "c"));
+        List<String> letters = new ArrayList<>(List.of("a", "b", "c", "d"));
         Random randomInt = new Random(System.currentTimeMillis());
 
         int counter = 0;
