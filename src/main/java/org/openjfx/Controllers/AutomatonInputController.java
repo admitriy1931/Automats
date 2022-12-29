@@ -49,8 +49,8 @@ public class AutomatonInputController {
     protected void initialize() {
         setupButtonAsReturnToStart(returnToStartButton);
         initCreateTableButton();
-        setupStatesCountField();
-        setupAlphabetField();
+        setupStatesCountField(statesCountField);
+        setupAlphabetField(alphabetField);
     }
 
     public static void setupButtonAsReturnToStart(Button button) {
@@ -61,7 +61,7 @@ public class AutomatonInputController {
         });
     }
 
-    protected void setupStatesCountField() {
+    protected void setupStatesCountField(TextField statesCountField) {
         statesCountField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 statesCountField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -69,7 +69,7 @@ public class AutomatonInputController {
         });
     }
 
-    protected void setupAlphabetField() {
+    protected void setupAlphabetField(TextField alphabetField) {
         alphabetField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("[a-zA-Z0-1,]*")) {
                 alphabetField.setText(newValue.replaceAll("[^a-zA-Z0-1,]", ""));

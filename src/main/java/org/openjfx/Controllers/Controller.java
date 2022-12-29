@@ -14,20 +14,24 @@ public class Controller {
     private Button authorsButton;
 
     @FXML
-    private Button taskOneButton;
+    private Button generateSyncAutomatonButton;
 
     @FXML
-    private Button taskTwoButton;
+    private Button tableAndRegexAutomatonInputButton;
 
     @FXML
-    private Button taskThreeButton;
+    private Button tableAutomatonInputButton;
+
+    @FXML
+    private Button tableAutomatonInputWithSyncCheckButton;
 
     @FXML
     void initialize() {
         initAuthorsButton();
-        setupTaskButton(taskOneButton, "/automatonInput.fxml");
-        setupTaskButton(taskTwoButton, "/automatonAndRegexInput.fxml");
-        setupTaskButton(taskThreeButton, "/automatonInputWithGeneration.fxml");
+        setupTaskButton(tableAutomatonInputButton, "/automatonInput.fxml");
+        setupTaskButton(tableAndRegexAutomatonInputButton, "/automatonAndRegexInput.fxml");
+        setupTaskButton(tableAutomatonInputWithSyncCheckButton, "/automatonSyncInput.fxml");
+        setupTaskButton(generateSyncAutomatonButton, "/automatonSyncGenerationInput.fxml");
     }
 
     @FXML

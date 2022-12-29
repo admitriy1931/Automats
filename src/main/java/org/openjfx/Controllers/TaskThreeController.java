@@ -1,18 +1,18 @@
 package org.openjfx.Controllers;
 
-import algorithms.Adduction;
+import algorithms.GreedySyncWordFinding;
 import automaton.Automaton;
+import automaton.SynchronizedAutomaton;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+
+import java.util.ArrayList;
 
 import static org.openjfx.Controllers.AutomatonInputController.setupButtonAsReturnToStart;
 import static org.openjfx.Controllers.Controller.automatonList;
@@ -27,20 +27,11 @@ public class TaskThreeController {
         Automaton tableBasedAutomaton = automatonList.get(0);
         TableView<String[]> automatonTableView = TaskOneController.createAutomatonJumpTableTableView(tableBasedAutomaton);
 
-        Text automatonInfo;
-        //TODO
-        if (true) {
-             automatonInfo = new Text("Автомат, построенный по таблице");
-        }
-        else {
-            automatonInfo = new Text("Сгенерированный автомат");
-        }
+        Text automatonInfo = new Text("Автомат, построенный по таблице");
         automatonInfo.setFill(Color.WHITESMOKE);
         automatonInfo.setFont(Font.font("System", 20));
 
         Button findSyncWordButton = getFindSyncWordButton();
-
-
 
         setupMainPaneForAutomatonTableViewDisplay(mainPane, automatonTableView, automatonInfo, findSyncWordButton);
     }
@@ -50,23 +41,36 @@ public class TaskThreeController {
         button.setOnAction(event ->  {
             AnchorPane newPane = new AnchorPane();
             newPane.setStyle("-fx-background-color: #2e3348;");
-            //TODO
-            //String word = FindSyncWord();
-
-            String word = "";
-
-            Text text;
-            if (word.isBlank()) {
-                text = new Text("Синхронизирующего слова не существует");
+            SynchronizedAutomaton syncAutomaton = new SynchronizedAutomaton
+                    (automatonList.get(0).jumpTable, new ArrayList<>(), new ArrayList<>(), null, null);
+            Text syncWord = new Text();
+            Text shortestSyncWord = new Text();
+            try {
+                if (GreedySyncWordFinding.isAutomatonSynchronized(syncAutomaton)) {
+                    GreedySyncWordFinding.addTwoElementVertices(syncAutomaton);
+                    GreedySyncWordFinding.greedyWordFindingAlg(syncAutomaton);
+                    syncAutomaton = GreedySyncWordFinding.addCombinedElementVertices(syncAutomaton);
+                    syncAutomaton = GreedySyncWordFinding.greedyShortestWordFindingAlg(syncAutomaton);
+                    syncWord = new Text("Синхронизирующее слово: " + "'" + syncAutomaton.syncWord + "'");
+                    //TODO: Случай пустого кратчайшего слова?
+                    shortestSyncWord = new Text("Кратчайшее синхронизирующее слово: " + "'" + syncAutomaton.shortestSyncWord + "'");
+                }
+                else {
+                    syncWord = new Text("Автомат не синхронизируемый");
+                }
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
             }
-            else {
-                text = new Text("Синхронизирующее слово: " + "'" + word + "'");
-            }
-            text.setFont(Font.font("System", 16));
-            text.setFill(Color.WHITESMOKE);
-            newPane.getChildren().add(text);
-            AnchorPane.setLeftAnchor(text, 10.0);
-            AnchorPane.setTopAnchor(text, 10.0);
+
+            syncWord.setFont(Font.font("System", 20));
+            syncWord.setFill(Color.WHITESMOKE);
+            shortestSyncWord.setFont(Font.font("System", 20));
+            shortestSyncWord.setFill(Color.WHITESMOKE);
+            newPane.getChildren().addAll(syncWord, shortestSyncWord);
+            AnchorPane.setLeftAnchor(syncWord, 10.0);
+            AnchorPane.setTopAnchor(syncWord, 10.0);
+            AnchorPane.setLeftAnchor(shortestSyncWord, 10.0);
+            AnchorPane.setTopAnchor(shortestSyncWord, 40.0);
 
             Button returnToStartButton = new Button("Вернуться в начало");
             setupButtonAsReturnToStart(returnToStartButton);

@@ -7,39 +7,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 import java.util.Arrays;
 
 import static org.openjfx.Controllers.Controller.automatonList;
 
-public class AutomatonInputWithGenerationController extends AutomatonInputController {
-
-    @FXML
-    private Button generateRandomAutomatonButton;
+public class AutomatonSyncInputController extends AutomatonInputController {
 
     @FXML
     protected void initialize() {
         super.initialize();
-        setupGenerateRandomAutomatonButton(generateRandomAutomatonButton);
-    }
-
-    protected void setupGenerateRandomAutomatonButton(Button button) {
-        //TODO
-        button.setOnAction(event -> {
-            //String states = statesCountField.getText();
-            //String alphabet = alphabetField.getText();
-            // Automaton generatedAutomaton = GenerateRandomSynchronizedAutomaton(states, alphabet);
-            //Automaton generatedAutomaton = null;
-            //automatonList.add(generatedAutomaton);
-
-            button.getScene().getWindow().hide();
-
-            Loader.loadFxml("/taskThree.fxml", true);
-
-        });
     }
 
     protected Button getCreateAutomatonButton(TextField startVertexTextField, TextField finalVerticesTextField, TableView<String[]> automatonTableView, String[] states, String[] alphabet) {

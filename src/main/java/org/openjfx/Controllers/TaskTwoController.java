@@ -201,7 +201,9 @@ public class TaskTwoController {
 
         Arrays.sort(isomorphismTable, (arr1, arr2) -> {
             try {
-                return Integer.compare(Integer.parseInt(arr1[0]), Integer.parseInt(arr2[0]));
+                String replacedArr1 = arr1[0].replaceAll("<-", "").replaceAll("->", "").strip();
+                String replacedArr2 = arr2[0].replaceAll("<-", "").replaceAll("->", "").strip();
+                return Integer.compare(Integer.parseInt(replacedArr1), Integer.parseInt(replacedArr2));
             }
             catch (NumberFormatException e) {
                 return arr1[0].compareTo(arr2[0]);
