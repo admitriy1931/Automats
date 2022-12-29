@@ -9,6 +9,9 @@ import java.util.Map.Entry;
 public class GreedySyncWordFinding {
     public static boolean isAutomatonSynchronized(SynchronizedAutomaton syncAut)
         throws CloneNotSupportedException {
+        if (syncAut.vertices.size() < 2)
+            return false;
+
         SynchronizedAutomaton clonedSyncAut = syncAut.clone();
         addTwoElementVertices(clonedSyncAut);
         Map<String, List<String>> dijkstraResults = new HashMap<>();
@@ -139,7 +142,10 @@ public class GreedySyncWordFinding {
         SynchronizedAutomaton clonedSyncAut = twoElementSyncAut.clone();
         clonedSyncAut.twoElementVertices = new ArrayList<>(twoElementVertices);
         clonedSyncAut.syncWord = syncWord;
-        clonedSyncAut.shortestSyncWord = shortestSyncWord.toString();
+        String strShortestSyncWord = shortestSyncWord.toString();
+
+        if (!strShortestSyncWord.isEmpty()) clonedSyncAut.shortestSyncWord = strShortestSyncWord;
+        else clonedSyncAut.shortestSyncWord = syncWord;
 
         return clonedSyncAut.clone();
     }

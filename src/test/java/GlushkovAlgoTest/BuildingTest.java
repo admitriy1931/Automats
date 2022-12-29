@@ -4,11 +4,13 @@ import algorithms.GlushkovAlgo;
 import automaton.Automaton;
 import com.google.common.collect.HashBasedTable;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Disabled
 class BuildingNKATest {
     static final String wikiExample = "(a(ab)*)*+(ba)*";
     static final String simpleReg = "abc + abc";
