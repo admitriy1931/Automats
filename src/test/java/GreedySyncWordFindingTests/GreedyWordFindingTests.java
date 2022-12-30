@@ -22,8 +22,14 @@ public class GreedyWordFindingTests {
         jumpTable.put("1", "b", "0");
         jumpTable.put("2", "b", "2");
 
-        SynchronizedAutomaton syncAut = new SynchronizedAutomaton
-            (jumpTable, new ArrayList<>(), new ArrayList<>(), null, null);
+        SynchronizedAutomaton syncAut = null;
+        try {
+            syncAut = new SynchronizedAutomaton
+                (jumpTable, new ArrayList<>(), new ArrayList<>(), null, null);
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            Assertions.fail();
+        }
 
         GreedySyncWordFinding.addTwoElementVertices(syncAut);
         GreedySyncWordFinding.greedyWordFindingAlg(syncAut);
