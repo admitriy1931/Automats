@@ -14,33 +14,32 @@ public class Controller {
     private Button authorsButton;
 
     @FXML
-    private Button taskOneButton;
+    private Button generateSyncAutomatonButton;
 
     @FXML
-    private Button taskTwoButton;
+    private Button tableAndRegexAutomatonInputButton;
+
+    @FXML
+    private Button tableAutomatonInputButton;
+
+    @FXML
+    private Button tableAutomatonInputWithSyncCheckButton;
 
     @FXML
     void initialize() {
         initAuthorsButton();
-        initTaskOneButton();
-        initTaskTwoButton();
+        setupTaskButton(tableAutomatonInputButton, "/automatonInput.fxml");
+        setupTaskButton(tableAndRegexAutomatonInputButton, "/automatonAndRegexInput.fxml");
+        setupTaskButton(tableAutomatonInputWithSyncCheckButton, "/automatonSyncInput.fxml");
+        setupTaskButton(generateSyncAutomatonButton, "/automatonSyncGenerationInput.fxml");
     }
 
     @FXML
-    private void initTaskOneButton() {
-        taskOneButton.setOnAction(event -> {
-            taskOneButton.getScene().getWindow().hide();
+    private void setupTaskButton(Button button, String fxmlName) {
+        button.setOnAction(event -> {
+            button.getScene().getWindow().hide();
             automatonList.clear();
-            Loader.loadFxml("/automatonInput.fxml", false);
-        });
-    }
-
-    @FXML
-    private void initTaskTwoButton() {
-        taskTwoButton.setOnAction(event -> {
-            taskTwoButton.getScene().getWindow().hide();
-            automatonList.clear();
-            Loader.loadFxml("/automatonAndRegexInput.fxml", false);
+            Loader.loadFxml(fxmlName, false);
         });
     }
 

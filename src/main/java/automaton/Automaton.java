@@ -2,22 +2,22 @@ package automaton;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Table;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Automaton implements Cloneable, Serializable{
+public class Automaton implements Cloneable, Serializable {
     public Boolean isFinalized;
     public HashBasedTable<String, String, String> jumpTable;
     public List<String> vertices;
     public List<String> letters;
     public String startVertex;
     public List<String> finalVertices;
-    private static final String NON_EXISTING_VERTEX = "This vertex doesn't exist";
-    private static final String NON_EXISTING_LETTER = "This letter doesn't exist";
+    public static final String NON_EXISTING_VERTEX = "This vertex doesn't exist";
+    public static final String NON_EXISTING_LETTER = "This letter doesn't exist";
 
     public Automaton(Boolean isFinalized, HashBasedTable<String, String, String> jumpTable,
                      String startVertex, List<String> finalVertices) {
@@ -45,11 +45,11 @@ public class Automaton implements Cloneable, Serializable{
         return jumpTable.get(vertex, letter);
     }
 
-    public void addVertex(Table<String, String, String> vertexRow) {
-        if (vertexRow.rowKeySet().size() != 1 || vertexRow.columnKeySet().size() != vertices.size())
+    public void addVertex(String vertexName, HashBasedTable<String, String, String> vertexRow) {
+        if (vertexRow.rowKeySet().size() != 1 || vertexRow.columnKeySet().size() != letters.size())
             throw new IllegalArgumentException("incorrect vertex row given");
         jumpTable.putAll(vertexRow);
-        vertices.add(String.valueOf(vertexRow.columnKeySet()));
+        vertices.add(vertexName);
     }
 
     public void removeVertex(String vertex) {
@@ -74,6 +74,13 @@ public class Automaton implements Cloneable, Serializable{
 
     @Override
     public Automaton clone() throws CloneNotSupportedException {
-        return (Automaton) super.clone();
+        Automaton automaton = (Automaton) super.clone();
+
+        automaton.jumpTable = HashBasedTable.create(jumpTable);
+        automaton.vertices = new ArrayList<>(vertices);
+        automaton.letters = new ArrayList<>(letters);
+        automaton.finalVertices = new ArrayList<>(finalVertices);
+
+        return automaton;
     }
 }
