@@ -231,6 +231,8 @@ public class TaskOneController {
         automatonTableView.setFixedCellSize(25);
         automatonTableView.prefHeightProperty().bind(Bindings.size(automatonTableView.getItems()).multiply(automatonTableView.getFixedCellSize()).add(26));
         automatonTableView.maxHeightProperty().bind((new SimpleIntegerProperty(20)).multiply(automatonTableView.getFixedCellSize()).add(26));
+        automatonTableView.prefWidthProperty().bind(new SimpleIntegerProperty(2 + stateColumnWidth + regularColumnWidth * automaton.letters.size()));
+        automatonTableView.maxWidthProperty().bind(new SimpleIntegerProperty(stateColumnWidth + regularColumnWidth * 10));
 
         return automatonTableView;
     }

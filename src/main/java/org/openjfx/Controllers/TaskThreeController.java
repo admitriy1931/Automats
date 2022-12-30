@@ -41,7 +41,7 @@ public class TaskThreeController {
         button.setOnAction(event ->  {
             AnchorPane newPane = new AnchorPane();
             newPane.setStyle("-fx-background-color: #2e3348;");
-            SynchronizedAutomaton syncAutomaton = null;
+            SynchronizedAutomaton syncAutomaton;
             try {
                 syncAutomaton = new SynchronizedAutomaton
                         (automatonList.get(0).jumpTable, new ArrayList<>(), new ArrayList<>(), null, null);
