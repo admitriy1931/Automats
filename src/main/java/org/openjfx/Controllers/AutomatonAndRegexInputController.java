@@ -47,22 +47,22 @@ public class AutomatonAndRegexInputController extends AutomatonInputController {
                 if (states.length == 0) {
                     inputCorrectnessText = new Text("В автомате не может быть 0 состояний");
                     inputCorrectnessText.setFill(Color.RED);
-                    inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
-                    AnchorPane.setTopAnchor(inputCorrectnessText, 80.0);
-                    AnchorPane.setLeftAnchor(inputCorrectnessText, 130.0);
+                    inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 14));
+                    AnchorPane.setBottomAnchor(inputCorrectnessText, 10.0);
+                    AnchorPane.setLeftAnchor(inputCorrectnessText, 10.0);
                     inputWindowMainPane.getChildren().add(inputCorrectnessText);
                     return;
                 }
 
                 if (alphabetField.getText().equals("") || (alphabetField.getText().trim().length() == 0)  || containsDuplicates(alphabet)) {
                     if (containsDuplicates(alphabet))
-                        inputCorrectnessText = new Text("Алфавит содержит повторяющиеся элементы");
+                        inputCorrectnessText = new Text("Алфавит не может содержать повторяющиеся буквы");
                     else
                         inputCorrectnessText = new Text("Алфавит не может быть пустым");
                     inputCorrectnessText.setFill(Color.RED);
-                    inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
-                    AnchorPane.setTopAnchor(inputCorrectnessText, 80.0);
-                    AnchorPane.setLeftAnchor(inputCorrectnessText, 130.0);
+                    inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 14));
+                    AnchorPane.setBottomAnchor(inputCorrectnessText, 10.0);
+                    AnchorPane.setLeftAnchor(inputCorrectnessText, 10.0);
                     inputWindowMainPane.getChildren().add(inputCorrectnessText);
                     return;
                 }
@@ -134,8 +134,8 @@ public class AutomatonAndRegexInputController extends AutomatonInputController {
             catch (RegexpException e) {
                 regexStatusText.setText("Некорректное регулярное выражение: " + e.getText());
                 regexStatusText.setFill(Color.RED);
-                regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 18));
-                AnchorPane.setBottomAnchor(regexStatusText, 46.0);
+                regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 14));
+                AnchorPane.setBottomAnchor(regexStatusText, 48.0);
             }
             AnchorPane.setLeftAnchor(regexStatusText, Math.max(regexTextField.getPrefWidth(), regexTextField.getMaxWidth()) + 20.0);
             mainPane.getChildren().add(regexStatusText);
@@ -220,7 +220,7 @@ public class AutomatonAndRegexInputController extends AutomatonInputController {
             catch (RegexpException e) {
                 mainPane.getChildren().remove(regexStatusText);
                 regexStatusText = new Text("Некорректное регулярное выражение: " + e.getText());
-                regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 18));
+                regexStatusText.setFont(Font.font("System", FontPosture.ITALIC, 14));
                 regexStatusText.setFill(Color.RED);
                 AnchorPane.setBottomAnchor(regexStatusText, 45.0);
                 AnchorPane.setLeftAnchor(regexStatusText, Math.max(regexTextField.getPrefWidth(), regexTextField.getMaxWidth()) + 20.0);

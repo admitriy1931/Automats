@@ -41,8 +41,14 @@ public class TaskThreeController {
         button.setOnAction(event ->  {
             AnchorPane newPane = new AnchorPane();
             newPane.setStyle("-fx-background-color: #2e3348;");
-            SynchronizedAutomaton syncAutomaton = new SynchronizedAutomaton
-                    (automatonList.get(0).jumpTable, new ArrayList<>(), new ArrayList<>(), null, null);
+            SynchronizedAutomaton syncAutomaton = null;
+            try {
+                syncAutomaton = new SynchronizedAutomaton
+                        (automatonList.get(0).jumpTable, new ArrayList<>(), new ArrayList<>(), null, null);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+                return;
+            }
             Text syncWord = new Text();
             Text shortestSyncWord = new Text();
             try {

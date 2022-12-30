@@ -49,8 +49,9 @@ public class AutomatonInputController {
     protected void initialize() {
         setupButtonAsReturnToStart(returnToStartButton);
         initCreateTableButton();
-        setupStatesCountField(statesCountField);
-        setupAlphabetField(alphabetField);
+        setupStatesCountField();
+        setupAlphabetField();
+        inputCorrectnessText = new Text();
     }
 
     public static void setupButtonAsReturnToStart(Button button) {
@@ -61,7 +62,7 @@ public class AutomatonInputController {
         });
     }
 
-    protected void setupStatesCountField(TextField statesCountField) {
+    protected void setupStatesCountField() {
         statesCountField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 statesCountField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -69,7 +70,7 @@ public class AutomatonInputController {
         });
     }
 
-    protected void setupAlphabetField(TextField alphabetField) {
+    protected void setupAlphabetField() {
         alphabetField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("[a-zA-Z0-1,]*")) {
                 alphabetField.setText(newValue.replaceAll("[^a-zA-Z0-1,]", ""));
@@ -98,7 +99,7 @@ public class AutomatonInputController {
         if (states.length == 0) {
             inputCorrectnessText = new Text("В автомате не может быть 0 состояний");
             inputCorrectnessText.setFill(Color.RED);
-            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
+            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 14));
             AnchorPane.setBottomAnchor(inputCorrectnessText, 10.0);
             AnchorPane.setLeftAnchor(inputCorrectnessText, 10.0);
             inputWindowMainPane.getChildren().add(inputCorrectnessText);
@@ -107,11 +108,11 @@ public class AutomatonInputController {
 
         if (alphabetField.getText().equals("") || (alphabetField.getText().trim().length() == 0)  || containsDuplicates(alphabet)) {
             if (containsDuplicates(alphabet))
-                inputCorrectnessText = new Text("Алфавит содержит повторяющиеся элементы");
+                inputCorrectnessText = new Text("Алфавит не может содержать повторяющиеся буквы");
             else
                 inputCorrectnessText = new Text("Алфавит не может быть пустым");
             inputCorrectnessText.setFill(Color.RED);
-            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
+            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 14));
             AnchorPane.setBottomAnchor(inputCorrectnessText, 10.0);
             AnchorPane.setLeftAnchor(inputCorrectnessText, 10.0);
             inputWindowMainPane.getChildren().add(inputCorrectnessText);
@@ -167,9 +168,9 @@ public class AutomatonInputController {
     protected void setupInputCorrectnessText(Text inputCorrectnessText, String text, TableView<String[]> tableView) {
         inputCorrectnessText.setText(text);
         inputCorrectnessText.setFill(Color.RED);
-        inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
-        AnchorPane.setTopAnchor(inputCorrectnessText, 105.0);
-        AnchorPane.setLeftAnchor(inputCorrectnessText, Math.min(tableView.getPrefWidth(), tableView.getMaxWidth()) + 20.0);
+        inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 14));
+        AnchorPane.setTopAnchor(inputCorrectnessText, 110.0);
+        AnchorPane.setLeftAnchor(inputCorrectnessText, Math.min(tableView.getPrefWidth(), tableView.getMaxWidth()) + 23.0);
     }
 
     public static boolean containsDuplicates(String[] array)

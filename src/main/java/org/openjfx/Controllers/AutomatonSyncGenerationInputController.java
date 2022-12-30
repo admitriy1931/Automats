@@ -1,7 +1,7 @@
 package org.openjfx.Controllers;
 
 import algorithms.SynchronizedAutomatonsGenerator;
-import automaton.Automaton;
+import automaton.SynchronizedAutomaton;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -21,14 +21,10 @@ public class AutomatonSyncGenerationInputController extends AutomatonInputContro
     @FXML
     private Button generateSyncAutomatonButton;
 
-    public static int stateCount;
-
-    public static int letterCount;
-
     @FXML
     protected void initialize() {
         setupButtonAsReturnToStart(returnToStartButton);
-        setupStatesCountField(statesCountField);
+        setupStatesCountField();
         this.setupAlphabetField(this.alphabetField);
         setupGenerateSyncAutomatonButton(generateSyncAutomatonButton);
     }
@@ -38,9 +34,9 @@ public class AutomatonSyncGenerationInputController extends AutomatonInputContro
         button.setOnAction(event -> {
             if (!checkAlphabetAndStatesCorrectness())
                 return;
-            Automaton generatedAutomaton = null;
-            stateCount = Integer.parseInt(statesCountField.getText());
-            letterCount = Integer.parseInt(alphabetField.getText());
+            SynchronizedAutomaton generatedAutomaton = null;
+            int stateCount = Integer.parseInt(statesCountField.getText());
+            int letterCount = Integer.parseInt(alphabetField.getText());
             try {
                 generatedAutomaton = SynchronizedAutomatonsGenerator.synchronizedAutomatonsGenerator(1, stateCount, letterCount).get(0);
             } catch (CloneNotSupportedException e) {
@@ -70,29 +66,29 @@ public class AutomatonSyncGenerationInputController extends AutomatonInputContro
         int states = Integer.parseInt(statesCountField.getText());
         int lettersCount = Integer.parseInt(alphabetField.getText());
 
-        if (states == 0 || states > 10) {
-            if (states == 0) {
-                inputCorrectnessText = new Text("В автомате не может быть 0 состояний");
+        if (states < 2 || states > 10) {
+            if (states < 2) {
+                inputCorrectnessText = new Text("В синхронизируемом автомате не может быть меньше 2-х состояний");
             } else {
-                inputCorrectnessText = new Text("В сгенерированном автомате не может быть больше 10 состояний");
+                inputCorrectnessText = new Text("В сгенерированном автомате не может быть больше 10-ти состояний");
             }
             inputCorrectnessText.setFill(Color.RED);
-            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
+            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 14));
             AnchorPane.setBottomAnchor(inputCorrectnessText, 10.0);
             AnchorPane.setLeftAnchor(inputCorrectnessText, 10.0);
             inputWindowMainPane.getChildren().add(inputCorrectnessText);
             return false;
         }
 
-        if (lettersCount < 2 || lettersCount > 4) {
-            if (lettersCount < 2) {
-                inputCorrectnessText = new Text("Алфавит не может содержать меньше двух букв");
+        if (lettersCount == 0 || lettersCount > 4) {
+            if (lettersCount == 0) {
+                inputCorrectnessText = new Text("Алфавит не может быть пустым");
             }
             else {
                 inputCorrectnessText = new Text("Алфавит не может содержать больше 4-х букв");
             }
             inputCorrectnessText.setFill(Color.RED);
-            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 12));
+            inputCorrectnessText.setFont(Font.font("System", FontPosture.ITALIC, 14));
             AnchorPane.setBottomAnchor(inputCorrectnessText, 10.0);
             AnchorPane.setLeftAnchor(inputCorrectnessText, 10.0);
             inputWindowMainPane.getChildren().add(inputCorrectnessText);

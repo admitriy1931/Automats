@@ -18,21 +18,32 @@ public class TaskFourController {
     @FXML
     private AnchorPane mainPane;
 
+    private SynchronizedAutomaton currentGeneratedSyncAutomaton;
+
     @FXML
     void initialize() {
-        //TODO: Не забыть кастануть все эти автоматы к синхронизируемым
-        Automaton generatedAutomaton = (SynchronizedAutomaton)automatonList.get(0);
-        TableView<String[]> automatonTableView = TaskOneController.createAutomatonJumpTableTableView(generatedAutomaton);
+        currentGeneratedSyncAutomaton = (SynchronizedAutomaton)automatonList.get(0);
+        TableView<String[]> automatonTableView = TaskOneController.createAutomatonJumpTableTableView(currentGeneratedSyncAutomaton.originalSyncAutomaton);
+
+        TableView<String[]> syncedAutomatonTableView = TaskOneController.createAutomatonJumpTableTableView(currentGeneratedSyncAutomaton);
 
         Text automatonInfo = new Text("Сгенерированный автомат");
         automatonInfo.setFill(Color.WHITESMOKE);
         automatonInfo.setFont(Font.font("System", 20));
 
+        Text syncedAutomatonInfo = new Text("Сгенерированный автомат с добавленными вершинами");
+        syncedAutomatonInfo.setFill(Color.WHITESMOKE);
+        syncedAutomatonInfo.setFont(Font.font("System", 20));
+
         Button generateAnotherOneButton = getGenerateSyncAutomatonButton();
         Button returnToStartButton = new Button("Вернуться в начало");
         AutomatonInputController.setupButtonAsReturnToStart(returnToStartButton);
 
-        setupMainPaneForAutomatonTableViewDisplay(mainPane, automatonTableView, automatonInfo, generateAnotherOneButton, returnToStartButton);
+        TaskOneController.setupMainPaneForAutomatonsTableViewDisplay(mainPane, automatonTableView, syncedAutomatonTableView, automatonInfo, syncedAutomatonInfo, generateAnotherOneButton);
+
+        mainPane.getChildren().add(returnToStartButton);
+        AnchorPane.setLeftAnchor(returnToStartButton, 10.0);
+        AnchorPane.setBottomAnchor(returnToStartButton, 10.0);
     }
 
     @FXML
@@ -40,12 +51,10 @@ public class TaskFourController {
         Button button = new Button("Сгенерировать еще один автомат с такими же параметрами");
         button.setOnAction(event -> {
             Automaton generatedAutomaton = null;
-            //TODO: Тут выводить нормальный автомат, а не преобразованный
-            //generatedAutomaton.origin
             try {
                 generatedAutomaton = SynchronizedAutomatonsGenerator.synchronizedAutomatonsGenerator(1,
-                        AutomatonSyncGenerationInputController.stateCount,
-                        AutomatonSyncGenerationInputController.letterCount).get(0);
+                        currentGeneratedSyncAutomaton.originalSyncAutomaton.vertices.size(),
+                        currentGeneratedSyncAutomaton.originalSyncAutomaton.letters.size()).get(0);
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
             }
@@ -57,23 +66,5 @@ public class TaskFourController {
             Loader.loadFxml("/taskFour.fxml", true);
         });
         return button;
-    }
-
-    private void setupMainPaneForAutomatonTableViewDisplay(AnchorPane mainPane, TableView<String[]> firstAutomatonTableView, Text firstAutomatonInfo, Button generateAnotherOneButton, Button returnToStartButton) {
-        mainPane.getChildren().addAll(firstAutomatonTableView, firstAutomatonInfo, generateAnotherOneButton, returnToStartButton);
-
-        mainPane.setStyle("-fx-background-color: #2e3348;");
-
-        AnchorPane.setLeftAnchor(firstAutomatonTableView, 25.0);
-        AnchorPane.setTopAnchor(firstAutomatonTableView, 50.0);
-
-        AnchorPane.setLeftAnchor(firstAutomatonInfo, 25.0);
-        AnchorPane.setTopAnchor(firstAutomatonInfo, 10.0);
-
-        AnchorPane.setRightAnchor(generateAnotherOneButton, 10.0);
-        AnchorPane.setBottomAnchor(generateAnotherOneButton, 10.0);
-
-        AnchorPane.setRightAnchor(returnToStartButton, 10.0);
-        AnchorPane.setTopAnchor(returnToStartButton, 10.0);
     }
 }
