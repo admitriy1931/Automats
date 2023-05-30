@@ -16,11 +16,13 @@ public class BruteforceStrMatcher {
         for (int i = 0; i < textLen; i++) {
             int j = 0;
             for (; j < patternLen; j++) {
-                if (i + j == textLen || textBuilder.charAt(i + j) != patternBuilder.charAt(j))
-                    break;
-                else if (j != 0)
+                if (j != 0) {
                     result.add(patternBuilder.substring(0, j) + "     " + textBuilder.substring(0, i) +
-                            "|" + textBuilder.substring(i, i + j) + "|" + textBuilder.substring(i + j, textLen) + " ");
+                        "|" + textBuilder.substring(i, i + j) + "|" + textBuilder.substring(i + j, textLen) + " ");
+                }
+                if (i + j == textLen || textBuilder.charAt(i + j) != patternBuilder.charAt(j)) {
+                    break;
+                }
             }
             if (j == patternLen) {
                 result.add(patternBuilder.substring(0, j) + "     " + textBuilder.substring(0, i) +

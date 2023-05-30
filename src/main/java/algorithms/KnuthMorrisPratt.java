@@ -14,12 +14,14 @@ public class KnuthMorrisPratt {
         StringBuilder patternBuilder = new StringBuilder(pattern);
         StringBuilder textBuilder = new StringBuilder(text);
         int[] lps = new int[patternLen];
+        String[] prefix = new String[patternLen];
         int j = 0;
-        LPS(patternBuilder, patternLen, lps);
-        result.add("Префикс-функция " + Arrays.toString(lps));
+        LPS(patternBuilder, patternLen, lps, prefix);
+        result.add("Префикс-функция (длины) " + Arrays.toString(lps));
+        result.add("Префикс-функция (префиксы) " + Arrays.toString(prefix));
 
         int i = 0;
-        while ((textLen - i) >= (patternLen - j)) {
+        while (i < textLen) {
             if (patternBuilder.charAt(j) == textBuilder.charAt(i)) {
                 j++;
                 i++;
@@ -40,15 +42,17 @@ public class KnuthMorrisPratt {
         return result;
     }
 
-    static void LPS(StringBuilder patternBuilder, int patternLen, int[] lps)
+    static void LPS(StringBuilder patternBuilder, int patternLen, int[] lps, String[] prefix)
     {
         int len = 0;
         int ind = 1;
         lps[0] = 0;
+        prefix[0] = "";
         while (ind < patternLen) {
             if (patternBuilder.charAt(ind) == patternBuilder.charAt(len)) {
                 len++;
                 lps[ind] = len;
+                prefix[ind] = patternBuilder.substring(0, len);
                 ind++;
             }
             else
@@ -58,6 +62,7 @@ public class KnuthMorrisPratt {
                 else
                 {
                     lps[ind] = len;
+                    prefix[ind] = "";
                     ind++;
                 }
             }
