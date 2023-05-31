@@ -2,6 +2,9 @@ module org.openjfx {
     requires javafx.controls;
     requires javafx.fxml;
     requires com.google.common;
+    requires itextpdf;
+    requires kernel;
+    requires io;
     exports org.openjfx;
     exports algorithms;
     exports automaton;
