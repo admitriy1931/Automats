@@ -5,6 +5,7 @@ module org.openjfx {
     requires itextpdf;
     requires kernel;
     requires io;
+    requires com.github.librepdf.openpdf;
     exports org.openjfx;
     exports algorithms;
     exports automaton;

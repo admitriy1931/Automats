@@ -1,155 +1,162 @@
 package algorithms;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.*;
 
 import java.io.FileOutputStream;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.kernel.font.PdfFont;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import javafx.scene.text.Text;
-import com.itextpdf.io.font.constants.StandardFonts;
-import com.itextpdf.kernel.font.PdfFontFactory;
-import java.util.HashSet;
 import java.util.List;
 
-public class StringSubstringGenerator {
-    private StringSubstringGenerator() {
-    }
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.Document;
+import com.lowagie.text.Paragraph;
 
+
+public class StringSubstringGenerator {
     private static final String CHARACTERS = "abcdefghijklmnopqrstuvwxyz";
     private static final int MIN_LENGTH = 4;
     private static final int MAX_LENGTH = 5;
-    private static final double ver1 = 0.7; //вероятность того, что генератор выдаст строку из одного слова
-    private static final double ver2 = 0.8; //вероятность того, что генератор выдаст подстроку из строки
+    private static double ver2; //вероятность того, что генератор выдаст подстроку из строки
+    private static int wordCount; //колличество слов в генерируемом предложении
+    private static int optionCount; //колличество вариантов
     static Map<String, String> stringAndSubstring = new HashMap<>();
+    public StringSubstringGenerator(int wordCount, int optionCount, double ver) {
+        this.wordCount = wordCount;
+        this.optionCount = optionCount;
+        this.ver2 = ver;
+    }
 
-    public static void func1() {
-        for (int i = 0; i < 30; i++) {
+    public void func1() {
+        for (int i = 0; i < optionCount; i++) {
             Random random = new Random();
-            double randomNumber = random.nextDouble();
             double randomNumber2 = random.nextDouble();
-            if (randomNumber <= ver1) {
-                String w = String.valueOf(generateWorld(MIN_LENGTH, MAX_LENGTH));
-                int n1 = random.nextInt(w.length() - 3) + 1; // первый индекс
-                int diff = random.nextInt(2) + 2; // разница между индексами (2 или 3)
-                int n2 = n1 + diff;
-
-                if (randomNumber2 <= ver2){
-                    String substr = w.substring(n1,n2);
-                    stringAndSubstring.put(w,substr);
-                }
-                else{
-                    String noSubstr = String.valueOf(generateSubstring());
-                    while(true){
-                        if (!w.contains(noSubstr)){
-                            noSubstr = String.valueOf(generateSubstring());
-                            break;
-                        }
-                    }
-                    stringAndSubstring.put(w, noSubstr);
-                }
-            } else {
-                String[] w2 = new String[2];
-                w2[0] = generateWorld(MIN_LENGTH, MAX_LENGTH).toString();
-                w2[1] = generateWorld(MIN_LENGTH, MAX_LENGTH).toString();
-
-                int n1 = random.nextInt(MIN_LENGTH - 3) + 1; // первый индекс
-                int diff = random.nextInt(2) + 2; // разница между индексами (2 или 3)
-                int n2 = n1 + diff;
-
-                if (randomNumber2 <= ver2){
-                    int rnd = random.nextInt(2);
-                    if (rnd == 0){
-                        String substr = w2[0].substring(n1,n2);
-                        stringAndSubstring.put(w2[0] + " " + w2[1] ,substr);
-                    }
-                    else{
-                        String substr = w2[1].substring(n1,n2);
-                        stringAndSubstring.put(w2[0] + " " + w2[1] ,substr);
-                    }
-
-                }
-                else{
-                    String noSubstr = String.valueOf(generateSubstring());
-                    while(true){
-                        if (!w2[0].contains(noSubstr) && !w2[1].contains(noSubstr)){
-                            noSubstr = String.valueOf(generateWorld(n1,n2));
-                            break;
-                        }
-                    }
-                    stringAndSubstring.put(w2[0] + " " + w2[1], noSubstr);
-                }
+            String w = generateWords();
+            String[] ww = w.split(" ");
+            if (randomNumber2 <= ver2){
+                int randomW = random.nextInt(ww.length);
+                String wSub = ww[randomW];
+                Random r = new Random();
+                int startIndex = r.nextInt(wSub.length() - 2); // начальный индекс
+                int endIndex = startIndex + r.nextInt(2) + 2; // конечный индекс (2 или 3 символа)
+                String subStr = wSub.substring(startIndex, endIndex);
+                stringAndSubstring.put(w, subStr);
 
             }
-
+            else{
+                String a = generateSubstring();
+                while (!IsStrContainsSubstring(ww, a)){
+                    a= generateWords();
+                }
+                stringAndSubstring.put(w, a);
+            }
         }
     }
-
-    public static void printStringndSubstring() throws DocumentException {
-        func1();
-//        Document document = new Document();
-//
-//        try {
-//            PdfWriter.getInstance(document, new FileOutputStream("src/main/resources/output.pdf"));
-//            document.open();
-//            int i = 0;
-//            for (Map.Entry<String, String> entry : stringAndSubstring.entrySet()) {
-//                String str = entry.getKey();
-//                String substring = entry.getValue();
-//                List<String> output = algorithms.KnuthMorrisPratt.KMP(substring, str);
-//                Font font1 = new Font(Font.FontFamily.HELVETICA, 14);
-//                document.add(new Paragraph("Option " + i, font1));
-//                Text textSubstring = new Text(substring).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD));
-//
-//// Создание объекта Text для строки str
-//                Text textStr = new Text(str).setFont(PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD));
-//
-//// Создание объекта Paragraph с объединенными объектами Text
-//                Paragraph paragraph = new Paragraph()
-//                        .add("Is a ")
-//                        .add(textSubstring)
-//                        .add(" substring of a string ")
-//                        .add(textStr)
-//                        .add("?");
-//
-//                i+=1;
-//                System.out.println(i);
-//            }
-//            document.close();
-//            System.out.println("файл создан");
-//
-//        } catch (DocumentException | FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
+    public static Boolean IsStrContainsSubstring(String[] str, String substr) {
+        for (String e : str) {
+            if (e.contains(substr)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public void printStringndSubstring2() throws IOException {
+        int i = 0;
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream("output2.pdf"));
+        document.open();
         for (Map.Entry<String, String> entry : stringAndSubstring.entrySet()) {
-            String str = entry.getKey();
-            String substring = entry.getValue();
 
-            System.out.println("String: " + entry.getKey() + " " + "Substring: " + entry.getValue());
-//            System.out.println(output);
-//            for (String e: output) {
-//                System.out.println(e);
-//
-//            }
+            List<String> output = algorithms.KnuthMorrisPratt.KMP(entry.getValue(), entry.getKey());
 
+            Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+            Font mainFont = new Font(Font.HELVETICA, 14);
+            Chunk optionChunk = new Chunk("Option " + i + "\n", mainFont);
+            Chunk isAChunk = new Chunk("Is a ", FontFactory.getFont(FontFactory.HELVETICA));
+            Chunk valueChunk = new Chunk(entry.getValue(), boldFont);
+            Chunk substringChunk = new Chunk(" substring of a string ", FontFactory.getFont(FontFactory.HELVETICA));
+            Chunk keyChunk = new Chunk(entry.getKey(), boldFont);
+            Chunk questionMarkChunk = new Chunk(" ?\n" + "\n",FontFactory.getFont(FontFactory.HELVETICA));
+            Paragraph paragraph = new Paragraph();
+            paragraph.add(optionChunk);
+            paragraph.add(isAChunk);
+            paragraph.add(valueChunk);
+            paragraph.add(substringChunk);
+            paragraph.add(keyChunk);
+            paragraph.add(questionMarkChunk);
+            document.add(paragraph);
+///////////////////////////////
+            System.out.println("str: "+ entry.getKey() + "sub: " + entry.getValue());
+            System.out.println(output);
+
+            PdfPTable table = new PdfPTable(3);
+            table.setWidthPercentage(100);
+            //PdfPCell cell = new PdfPCell(new Paragraph("Text"));
+            //table.addCell(cell);
+
+            for (int j = 0; j < 5; j++) {
+                table.addCell("Str " + j + ", Col 1");
+                table.addCell("Str " + j + ", Col 2");
+                table.addCell("Str " + j + ", Col 3");
+            }
+
+            document.add(table);
+
+            i++;
         }
+        document.close();
+
+
     }
 
-    public static StringBuilder generateWorld(int minLen, int maxLen){
-        SecureRandom random = new SecureRandom();
-        int length = minLen + random.nextInt(maxLen - minLen + 1);
-        StringBuilder sb = new StringBuilder();
-        for (int j = 0; j < length; j++) {
-            int randomIndex = random.nextInt(CHARACTERS.length());
-            char randomChar = CHARACTERS.charAt(randomIndex);
-            sb.append(randomChar);
+    public void printStringndSubstring() throws IOException {
+        int i = 0;
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream("output.pdf"));
+        document.open();
+        for (Map.Entry<String, String> entry : stringAndSubstring.entrySet()) {
+            //String f = "Option " + i + " \n" + "Is a "  + entry.getValue() + " substring of a string " + entry.getKey() + " ?";
+            Font boldFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+            Font mainFont = new Font(Font.HELVETICA, 14);
+            Chunk optionChunk = new Chunk("Option " + i + "\n", mainFont);
+            Chunk isAChunk = new Chunk("Is a ", FontFactory.getFont(FontFactory.HELVETICA));
+            Chunk valueChunk = new Chunk(entry.getValue(), boldFont);
+            Chunk substringChunk = new Chunk(" substring of a string ", FontFactory.getFont(FontFactory.HELVETICA));
+            Chunk keyChunk = new Chunk(entry.getKey(), boldFont);
+            Chunk questionMarkChunk = new Chunk(" ?\n" + "\n",FontFactory.getFont(FontFactory.HELVETICA));
+            Paragraph paragraph = new Paragraph();
+            paragraph.add(optionChunk);
+            paragraph.add(isAChunk);
+            paragraph.add(valueChunk);
+            paragraph.add(substringChunk);
+            paragraph.add(keyChunk);
+            paragraph.add(questionMarkChunk);
+            document.add(paragraph);
+            i++;
+
         }
-        return sb;
+        document.close();
+    }
+
+    public static String generateWords(){
+        int n = wordCount; // Количество слов в предложении
+        Random rand = new Random();
+        StringBuilder wordBuilder = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            // Генерируем слово случайной длины от 4 до 5 символов
+            int len = rand.nextInt((MAX_LENGTH - MIN_LENGTH) + 1) + MIN_LENGTH;
+            for (int j = 0; j < len; j++) {
+                char ch = CHARACTERS.charAt(rand.nextInt(CHARACTERS.length())); // Выбираем случайный символ из допустимых
+
+                wordBuilder.append(ch);
+            }
+            if (i != n-1){
+                wordBuilder.append(" ");
+            }
+            else{
+                continue;
+            }
+        }
+        return wordBuilder.toString();
     }
     public static String generateSubstring() {
         Random random = new Random();
